@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 import React from "react";
-
 import { getFirestore } from "firebase/firestore";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import { getStorage } from "firebase/storage";
@@ -22,15 +21,6 @@ const firebaseConfig = {
   messagingSenderId: messagingSenderId,
   appId: appId,
 };
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyDv-c-FVGSrkK6TF5grws75vCNQKmfpT-4",
-//   authDomain: "green-crypto-app.firebaseapp.com",
-//   projectId: "green-crypto-app",
-//   storageBucket: "green-crypto-app.appspot.com",
-//   messagingSenderId: "324045532006",
-//   appId: "1:324045532006:web:2930fb5235695b259036a7",
-// };
 
 // Initialize Firebase
 const myApp = initializeApp(firebaseConfig);
