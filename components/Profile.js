@@ -1,9 +1,8 @@
-import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 import React, { useState } from "react";
-import Profile from "../components/Profile";
-import styles from "../components/styles/styles";
+import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import styles from "./styles/styles";
 
-export default function ProfileScreen() {
+const Profile = () => {
   const [username, setUsername] = useState("John Doe");
   const [email, setEmail] = useState("johndoe@example.com");
   const [bio, setBio] = useState("This is my bio");
@@ -24,14 +23,14 @@ export default function ProfileScreen() {
           style={styles.userIcon}
         />
         <Text style={styles.username}>{username}</Text>
-        {/* <TouchableOpacity onPress={() => setIsEditing(true)}>
+        <TouchableOpacity onPress={() => setIsEditing(true)}>
           <Text style={styles.editButton}>Edit</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
       <View style={styles.body}>
-        {/* <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{email}</Text> */}
-        {/* {isEditing ? (
+        <Text style={styles.label}>Email:</Text>
+        <Text style={styles.value}>{email}</Text>
+        {isEditing ? (
           <>
             <Text style={styles.label}>Username:</Text>
             <TextInput
@@ -50,17 +49,17 @@ export default function ProfileScreen() {
               <Text style={styles.saveButton}>Save</Text>
             </TouchableOpacity>
           </>
-        ) : ( */}
-        <>
-          <View>
+        ) : (
+          <>
             <Text style={styles.label}>Username:</Text>
             <Text style={styles.value}>{username}</Text>
-          </View>
-          <Text style={styles.label}>Bio:</Text>
-          <Text style={styles.value}>{bio}</Text>
-        </>
-        {/* )} */}
+            <Text style={styles.label}>Bio:</Text>
+            <Text style={styles.value}>{bio}</Text>
+          </>
+        )}
       </View>
     </View>
   );
-}
+};
+
+export default Profile;
