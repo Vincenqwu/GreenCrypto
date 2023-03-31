@@ -3,7 +3,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
+import { Entypo, FontAwesome, Foundation } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import PortfolioScreen from "../screens/PortfolioScreen";
@@ -63,7 +63,7 @@ export default function BottomTabNavigator({ navigation }) {
         options={{
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="coffee" color={color} size={size} />
+            <Entypo name="home" size={size ? 30 : 25} color={color} />
           ),
         }}
       />
@@ -73,7 +73,7 @@ export default function BottomTabNavigator({ navigation }) {
         options={{
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="exclamation" color={color} size={size} />
+            <FontAwesome name="user" color={color} size={size} />
           ),
         }}
       />
@@ -83,7 +83,7 @@ export default function BottomTabNavigator({ navigation }) {
         options={{
           tabBarLabel: "Portfolio",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="exclamation" color={color} size={size} />
+            <Foundation name="graph-pie" size={size ? 35 : 30} color={color} />
           ),
         }}
       />
@@ -93,7 +93,7 @@ export default function BottomTabNavigator({ navigation }) {
         options={{
           tabBarLabel: "Activities",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="exclamation" color={color} size={size} />
+            <FontAwesome name="list" color={color} size={size} />
           ),
         }}
       />
