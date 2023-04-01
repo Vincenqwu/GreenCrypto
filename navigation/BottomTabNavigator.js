@@ -58,7 +58,7 @@ export default function BottomTabNavigator({ navigation }) {
       }}
     >
       <Tab.Screen
-        name="Home"
+        name="CryptoMarket"
         component={HomeScreen}
         options={{
           tabBarLabel: "Home",
