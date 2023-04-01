@@ -5,12 +5,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: "yellow",
+    backgroundColor: "#F5FCFF",
   },
 
   card: {
     backgroundColor: "#FFFFFF",
-    marginTop: 100,
+    marginTop: 30,
+    // width: "80%",
     borderRadius: 10,
     padding: 20,
     shadowColor: "#000",
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 16,
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   input: {
     fontSize: 16,

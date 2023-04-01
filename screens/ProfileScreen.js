@@ -16,22 +16,23 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.profileContainer}>
-      <View style={styles.header}>
-        <Image
-          source={{
-            uri: "https://reactnative.dev/img/tiny_logo.png",
-          }}
-          style={styles.userIcon}
-        />
-        <Text style={styles.username}>{username}</Text>
-        {/* <TouchableOpacity onPress={() => setIsEditing(true)}>
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <Image
+            source={{
+              uri: "https://reactnative.dev/img/tiny_logo.png",
+            }}
+            style={styles.userIcon}
+          />
+          <Text style={styles.username}>{username}</Text>
+          {/* <TouchableOpacity onPress={() => setIsEditing(true)}>
           <Text style={styles.editButton}>Edit</Text>
         </TouchableOpacity> */}
-      </View>
-      <View style={styles.body}>
-        {/* <Text style={styles.label}>Email:</Text>
+        </View>
+        <View style={styles.body}>
+          {/* <Text style={styles.label}>Email:</Text>
         <Text style={styles.value}>{email}</Text> */}
-        {/* {isEditing ? (
+          {/* {isEditing ? (
           <>
             <Text style={styles.label}>Username:</Text>
             <TextInput
@@ -51,15 +52,16 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </>
         ) : ( */}
-        <>
-          <View>
-            <Text style={styles.label}>Username:</Text>
-            <Text style={styles.value}>{username}</Text>
-          </View>
-          <Text style={styles.label}>Bio:</Text>
-          <Text style={styles.value}>{bio}</Text>
-        </>
-        {/* )} */}
+          <>
+            <View style={styles.row}>
+              <Text style={styles.label}>Username:</Text>
+              <Text style={styles.value}>{username}</Text>
+            </View>
+            <Text style={styles.label}>Bio:</Text>
+            <Text style={styles.value}>{bio}</Text>
+          </>
+          {/* )} */}
+        </View>
       </View>
     </View>
   );

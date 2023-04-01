@@ -29,8 +29,11 @@ const Profile = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.body}>
-          <Text style={styles.label}>Email:</Text>
-          <Text style={styles.value}>{email}</Text>
+          <View style={styles.row}>
+            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.value}>{email}</Text>
+          </View>
+
           {isEditing ? (
             <>
               <Text style={styles.label}>Username:</Text>
