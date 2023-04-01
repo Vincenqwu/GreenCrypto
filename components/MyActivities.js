@@ -51,6 +51,7 @@ export default function MyActivities( { posts }) {
           onPress: () => {
             const newPost = {
               activityId: activityItem.id,
+              userId: activityItem.userId,
               action: activityItem.action,
               coinId: activityItem.coinId,
               amount: activityItem.amount,
