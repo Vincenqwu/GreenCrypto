@@ -44,7 +44,9 @@ export default function BottomTabNavigator({ navigation }) {
                 opacity: 0.8,
               }}
             >
-              <MaterialIcons name="add" size={25} color="white" />
+              {isAuthenticated ? null : (
+                <MaterialIcons name="add" size={25} color="white" />
+              )}
             </TouchableOpacity>
           </View>
         ),
