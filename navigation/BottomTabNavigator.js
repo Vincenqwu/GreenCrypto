@@ -7,7 +7,7 @@ import { Entypo, FontAwesome, Foundation } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import PortfolioScreen from "../screens/PortfolioScreen";
-import ActivityListScreen from "../screens/ActivityListScreen";
+import ActivitiesScreen from "../screens/ActivitiesScreen";
 
 export default function BottomTabNavigator({ navigation }) {
   const Tab = createBottomTabNavigator();
@@ -89,7 +89,7 @@ export default function BottomTabNavigator({ navigation }) {
       />
       <Tab.Screen
         name="Activity List"
-        component={ActivityListScreen}
+        component={ActivitiesScreen}
         options={{
           tabBarLabel: "Activities",
           tabBarIcon: ({ color, size }) => (
