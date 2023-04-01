@@ -1,10 +1,32 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  container: {
+  profileContainer: {
     flex: 1,
-    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "yellow",
+  },
+
+  card: {
+    backgroundColor: "#FFFFFF",
+    marginTop: 100,
+    borderRadius: 10,
     padding: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
   },
   header: {
     flexDirection: "row",

@@ -15,7 +15,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.profileContainer}>
       <View style={styles.header}>
         <Image
           source={{

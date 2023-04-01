@@ -14,49 +14,51 @@ const Profile = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Image
-          source={{
-            uri: "https://reactnative.dev/img/tiny_logo.png",
-          }}
-          style={styles.userIcon}
-        />
-        <Text style={styles.username}>{username}</Text>
-        <TouchableOpacity onPress={() => setIsEditing(true)}>
-          <Text style={styles.editButton}>Edit</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.body}>
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{email}</Text>
-        {isEditing ? (
-          <>
-            <Text style={styles.label}>Username:</Text>
-            <TextInput
-              style={styles.input}
-              value={username}
-              onChangeText={setUsername}
-            />
-            <Text style={styles.label}>Bio:</Text>
-            <TextInput
-              style={styles.input}
-              value={bio}
-              onChangeText={setBio}
-              multiline={true}
-            />
-            <TouchableOpacity onPress={handleSave}>
-              <Text style={styles.saveButton}>Save</Text>
-            </TouchableOpacity>
-          </>
-        ) : (
-          <>
-            <Text style={styles.label}>Username:</Text>
-            <Text style={styles.value}>{username}</Text>
-            <Text style={styles.label}>Bio:</Text>
-            <Text style={styles.value}>{bio}</Text>
-          </>
-        )}
+    <View style={styles.profileContainer}>
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <Image
+            source={{
+              uri: "https://reactnative.dev/img/tiny_logo.png",
+            }}
+            style={styles.userIcon}
+          />
+          <Text style={styles.username}>{username}</Text>
+          <TouchableOpacity onPress={() => setIsEditing(true)}>
+            <Text style={styles.editButton}>Edit</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.body}>
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.value}>{email}</Text>
+          {isEditing ? (
+            <>
+              <Text style={styles.label}>Username:</Text>
+              <TextInput
+                style={styles.input}
+                value={username}
+                onChangeText={setUsername}
+              />
+              <Text style={styles.label}>Bio:</Text>
+              <TextInput
+                style={styles.input}
+                value={bio}
+                onChangeText={setBio}
+                multiline={true}
+              />
+              <TouchableOpacity onPress={handleSave}>
+                <Text style={styles.saveButton}>Save</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Text style={styles.label}>Username:</Text>
+              <Text style={styles.value}>{username}</Text>
+              <Text style={styles.label}>Bio:</Text>
+              <Text style={styles.value}>{bio}</Text>
+            </>
+          )}
+        </View>
       </View>
     </View>
   );
