@@ -1,10 +1,42 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { FlatList, RefreshControl, View, Text } from "react-native";
+import CoinItem from "../components/CoinItem";
+import { getMarketData } from "../api/request";
 
-export default function HomeScreen() {
+const HomeScreen = () => {
+  const [coins, setCoins] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchCoins = async (pageNumber) => {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
+    const coinsData = await getMarketData(pageNumber);
+    setCoins((existingCoins) => [...existingCoins, ...coinsData]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchCoins();
+  }, []);
+
   return (
-    <View>
-      <Text>HomeScreen</Text>
+    <View style={{ backgroundColor: "#000000" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      ></View>
+      <FlatList
+        data={coins.slice(0, 1)}
+        renderItem={({ item }) => <CoinItem marketCoin={item} />}
+        keyExtractor={(item) => item.id.toString()}
+      />
     </View>
-  )
-}
+  );
+};
+
+export default HomeScreen;
