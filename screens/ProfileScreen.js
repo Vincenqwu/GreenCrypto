@@ -5,7 +5,7 @@ import styles from "../components/styles/styles";
 
 export default function ProfileScreen() {
   const [username, setUsername] = useState("John Doe");
-  const [email, setEmail] = useState("johndoe@example.com");
+  const [email, setEmail] = useState("johndoe@gmail.com");
   const [bio, setBio] = useState("This is my bio");
   const [isEditing, setIsEditing] = useState(false);
 
@@ -55,9 +55,6 @@ export default function ProfileScreen() {
                   multiline={true}
                 />
               </View>
-              <TouchableOpacity onPress={handleSave}>
-                <Text style={styles.saveButton}>Save</Text>
-              </TouchableOpacity>
             </>
           ) : (
             <>
@@ -65,21 +62,21 @@ export default function ProfileScreen() {
                 <Text style={styles.label}>Username:</Text>
                 <Text style={styles.value}>{username}</Text>
               </View>
-              {/* <View style={styles.row}> */}
-              <Text style={styles.label}>Bio:</Text>
-              <Text style={styles.value}>{bio}</Text>
-              {/* </View> */}
+              <View style={styles.row}>
+                <Text style={styles.label}>Bio:</Text>
+                <Text style={styles.value}>{bio} </Text>
+              </View>
             </>
           )}
         </View>
-        <View style={styles.footer}>
-          <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
-            <Text style={styles.button}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onLogout}>
-            <Text style={styles.button}>Logout</Text>
-          </TouchableOpacity>
-        </View>
+      </View>
+      <View style={styles.footer}>
+        <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
+          <Text style={styles.button}>Edit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onLogout}>
+          <Text style={styles.button}>Logout</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
