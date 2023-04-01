@@ -1,13 +1,13 @@
 import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 import React, { useState } from "react";
 import Profile from "../components/Profile";
-import styles from "../components/styles/styles";
+import styles from "../components/styles/profileStyles";
 import PressableButton from "../components/PressableButton";
 import { AntDesign } from "@expo/vector-icons";
+import { auth } from "../Firebase/firebase-setup";
 
 export default function ProfileScreen() {
   const [username, setUsername] = useState("John Doe");
-  const [email, setEmail] = useState("johndoe@gmail.com");
   const [bio, setBio] = useState("This is my bio");
   const [isEditing, setIsEditing] = useState(false);
 
@@ -16,6 +16,9 @@ export default function ProfileScreen() {
     console.log("save new profile");
     // Code to save changes to username and bio
   };
+  const email = auth.currentUser.email;
+
+  console.log(auth.currentUser);
 
   const onLogout = () => {
     console.log("log out");

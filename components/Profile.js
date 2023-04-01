@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
-import styles from "./styles/styles";
+import styles from "./styles/profileStyles";
 
 const Profile = () => {
   const [username, setUsername] = useState("John Doe");
