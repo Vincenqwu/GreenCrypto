@@ -40,7 +40,6 @@ export default function PortfolioScreen() {
 
   return (
     <View>
-      <Text>PortfolioScreen</Text>
       <PressableButton
         pressHandler={() => buyCrypto(testCoinId, testAmount)}
         style={styles.buttonStyle}
@@ -53,6 +52,7 @@ export default function PortfolioScreen() {
 
 const styles = StyleSheet.create({
   buttonStyle: {
+    marginTop: 10,
     backgroundColor: "blue",
     padding: 10,
     paddingHorizontal: 20,
