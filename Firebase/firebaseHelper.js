@@ -14,6 +14,23 @@ export async function createActivity(activity) {
   }
 }
 
+export async function editActivity(activityId, postCreated) {
+  try {
+    await updateDoc(doc(firestore, "activities", activityId), postCreated);
+  } catch (err) { 
+    console.log(err);
+  }
+}
+
+export async function createPost(post) {
+  try {
+    const docRef = await addDoc(collection(firestore, "posts"), post);
+    console.log(docRef.id);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function deletePost(postId) {
   try {
     await deleteDoc(doc(firestore, "posts", postId));
