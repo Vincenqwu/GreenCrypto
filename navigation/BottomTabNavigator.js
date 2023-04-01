@@ -28,7 +28,6 @@ export default function BottomTabNavigator({ navigation }) {
   }, [auth]);
 
   function iconPressed() {
-    console.log("icon pressed");
     navigation.navigate("Login");
   }
 

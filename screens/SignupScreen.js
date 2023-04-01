@@ -37,7 +37,6 @@ const SignupScreen = ({ navigation }) => {
 
       navigation.navigate("HomeNavigator");
       console.log(`user ${email} created!`);
-      // console.log(userCred.user.uid);
     } catch (err) {
       console.log("Auth error", err);
     }

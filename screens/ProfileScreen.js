@@ -64,7 +64,7 @@ export default function ProfileScreen() {
       username: editUsername,
       bio: editBio,
     };
-    console.log(newProfile);
+    // console.log(newProfile);
     if (profileId) {
       updateUserProfile(profileId, newProfile);
     }

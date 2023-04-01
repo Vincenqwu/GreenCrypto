@@ -54,14 +54,6 @@ export async function createProfile(profile) {
 }
 
 export async function updateUserProfile(pid, newProfile) {
-  // console.log("async", pid);
-  // try {
-  //   await updateDoc(doc(firestore, "profiles", uid), newProfile);
-  // } catch (err) {
-  //   console.log(err);
-  // }
-
-  // Set the "capital" field of the city 'DC'
   try {
     const profileRef = doc(firestore, "profiles", pid);
     await updateDoc(profileRef, newProfile);
