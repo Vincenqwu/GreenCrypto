@@ -14,6 +14,8 @@ export default function ProfileScreen() {
     // Code to save changes to username and bio
   };
 
+  const onLogout = () => {};
+
   return (
     <View style={styles.profileContainer}>
       <View style={styles.card}>
@@ -30,37 +32,53 @@ export default function ProfileScreen() {
         </TouchableOpacity> */}
         </View>
         <View style={styles.body}>
-          {/* <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{email}</Text> */}
-          {/* {isEditing ? (
-          <>
-            <Text style={styles.label}>Username:</Text>
-            <TextInput
-              style={styles.input}
-              value={username}
-              onChangeText={setUsername}
-            />
-            <Text style={styles.label}>Bio:</Text>
-            <TextInput
-              style={styles.input}
-              value={bio}
-              onChangeText={setBio}
-              multiline={true}
-            />
-            <TouchableOpacity onPress={handleSave}>
-              <Text style={styles.saveButton}>Save</Text>
-            </TouchableOpacity>
-          </>
-        ) : ( */}
-          <>
-            <View style={styles.row}>
-              <Text style={styles.label}>Username:</Text>
-              <Text style={styles.value}>{username}</Text>
-            </View>
-            <Text style={styles.label}>Bio:</Text>
-            <Text style={styles.value}>{bio}</Text>
-          </>
-          {/* )} */}
+          <View style={styles.row}>
+            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.value}>{email}</Text>
+          </View>
+          {isEditing ? (
+            <>
+              <View style={styles.row}>
+                <Text style={styles.label}>Username:</Text>
+                <TextInput
+                  style={styles.input}
+                  value={username}
+                  onChangeText={setUsername}
+                />
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Bio:</Text>
+                <TextInput
+                  style={styles.input}
+                  value={bio}
+                  onChangeText={setBio}
+                  multiline={true}
+                />
+              </View>
+              <TouchableOpacity onPress={handleSave}>
+                <Text style={styles.saveButton}>Save</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <View style={styles.row}>
+                <Text style={styles.label}>Username:</Text>
+                <Text style={styles.value}>{username}</Text>
+              </View>
+              {/* <View style={styles.row}> */}
+              <Text style={styles.label}>Bio:</Text>
+              <Text style={styles.value}>{bio}</Text>
+              {/* </View> */}
+            </>
+          )}
+        </View>
+        <View style={styles.footer}>
+          <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
+            <Text style={styles.button}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onLogout}>
+            <Text style={styles.button}>Logout</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
