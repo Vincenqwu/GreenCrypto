@@ -13,7 +13,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="BottomTabNavigator"
+          name="HomeNavigator"
           component={BottomTabNavigator}
           options={{
             headerShown: false,

@@ -1,31 +1,89 @@
-import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
-import React, { useState } from "react";
-import Profile from "../components/Profile";
-import styles from "../components/styles/profileStyles";
+import { View, Text, Image, TextInput } from "react-native";
+import React, { useEffect, useState } from "react";
+import styles from "../styles/profileStyles";
 import PressableButton from "../components/PressableButton";
 import { AntDesign } from "@expo/vector-icons";
-import { auth } from "../Firebase/firebase-setup";
+import { auth, firestore } from "../Firebase/firebase-setup";
+import { signOut } from "firebase/auth";
+import { onSnapshot, collection, query, where } from "firebase/firestore";
+import { updateUserProfile } from "../Firebase/firebaseHelper";
 
 export default function ProfileScreen() {
-  const [username, setUsername] = useState("John Doe");
-  const [bio, setBio] = useState("This is my bio");
+  const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [editUsername, setEditUsername] = useState("");
+  const [editBio, setEditBio] = useState("");
+  const [profileId, setProfileId] = useState(null);
+
+  const onCancel = () => {
+    setIsEditing(false);
+  };
+
+  const currentUser = auth.currentUser;
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(firestore, "profiles"),
+        where("uid", "==", currentUser.uid)
+      ),
+      (querySnapshot) => {
+        if (querySnapshot.empty) {
+          // no data
+          let newProfile = {
+            uid: currentUser.uid,
+            email: currentUser.email,
+            bio: "Please write about yourself",
+            username: "New User",
+          };
+          setProfile(newProfile);
+        } else {
+          let newProfile = null;
+          let snap = querySnapshot.docs.at(0);
+
+          newProfile = snap.data();
+          setProfile(newProfile);
+          setProfileId(snap.id);
+        }
+      },
+      (error) => {
+        console.log("onsnapshot error: ", error);
+      }
+    );
+    return () => {
+      unsubscribe();
+    };
+  }, [currentUser]);
 
   const handleSave = () => {
     setIsEditing(false);
-    console.log("save new profile");
-    // Code to save changes to username and bio
-  };
-  const email = auth.currentUser.email;
+    setEditBio(editBio);
+    setEditUsername(editUsername);
 
-  console.log(auth.currentUser);
+    let newProfile = {
+      ...profile,
+      username: editUsername,
+      bio: editBio,
+    };
+    console.log(newProfile);
+    if (profileId) {
+      updateUserProfile(profileId, newProfile);
+    }
+  };
 
   const onLogout = () => {
-    console.log("log out");
+    signOut(auth);
   };
   const onEdit = () => {
     setIsEditing(true);
+    if (profile) {
+      setEditBio(profile.bio);
+      setEditUsername(profile.username);
+    }
   };
+
+  if (!profile) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <View style={styles.profileContainer}>
@@ -40,12 +98,12 @@ export default function ProfileScreen() {
           <PressableButton style={styles.camera}>
             <AntDesign name="camera" size={24} color="black" />
           </PressableButton>
-          <Text style={styles.username}>{username}</Text>
+          <Text style={styles.username}>{profile.username}</Text>
         </View>
         <View style={styles.body}>
           <View style={styles.row}>
             <Text style={styles.label}>Email:</Text>
-            <Text style={styles.value}>{email}</Text>
+            <Text style={styles.value}>{profile.email}</Text>
           </View>
           {isEditing ? (
             <>
@@ -53,16 +111,20 @@ export default function ProfileScreen() {
                 <Text style={styles.label}>Username:</Text>
                 <TextInput
                   style={styles.input}
-                  value={username}
-                  onChangeText={setUsername}
+                  value={editUsername}
+                  onChangeText={(newUsername) => {
+                    setEditUsername(newUsername);
+                  }}
                 />
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Bio:</Text>
                 <TextInput
                   style={styles.input}
-                  value={bio}
-                  onChangeText={setBio}
+                  value={editBio}
+                  onChangeText={(newBio) => {
+                    setEditBio(newBio);
+                  }}
                   multiline={true}
                 />
               </View>
@@ -71,11 +133,11 @@ export default function ProfileScreen() {
             <>
               <View style={styles.row}>
                 <Text style={styles.label}>Username:</Text>
-                <Text style={styles.value}>{username}</Text>
+                <Text style={styles.value}>{profile.username}</Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.label}>Bio:</Text>
-                <Text style={styles.value}>{bio} </Text>
+                <Text style={styles.value}>{profile.bio} </Text>
               </View>
             </>
           )}
@@ -87,15 +149,20 @@ export default function ProfileScreen() {
             <PressableButton style={styles.button} pressHandler={handleSave}>
               <Text style={styles.btnText}>Save</Text>
             </PressableButton>
+            <PressableButton style={styles.button} pressHandler={onCancel}>
+              <Text style={styles.btnText}>Cancel</Text>
+            </PressableButton>
           </>
         ) : (
-          <PressableButton style={styles.button} pressHandler={onEdit}>
-            <Text style={styles.btnText}>Edit</Text>
-          </PressableButton>
+          <>
+            <PressableButton style={styles.button} pressHandler={onEdit}>
+              <Text style={styles.btnText}>Edit</Text>
+            </PressableButton>
+            <PressableButton style={styles.button} pressHandler={onLogout}>
+              <Text style={styles.btnText}>Log out</Text>
+            </PressableButton>
+          </>
         )}
-        <PressableButton style={styles.button} pressHandler={onLogout}>
-          <Text style={styles.btnText}>Log out</Text>
-        </PressableButton>
       </View>
     </View>
   );
