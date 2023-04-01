@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -8,9 +8,24 @@ import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import PortfolioScreen from "../screens/PortfolioScreen";
 import ActivitiesScreen from "../screens/ActivitiesScreen";
+import { auth } from "../Firebase/firebase-setup";
+import LoginScreen from "../screens/LoginScreen";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function BottomTabNavigator({ navigation }) {
   const Tab = createBottomTabNavigator();
+
+  const [isAuthenticated, setIsAuthenticated] = useState(auth.currentUser);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    });
+  }, [auth]);
 
   function iconPressed() {
     console.log("icon pressed");
@@ -67,36 +82,55 @@ export default function BottomTabNavigator({ navigation }) {
           ),
         }}
       />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarLabel: "Profile",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="user" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Portfolio"
-        component={PortfolioScreen}
-        options={{
-          tabBarLabel: "Portfolio",
-          tabBarIcon: ({ color, size }) => (
-            <Foundation name="graph-pie" size={size ? 35 : 30} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Activity List"
-        component={ActivitiesScreen}
-        options={{
-          tabBarLabel: "Activities",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="list" color={color} size={size} />
-          ),
-        }}
-      />
+      {isAuthenticated ? (
+        <>
+          <Tab.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{
+              tabBarLabel: "Profile",
+              tabBarIcon: ({ color, size }) => (
+                <FontAwesome name="user" color={color} size={size} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Portfolio"
+            component={PortfolioScreen}
+            options={{
+              tabBarLabel: "Portfolio",
+              tabBarIcon: ({ color, size }) => (
+                <Foundation
+                  name="graph-pie"
+                  size={size ? 35 : 30}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Activity List"
+            component={ActivitiesScreen}
+            options={{
+              tabBarLabel: "Activities",
+              tabBarIcon: ({ color, size }) => (
+                <FontAwesome name="list" color={color} size={size} />
+              ),
+            }}
+          />
+        </>
+      ) : (
+        <Tab.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{
+            tabBarLabel: "Profile",
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome name="user" color={color} size={size} />
+            ),
+          }}
+        />
+      )}
     </Tab.Navigator>
   );
 }

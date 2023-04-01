@@ -9,8 +9,8 @@ export default function LoginScreen({ navigation }) {
   const loginHandler = async () => {
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
-      console.log(userCred);
-      navigation.navigate("Home");
+      // console.log(userCred);
+      navigation.navigate("HomeNavigator", { screen: "Profile" });
     } catch (err) {
       console.log("login err ", err);
     }

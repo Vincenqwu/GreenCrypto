@@ -1,12 +1,10 @@
 import { View, Text, TextInput, Button, Alert } from "react-native";
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useNavigation } from "@react-navigation/native";
 import { auth } from "../Firebase/firebase-setup";
+import { createProfile } from "../Firebase/firebaseHelper";
 
-const SignupScreen = () => {
-  const navigation = useNavigation();
-
+const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confrimPassword, setConfirmPassword] = useState("");
@@ -21,8 +19,25 @@ const SignupScreen = () => {
       return;
     }
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCred = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const newUser = userCred.user;
+
+      let newProfile = {
+        uid: newUser.uid,
+        email: newUser.email,
+        bio: "Please write about yourself",
+        username: "New User",
+        date: new Date(),
+      };
+      await createProfile(newProfile);
+
+      navigation.navigate("HomeNavigator");
       console.log(`user ${email} created!`);
+      // console.log(userCred.user.uid);
     } catch (err) {
       console.log("Auth error", err);
     }
