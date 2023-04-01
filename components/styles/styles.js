@@ -1,8 +1,18 @@
 import { StyleSheet } from "react-native";
+const colors = {
+  bgColor: "#3795BD",
+  highlight: "#FDFF00",
+  inactive: "#BDCDD6",
+  barColor: "#5B8FB9",
+  lightBg: "#ECF9FF",
+  navy: "#00337C",
+  lightText: "#ECF2FF",
+  btnColor: "#0F6292",
+};
 
 const styles = StyleSheet.create({
   profileContainer: {
-    marginTop: 20,
+    marginTop: 50,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#f0f0f0",
@@ -24,6 +34,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
+    // alignSelf: "center",
     marginBottom: 10,
   },
   userIcon: {
@@ -62,21 +73,24 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     marginBottom: 5,
   },
-  saveButton: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "blue",
-    marginTop: 10,
-  },
+
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
+    marginTop: 20,
   },
+
   button: {
+    backgroundColor: colors.btnColor,
+    padding: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  btnText: {
+    color: colors.lightText,
     fontSize: 18,
     fontWeight: "bold",
-    color: "blue",
   },
 });
 

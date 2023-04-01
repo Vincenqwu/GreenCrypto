@@ -2,6 +2,7 @@ import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 import React, { useState } from "react";
 import Profile from "../components/Profile";
 import styles from "../components/styles/styles";
+import PressableButton from "../components/PressableButton";
 
 export default function ProfileScreen() {
   const [username, setUsername] = useState("John Doe");
@@ -11,15 +12,27 @@ export default function ProfileScreen() {
 
   const handleSave = () => {
     setIsEditing(false);
+    console.log("save new profile");
     // Code to save changes to username and bio
   };
 
-  const onLogout = () => {};
+  const onLogout = () => {
+    console.log("log out");
+  };
+  const onEdit = () => {
+    setIsEditing(true);
+  };
 
   return (
     <View style={styles.profileContainer}>
       <View style={styles.card}>
         <View style={styles.header}>
+          <PressableButton>
+            <Image
+              source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
+              style={styles.cameraIcon}
+            />
+          </PressableButton>
           <Image
             source={{
               uri: "https://reactnative.dev/img/tiny_logo.png",
@@ -27,9 +40,6 @@ export default function ProfileScreen() {
             style={styles.userIcon}
           />
           <Text style={styles.username}>{username}</Text>
-          {/* <TouchableOpacity onPress={() => setIsEditing(true)}>
-          <Text style={styles.editButton}>Edit</Text>
-        </TouchableOpacity> */}
         </View>
         <View style={styles.body}>
           <View style={styles.row}>
@@ -71,12 +81,20 @@ export default function ProfileScreen() {
         </View>
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
-          <Text style={styles.button}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onLogout}>
-          <Text style={styles.button}>Logout</Text>
-        </TouchableOpacity>
+        {isEditing ? (
+          <>
+            <PressableButton style={styles.button} pressHandler={handleSave}>
+              <Text style={styles.btnText}>Save</Text>
+            </PressableButton>
+          </>
+        ) : (
+          <PressableButton style={styles.button} pressHandler={onEdit}>
+            <Text style={styles.btnText}>Edit</Text>
+          </PressableButton>
+        )}
+        <PressableButton style={styles.button} pressHandler={onLogout}>
+          <Text style={styles.btnText}>Log out</Text>
+        </PressableButton>
       </View>
     </View>
   );
