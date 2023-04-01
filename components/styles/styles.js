@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    // alignSelf: "center",
+    justifyContent: "center",
     marginBottom: 10,
   },
   userIcon: {
@@ -91,6 +91,9 @@ const styles = StyleSheet.create({
     color: colors.lightText,
     fontSize: 18,
     fontWeight: "bold",
+  },
+  camera: {
+    marginHorizontal: 10,
   },
 });
 

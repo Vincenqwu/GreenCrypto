@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Profile from "../components/Profile";
 import styles from "../components/styles/styles";
 import PressableButton from "../components/PressableButton";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function ProfileScreen() {
   const [username, setUsername] = useState("John Doe");
@@ -27,18 +28,15 @@ export default function ProfileScreen() {
     <View style={styles.profileContainer}>
       <View style={styles.card}>
         <View style={styles.header}>
-          <PressableButton>
-            <Image
-              source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
-              style={styles.cameraIcon}
-            />
-          </PressableButton>
           <Image
             source={{
               uri: "https://reactnative.dev/img/tiny_logo.png",
             }}
             style={styles.userIcon}
           />
+          <PressableButton style={styles.camera}>
+            <AntDesign name="camera" size={24} color="black" />
+          </PressableButton>
           <Text style={styles.username}>{username}</Text>
         </View>
         <View style={styles.body}>
