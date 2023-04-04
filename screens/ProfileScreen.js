@@ -108,15 +108,10 @@ export default function ProfileScreen() {
   };
 
   const getIconImage = () => {
-    if (profile.iconUri) {
-      if (hasNewPhoto) {
-        return imageUri;
-      } else {
-        return profile.iconUri;
-      }
-    } else {
-      return defaultImgUri;
+    if (hasNewPhoto) {
+      return imageUri;
     }
+    return profile.iconUri || defaultImgUri;
   };
 
   const onLogout = () => {
