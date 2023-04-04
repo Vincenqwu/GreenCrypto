@@ -70,7 +70,7 @@ export default function ProfileScreen() {
   }, [currentUser]);
 
   const fetchImageData = async (uri) => {
-    console.log("local:", uri); //local uri on the device
+    // console.log("local:", uri); //local uri on the device
     const response = await fetch(uri);
     const imageBlob = await response.blob(); //image data
     const imageName = uri.substring(uri.lastIndexOf("/") + 1);
@@ -91,12 +91,11 @@ export default function ProfileScreen() {
     };
     if (profileId) {
       if (hasNewPhoto) {
-        // console.log("new uri:", newIconUri);
         let newIconUri = await fetchImageData(uri);
         const reference = ref(storage, newIconUri);
         const url = await getDownloadURL(reference);
-        console.log("download url:", url);
-        // setImageUri(url);
+        // console.log("download url:", url);
+
         newProfile = {
           ...newProfile,
           iconUri: url,
