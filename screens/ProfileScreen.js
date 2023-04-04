@@ -1,12 +1,14 @@
 import { View, Text, Image, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 import styles from "../styles/profileStyles";
-import PressableButton from "../components/PressableButton";
-import { AntDesign } from "@expo/vector-icons";
 import { auth, firestore } from "../Firebase/firebase-setup";
 import { signOut } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { updateUserProfile } from "../Firebase/firebaseHelper";
+import { ProfileButton, ProfileField } from "../components/Profile";
+import ImageManager from "../components/ImageManager";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from "../Firebase/firebase-setup";
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState(null);
@@ -15,8 +17,20 @@ export default function ProfileScreen() {
   const [editBio, setEditBio] = useState("");
   const [profileId, setProfileId] = useState(null);
 
+  // Icon Image Manager
+  const defaultImgUri = "https://reactnative.dev/img/tiny_logo.png";
+  const [imageUri, setImageUri] = useState(defaultImgUri);
+  const [hasNewPhoto, setHasNewPhoto] = useState(false);
+
+  const imageUriHandler = (uri) => {
+    setImageUri(uri);
+    console.log("set image uri: ", uri);
+    setHasNewPhoto(true);
+  };
+
   const onCancel = () => {
     setIsEditing(false);
+    setHasNewPhoto(false);
   };
 
   const currentUser = auth.currentUser;
@@ -34,6 +48,7 @@ export default function ProfileScreen() {
             email: currentUser.email,
             bio: "Please write about yourself",
             username: "New User",
+            iconUri: defaultImgUri,
           };
           setProfile(newProfile);
         } else {
@@ -54,7 +69,17 @@ export default function ProfileScreen() {
     };
   }, [currentUser]);
 
-  const handleSave = () => {
+  const fetchImageData = async (uri) => {
+    // console.log("local:", uri); //local uri on the device
+    const response = await fetch(uri);
+    const imageBlob = await response.blob(); //image data
+    const imageName = uri.substring(uri.lastIndexOf("/") + 1);
+    const imageRef = ref(storage, `images/${imageName}`);
+    const uploadResult = await uploadBytesResumable(imageRef, imageBlob);
+    return uploadResult.metadata.fullPath; //path to the image on the storage
+  };
+
+  const handleSave = async (uri) => {
     setIsEditing(false);
     setEditBio(editBio);
     setEditUsername(editUsername);
@@ -64,9 +89,33 @@ export default function ProfileScreen() {
       username: editUsername,
       bio: editBio,
     };
-    console.log(newProfile);
     if (profileId) {
+      if (hasNewPhoto) {
+        let newIconUri = await fetchImageData(uri);
+        const reference = ref(storage, newIconUri);
+        const url = await getDownloadURL(reference);
+        // console.log("download url:", url);
+
+        newProfile = {
+          ...newProfile,
+          iconUri: url,
+        };
+      }
+      console.log(newProfile);
+
       updateUserProfile(profileId, newProfile);
+    }
+  };
+
+  const getIconImage = () => {
+    if (profile.iconUri) {
+      if (hasNewPhoto) {
+        return imageUri;
+      } else {
+        return profile.iconUri;
+      }
+    } else {
+      return defaultImgUri;
     }
   };
 
@@ -89,22 +138,12 @@ export default function ProfileScreen() {
     <View style={styles.profileContainer}>
       <View style={styles.card}>
         <View style={styles.header}>
-          <Image
-            source={{
-              uri: "https://reactnative.dev/img/tiny_logo.png",
-            }}
-            style={styles.userIcon}
-          />
-          <PressableButton style={styles.camera}>
-            <AntDesign name="camera" size={24} color="black" />
-          </PressableButton>
+          <Image source={{ uri: getIconImage() }} style={styles.userIcon} />
           <Text style={styles.username}>{profile.username}</Text>
+          {isEditing && <ImageManager imageUriHandler={imageUriHandler} />}
         </View>
         <View style={styles.body}>
-          <View style={styles.row}>
-            <Text style={styles.label}>Email:</Text>
-            <Text style={styles.value}>{profile.email}</Text>
-          </View>
+          <ProfileField label={"Email"} value={profile.email} />
           {isEditing ? (
             <>
               <View style={styles.row}>
@@ -131,36 +170,28 @@ export default function ProfileScreen() {
             </>
           ) : (
             <>
-              <View style={styles.row}>
-                <Text style={styles.label}>Username:</Text>
-                <Text style={styles.value}>{profile.username}</Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.label}>Bio:</Text>
-                <Text style={styles.value}>{profile.bio} </Text>
-              </View>
+              <ProfileField label={"Username"} value={profile.username} />
+              <ProfileField label={"Bio"} value={profile.bio} />
             </>
           )}
+          <ProfileField label={"Location"} value={"Earth"} />
         </View>
       </View>
       <View style={styles.footer}>
         {isEditing ? (
           <>
-            <PressableButton style={styles.button} pressHandler={handleSave}>
-              <Text style={styles.btnText}>Save</Text>
-            </PressableButton>
-            <PressableButton style={styles.button} pressHandler={onCancel}>
-              <Text style={styles.btnText}>Cancel</Text>
-            </PressableButton>
+            <ProfileButton
+              handler={() => {
+                handleSave(imageUri);
+              }}
+              title="Save"
+            />
+            <ProfileButton handler={onCancel} title="Cancel" />
           </>
         ) : (
           <>
-            <PressableButton style={styles.button} pressHandler={onEdit}>
-              <Text style={styles.btnText}>Edit</Text>
-            </PressableButton>
-            <PressableButton style={styles.button} pressHandler={onLogout}>
-              <Text style={styles.btnText}>Log out</Text>
-            </PressableButton>
+            <ProfileButton handler={onEdit} title="Edit" />
+            <ProfileButton handler={onLogout} title="Log out" />
           </>
         )}
       </View>
