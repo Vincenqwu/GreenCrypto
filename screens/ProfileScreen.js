@@ -7,6 +7,7 @@ import { auth, firestore } from "../Firebase/firebase-setup";
 import { signOut } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { updateUserProfile } from "../Firebase/firebaseHelper";
+import { ProfileButton, ProfileField } from "../components/Profile";
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState(null);
@@ -101,10 +102,7 @@ export default function ProfileScreen() {
           <Text style={styles.username}>{profile.username}</Text>
         </View>
         <View style={styles.body}>
-          <View style={styles.row}>
-            <Text style={styles.label}>Email:</Text>
-            <Text style={styles.value}>{profile.email}</Text>
-          </View>
+          <ProfileField label={"Email"} value={profile.email} />
           {isEditing ? (
             <>
               <View style={styles.row}>
@@ -131,36 +129,23 @@ export default function ProfileScreen() {
             </>
           ) : (
             <>
-              <View style={styles.row}>
-                <Text style={styles.label}>Username:</Text>
-                <Text style={styles.value}>{profile.username}</Text>
-              </View>
-              <View style={styles.row}>
-                <Text style={styles.label}>Bio:</Text>
-                <Text style={styles.value}>{profile.bio} </Text>
-              </View>
+              <ProfileField label={"Username"} value={profile.username} />
+              <ProfileField label={"Bio"} value={profile.bio} />
             </>
           )}
+          <ProfileField label={"Location"} value={"Earth"} />
         </View>
       </View>
       <View style={styles.footer}>
         {isEditing ? (
           <>
-            <PressableButton style={styles.button} pressHandler={handleSave}>
-              <Text style={styles.btnText}>Save</Text>
-            </PressableButton>
-            <PressableButton style={styles.button} pressHandler={onCancel}>
-              <Text style={styles.btnText}>Cancel</Text>
-            </PressableButton>
+            <ProfileButton handler={handleSave} title="Save" />
+            <ProfileButton handler={onCancel} title="Cancel" />
           </>
         ) : (
           <>
-            <PressableButton style={styles.button} pressHandler={onEdit}>
-              <Text style={styles.btnText}>Edit</Text>
-            </PressableButton>
-            <PressableButton style={styles.button} pressHandler={onLogout}>
-              <Text style={styles.btnText}>Log out</Text>
-            </PressableButton>
+            <ProfileButton handler={onEdit} title="Edit" />
+            <ProfileButton handler={onLogout} title="Log out" />
           </>
         )}
       </View>
