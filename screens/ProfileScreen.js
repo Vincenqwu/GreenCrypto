@@ -1,13 +1,12 @@
 import { View, Text, Image, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 import styles from "../styles/profileStyles";
-import PressableButton from "../components/PressableButton";
-import { AntDesign } from "@expo/vector-icons";
 import { auth, firestore } from "../Firebase/firebase-setup";
 import { signOut } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { updateUserProfile } from "../Firebase/firebaseHelper";
 import { ProfileButton, ProfileField } from "../components/Profile";
+import ImageManager from "../components/ImageManager";
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState(null);
@@ -15,6 +14,14 @@ export default function ProfileScreen() {
   const [editUsername, setEditUsername] = useState("");
   const [editBio, setEditBio] = useState("");
   const [profileId, setProfileId] = useState(null);
+
+  // Icon Image Manager
+  const defaultImgUri = "https://reactnative.dev/img/tiny_logo.png";
+  const [imageUri, setImageUri] = useState(defaultImgUri);
+
+  const imageUriHandler = (uri) => {
+    setImageUri(uri);
+  };
 
   const onCancel = () => {
     setIsEditing(false);
@@ -90,16 +97,9 @@ export default function ProfileScreen() {
     <View style={styles.profileContainer}>
       <View style={styles.card}>
         <View style={styles.header}>
-          <Image
-            source={{
-              uri: "https://reactnative.dev/img/tiny_logo.png",
-            }}
-            style={styles.userIcon}
-          />
-          <PressableButton style={styles.camera}>
-            <AntDesign name="camera" size={24} color="black" />
-          </PressableButton>
+          <Image source={{ uri: imageUri }} style={styles.userIcon} />
           <Text style={styles.username}>{profile.username}</Text>
+          <ImageManager imageUriHandler={imageUriHandler} />
         </View>
         <View style={styles.body}>
           <ProfileField label={"Email"} value={profile.email} />

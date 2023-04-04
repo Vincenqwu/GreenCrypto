@@ -2,6 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import PressableButton from "./PressableButton";
 import styles from "../styles/profileStyles";
+import { AntDesign } from "@expo/vector-icons";
 
 const ProfileButton = ({ title, handler }) => {
   return (
@@ -22,4 +23,14 @@ const ProfileField = ({ label, value }) => {
   );
 };
 
-export { ProfileButton, ProfileField };
+const CameraButton = ({ handler }) => {
+  return (
+    <>
+      <PressableButton style={styles.camera} pressHandler={handler}>
+        <AntDesign name="camera" size={24} color="black" />
+      </PressableButton>
+    </>
+  );
+};
+
+export { ProfileButton, ProfileField, CameraButton };
