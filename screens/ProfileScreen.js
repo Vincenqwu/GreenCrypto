@@ -7,6 +7,8 @@ import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { updateUserProfile } from "../Firebase/firebaseHelper";
 import { ProfileButton, ProfileField } from "../components/Profile";
 import ImageManager from "../components/ImageManager";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { storage } from "../Firebase/firebase-setup";
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState(null);
@@ -18,13 +20,17 @@ export default function ProfileScreen() {
   // Icon Image Manager
   const defaultImgUri = "https://reactnative.dev/img/tiny_logo.png";
   const [imageUri, setImageUri] = useState(defaultImgUri);
+  const [hasNewPhoto, setHasNewPhoto] = useState(false);
 
   const imageUriHandler = (uri) => {
     setImageUri(uri);
+    console.log("set image uri: ", uri);
+    setHasNewPhoto(true);
   };
 
   const onCancel = () => {
     setIsEditing(false);
+    setHasNewPhoto(false);
   };
 
   const currentUser = auth.currentUser;
@@ -42,6 +48,7 @@ export default function ProfileScreen() {
             email: currentUser.email,
             bio: "Please write about yourself",
             username: "New User",
+            iconUri: defaultImgUri,
           };
           setProfile(newProfile);
         } else {
@@ -62,7 +69,17 @@ export default function ProfileScreen() {
     };
   }, [currentUser]);
 
-  const handleSave = () => {
+  const fetchImageData = async (uri) => {
+    console.log("local:", uri); //local uri on the device
+    const response = await fetch(uri);
+    const imageBlob = await response.blob(); //image data
+    const imageName = uri.substring(uri.lastIndexOf("/") + 1);
+    const imageRef = ref(storage, `images/${imageName}`);
+    const uploadResult = await uploadBytesResumable(imageRef, imageBlob);
+    return uploadResult.metadata.fullPath; //path to the image on the storage
+  };
+
+  const handleSave = async (uri) => {
     setIsEditing(false);
     setEditBio(editBio);
     setEditUsername(editUsername);
@@ -72,9 +89,34 @@ export default function ProfileScreen() {
       username: editUsername,
       bio: editBio,
     };
-    console.log(newProfile);
     if (profileId) {
+      if (hasNewPhoto) {
+        // console.log("new uri:", newIconUri);
+        let newIconUri = await fetchImageData(uri);
+        const reference = ref(storage, newIconUri);
+        const url = await getDownloadURL(reference);
+        console.log("download url:", url);
+        // setImageUri(url);
+        newProfile = {
+          ...newProfile,
+          iconUri: url,
+        };
+      }
+      console.log(newProfile);
+
       updateUserProfile(profileId, newProfile);
+    }
+  };
+
+  const getIconImage = () => {
+    if (profile.iconUri) {
+      if (hasNewPhoto) {
+        return imageUri;
+      } else {
+        return profile.iconUri;
+      }
+    } else {
+      return defaultImgUri;
     }
   };
 
@@ -97,9 +139,9 @@ export default function ProfileScreen() {
     <View style={styles.profileContainer}>
       <View style={styles.card}>
         <View style={styles.header}>
-          <Image source={{ uri: imageUri }} style={styles.userIcon} />
+          <Image source={{ uri: getIconImage() }} style={styles.userIcon} />
           <Text style={styles.username}>{profile.username}</Text>
-          <ImageManager imageUriHandler={imageUriHandler} />
+          {isEditing && <ImageManager imageUriHandler={imageUriHandler} />}
         </View>
         <View style={styles.body}>
           <ProfileField label={"Email"} value={profile.email} />
@@ -139,7 +181,12 @@ export default function ProfileScreen() {
       <View style={styles.footer}>
         {isEditing ? (
           <>
-            <ProfileButton handler={handleSave} title="Save" />
+            <ProfileButton
+              handler={() => {
+                handleSave(imageUri);
+              }}
+              title="Save"
+            />
             <ProfileButton handler={onCancel} title="Cancel" />
           </>
         ) : (

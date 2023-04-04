@@ -1,10 +1,11 @@
-import { View, Text, Image, Alert } from "react-native";
+import { View, Alert } from "react-native";
 import React, { useState } from "react";
 import { CameraButton } from "./Profile";
 import * as ImagePicker from "expo-image-picker";
 
 const ImageManager = ({ imageUriHandler }) => {
   const [imageUri, setImageUri] = useState("");
+
   const [permissionInfo, requestPermission] =
     ImagePicker.useCameraPermissions();
 
