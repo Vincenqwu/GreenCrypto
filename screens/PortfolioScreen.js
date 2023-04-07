@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Alert } from 'react-native'
 import React from 'react'
-import { getCryptoData } from "../api/coinGeckoAPI"
+import { getCryptoData } from "../api/request"
 import { createActivity } from "../Firebase/firebaseHelper"
 import PressableButton from "../components/PressableButton"; 
 

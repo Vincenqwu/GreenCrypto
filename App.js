@@ -5,6 +5,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BottomTabNavigator from "./navigation/BottomTabNavigator";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
+import SearchCoinScreen from "./screens/SearchCoinScreen";
+import CoinDetailScreen from "./screens/CoinDetailScreen";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -33,6 +35,20 @@ export default function App() {
           component={SignupScreen}
           options={{
             title: "Signup",
+          }}
+        />
+        <Stack.Screen
+          name="Search"
+          component={SearchCoinScreen}
+          options={{
+            title: "Search Coin",
+          }}
+        />
+        <Stack.Screen
+          name="Details"
+          component={CoinDetailScreen}
+          options={{
+            title: "Details",
           }}
         />
       </Stack.Navigator>

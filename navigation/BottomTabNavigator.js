@@ -1,9 +1,8 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Entypo, FontAwesome, Foundation } from "@expo/vector-icons";
+import { Entypo, FontAwesome, Foundation, Ionicons } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import PortfolioScreen from "../screens/PortfolioScreen";
@@ -29,7 +28,7 @@ export default function BottomTabNavigator({ navigation }) {
 
   function iconPressed() {
     console.log("icon pressed");
-    navigation.navigate("Login");
+    navigation.navigate("Search");
   }
 
   return (
@@ -44,9 +43,7 @@ export default function BottomTabNavigator({ navigation }) {
                 opacity: 0.8,
               }}
             >
-              {isAuthenticated ? null : (
-                <MaterialIcons name="add" size={25} color="white" />
-              )}
+            <Ionicons name="search-sharp" size={24} color="white" />
             </TouchableOpacity>
           </View>
         ),
