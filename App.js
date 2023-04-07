@@ -6,6 +6,7 @@ import BottomTabNavigator from "./navigation/BottomTabNavigator";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import SearchCoinScreen from "./screens/SearchCoinScreen";
+import CoinDetailScreen from "./screens/CoinDetailScreen";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -41,6 +42,13 @@ export default function App() {
           component={SearchCoinScreen}
           options={{
             title: "Search Coin",
+          }}
+        />
+        <Stack.Screen
+          name="Details"
+          component={CoinDetailScreen}
+          options={{
+            title: "Details",
           }}
         />
       </Stack.Navigator>
