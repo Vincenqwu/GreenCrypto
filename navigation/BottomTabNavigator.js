@@ -10,6 +10,7 @@ import ActivitiesScreen from "../screens/ActivitiesScreen";
 import { auth } from "../Firebase/firebase-setup";
 import LoginScreen from "../screens/LoginScreen";
 import { onAuthStateChanged } from "firebase/auth";
+import { Colors } from "../styles/Color";
 
 export default function BottomTabNavigator({ navigation }) {
   const Tab = createBottomTabNavigator();
@@ -43,12 +44,12 @@ export default function BottomTabNavigator({ navigation }) {
                 opacity: 0.8,
               }}
             >
-            <Ionicons name="search-sharp" size={24} color="white" />
+              <Ionicons name="search-sharp" size={24} color="white" />
             </TouchableOpacity>
           </View>
         ),
         headerStyle: {
-          backgroundColor: "blue",
+          backgroundColor: Colors.barColor,
         },
         headerTintColor: "white",
         headerTitleStyle: {
@@ -59,7 +60,7 @@ export default function BottomTabNavigator({ navigation }) {
           height: 90,
           paddingHorizontal: 5,
           paddingTop: 0,
-          backgroundColor: "blue",
+          backgroundColor: Colors.barColor,
           position: "absolute",
           borderTopWidth: 0,
         },
