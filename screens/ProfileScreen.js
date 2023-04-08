@@ -169,7 +169,11 @@ export default function ProfileScreen() {
               <ProfileField label={"Bio"} value={profile.bio} />
             </>
           )}
-          <ProfileField label={"Location"} value={"Earth"} />
+          <ProfileField
+            label={"Location"}
+            value={"Earth"}
+            isEditting={isEditing}
+          />
         </View>
       </View>
       <View style={styles.footer}>
