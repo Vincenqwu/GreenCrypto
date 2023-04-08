@@ -1,6 +1,12 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+  container: {
+    // backgroundColor: "red",
+    flex: 1,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+  },
   title: {
     color: "white",
     fontSize: 16,
