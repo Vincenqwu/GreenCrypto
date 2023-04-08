@@ -1,9 +1,9 @@
-import { View, Text, Switch, StyleSheet } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, Switch, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { auth, firestore } from "../Firebase/firebase-setup";
 import PublicPosts from "../components/PublicPosts";
-import MyActivities from '../components/MyActivities';
+import MyActivities from "../components/MyActivities";
 
 export default function ActivitiesScreen() {
   const [currentPage, setCurrentPage] = useState("myActivities");
@@ -11,9 +11,7 @@ export default function ActivitiesScreen() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      query(
-        collection(firestore, "posts")
-      ),
+      query(collection(firestore, "posts")),
       (querySnapshot) => {
         if (querySnapshot.empty) {
           // no data
@@ -38,20 +36,28 @@ export default function ActivitiesScreen() {
     };
   }, []);
 
-
   const handlePageChange = (value) => {
     setCurrentPage(value ? "PublicPosts" : "myActivities");
-  }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.switchContainer}>
-        <Text style ={styles.switchTitles}>{currentPage === "myActivities" ? "My Activities" : "Public Posts"}</Text>
-        <Switch value={currentPage === "PublicPosts"} onValueChange={handlePageChange} />
+        <Text style={styles.switchTitles}>
+          {currentPage === "myActivities" ? "My Activities" : "Public Posts"}
+        </Text>
+        <Switch
+          value={currentPage === "PublicPosts"}
+          onValueChange={handlePageChange}
+        />
       </View>
-      {currentPage === "myActivities" ? <MyActivities posts={posts} /> : <PublicPosts posts = {posts}/>}
+      {currentPage === "myActivities" ? (
+        <MyActivities posts={posts} />
+      ) : (
+        <PublicPosts posts={posts} />
+      )}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -64,10 +70,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    margin: 10
+    margin: 10,
   },
   switchTitles: {
     fontSize: 20,
     fontWeight: "bold",
   },
-})
+});

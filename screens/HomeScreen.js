@@ -31,7 +31,7 @@ const HomeScreen = () => {
         }}
       ></View>
       <FlatList
-        data={coins.slice(0, 1)}
+        data={coins}
         renderItem={({ item }) => <CoinItem marketCoin={item} />}
         keyExtractor={(item) => item.id.toString()}
       />

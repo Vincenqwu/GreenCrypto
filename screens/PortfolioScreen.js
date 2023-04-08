@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, Alert } from 'react-native'
-import React from 'react'
-import { getCryptoData } from "../api/request"
-import { createActivity } from "../Firebase/firebaseHelper"
-import PressableButton from "../components/PressableButton"; 
+import { View, Text, StyleSheet, Alert } from "react-native";
+import React from "react";
+import { getCryptoData } from "../api/request";
+import { createActivity } from "../Firebase/firebaseHelper";
+import PressableButton from "../components/PressableButton";
+import { Colors } from "../styles/Color";
 
 export default function PortfolioScreen() {
   let testCoinId = "bitcoin";
@@ -17,7 +18,7 @@ export default function PortfolioScreen() {
       [
         {
           text: "Cancel",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "OK",
@@ -28,12 +29,11 @@ export default function PortfolioScreen() {
               amount: amount,
               price: coinData.market_data.current_price.usd,
               timestamp: coinData.last_updated,
-            }
+            };
             console.log(newActivity);
             createActivity(newActivity);
-
-          }
-        }
+          },
+        },
       ]
     );
   }
@@ -47,13 +47,13 @@ export default function PortfolioScreen() {
         <Text style={styles.buttonTextStyle}>Click to Buy Bitcoin</Text>
       </PressableButton>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   buttonStyle: {
     marginTop: 10,
-    backgroundColor: "blue",
+    backgroundColor: Colors.buttonColor,
     padding: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

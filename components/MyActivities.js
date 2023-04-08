@@ -1,10 +1,21 @@
-import { FlatList, StyleSheet, Text, View, Pressable, Alert } from "react-native";
-import React, { useState, useEffect } from 'react'
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Alert,
+} from "react-native";
+import React, { useState, useEffect } from "react";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { auth, firestore } from "../Firebase/firebase-setup";
-import { createPost, editActivity, deletePost } from "../Firebase/firebaseHelper";
-
-export default function MyActivities( { posts }) {
+import {
+  createPost,
+  editActivity,
+  deletePost,
+} from "../Firebase/firebaseHelper";
+import { Colors } from "../styles/Color";
+export default function MyActivities({ posts }) {
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
@@ -44,7 +55,7 @@ export default function MyActivities( { posts }) {
       [
         {
           text: "Cancel",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "OK",
@@ -58,12 +69,11 @@ export default function MyActivities( { posts }) {
               price: activityItem.price,
               timestamp: activityItem.timestamp,
               postDate: new Date(),
-            }
+            };
             createPost(newPost);
             editActivity(activityItem.id, { postCreated: true });
-
-          }
-        }
+          },
+        },
       ]
     );
   }
@@ -75,7 +85,7 @@ export default function MyActivities( { posts }) {
       [
         {
           text: "Cancel",
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "OK",
@@ -86,8 +96,8 @@ export default function MyActivities( { posts }) {
                 deletePost(posts[i].id);
               }
             }
-          }
-        }
+          },
+        },
       ]
     );
   }
@@ -105,30 +115,25 @@ export default function MyActivities( { posts }) {
             <Text style={styles.listItemText}>Amount: {item.amount}</Text>
             <Text style={styles.listItemText}>Price: {item.price}</Text>
             <Text style={styles.listItemText}>Date: {item.timestamp}</Text>
-            {item.postCreated ?
+            {item.postCreated ? (
               <Pressable
                 onPress={() => removeFromPost(item.id)}
                 style={styles.removePostButton}
               >
                 <Text style={styles.createPostButtonText}>Remove Post</Text>
               </Pressable>
-              :
-
+            ) : (
               <Pressable
                 onPress={() => addToPost(item)}
                 style={styles.createPostButton}
               >
                 <Text style={styles.createPostButtonText}>Create Post</Text>
               </Pressable>
-
-
-            }
-
+            )}
           </View>
         );
       }}
     />
-
   );
 }
 
@@ -160,7 +165,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   createPostButton: {
-    backgroundColor: "blue",
+    backgroundColor: Colors.buttonColor,
     padding: 10,
     borderRadius: 5,
     marginTop: 5,
@@ -170,7 +175,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   removePostButton: {
-    backgroundColor: "red",
+    backgroundColor: Colors.removeButtonColor,
     padding: 10,
     borderRadius: 5,
     marginTop: 5,
