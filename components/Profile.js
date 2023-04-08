@@ -6,6 +6,7 @@ import styles from "../styles/profileStyles";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "../styles/Color";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileButton = ({ title, handler }) => {
   return (
@@ -16,25 +17,29 @@ const ProfileButton = ({ title, handler }) => {
 };
 
 const ProfileField = ({ label, value, isEditting = false }) => {
+  const navigation = useNavigation();
+
+  const onLocate = () => {
+    navigation.navigate("Map");
+  };
+
   return (
-    <>
-      <View style={styles.row}>
-        <Text style={styles.label}>{label}:</Text>
-        <Text style={styles.value}>{value} </Text>
-      </View>
+    <View style={[styles.row, { flexDirection: "row" }]}>
+      <Text style={styles.label}>{label}:</Text>
+      <Text style={styles.value}>{value} </Text>
       {isEditting && (
-        <View style={pstyles.editLocation}>
-          <>
+        <PressableButton pressHandler={onLocate}>
+          <View style={pstyles.editLocation}>
             <MaterialIcons
               name="edit-location"
               size={22}
               color={Colors.buttonColor}
             />
             <Text style={pstyles.locateMe}>Locate Me</Text>
-          </>
-        </View>
+          </View>
+        </PressableButton>
       )}
-    </>
+    </View>
   );
 };
 
@@ -52,7 +57,7 @@ const pstyles = StyleSheet.create({
   editLocation: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 10,
+    marginLeft: 1,
   },
   locateMe: {
     marginLeft: 5,

@@ -7,6 +7,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import SearchCoinScreen from "./screens/SearchCoinScreen";
 import CoinDetailScreen from "./screens/CoinDetailScreen";
+import MapScreen from "./screens/MapScreen";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -49,6 +50,13 @@ export default function App() {
           component={CoinDetailScreen}
           options={{
             title: "Details",
+          }}
+        />
+        <Stack.Screen
+          name="Map"
+          component={MapScreen}
+          options={{
+            title: "Map",
           }}
         />
       </Stack.Navigator>
