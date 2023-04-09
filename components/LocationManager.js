@@ -4,9 +4,7 @@ import * as Location from "expo-location";
 import { MAPS_API_KEY } from "@env";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getUserLocation, saveUserLocation } from "../Firebase/firebaseHelper";
-import styles from "../styles/profileStyles";
-import PressableButton from "./PressableButton";
-import { MaterialIcons } from "@expo/vector-icons";
+
 import { Colors } from "../styles/Color";
 
 const LocationManager = () => {
