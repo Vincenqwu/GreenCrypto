@@ -56,19 +56,4 @@ const ProfileField = ({ label, value }) => {
   );
 };
 
-const EditableProfileField = ({ label, value }) => {
-  return (
-    <View style={styles.row}>
-      <FieldPair label={label} value={value} />
-      <LocateButton />
-    </View>
-  );
-};
-
-export {
-  ProfileButton,
-  StaticProfileField,
-  CameraButton,
-  ProfileField,
-  EditableProfileField,
-};
+export { ProfileButton, StaticProfileField, CameraButton, ProfileField };

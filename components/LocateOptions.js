@@ -10,11 +10,15 @@ import styles from "../styles/profileStyles";
 import { constants } from "./helper/constants";
 import { getAddressFromCoords } from "./helper/service";
 
-const LocateButton = ({ locateUserHandler }) => {
+const LocateButton = ({ locateUserHandler, coordinate }) => {
   const navigation = useNavigation();
 
   const handleChooseLocation = () => {
-    navigation.navigate("Map");
+    if (coordinate) {
+      navigation.navigate("Map", { coordinate: coordinate });
+    } else {
+      navigation.navigate("Map");
+    }
   };
 
   const handleLocateMe = () => {
@@ -56,24 +60,14 @@ const LocateButton = ({ locateUserHandler }) => {
   );
 };
 
-const StaticMap = ({ location }) => {
-  return (
-    <Image
-      source={{
-        uri: `https://maps.googleapis.com/maps/api/staticmap?center=${location.latitude},${location.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location.latitude},${location.longitude}&key=${MAPS_API_KEY}`,
-      }}
-      style={{ width: "100%", height: 200 }}
-    />
-  );
-};
-
 const LocateOptions = ({ profile, setCoordinate, setLocation }) => {
-  const [address, setAddress] = useState(null);
+  const location = profile.location;
+  const coordinate = profile.coordinate;
+
+  const [currentLocation, setCurrentLocation] = useState(location);
+
   const [permissionResponse, requestPermission] =
     Location.useForegroundPermissions();
-
-  const coordinate = profile.coordinate;
-  const location = profile.location;
 
   const verifyPermission = async () => {
     if (permissionResponse.granted) {
@@ -98,8 +92,8 @@ const LocateOptions = ({ profile, setCoordinate, setLocation }) => {
       setCoordinate(coord);
 
       const address = await getAddressFromCoords(coord);
-      setAddress(address);
       setLocation(address);
+      setCurrentLocation(address);
     } catch (err) {
       console.log("location handler ", err);
     }
@@ -109,10 +103,24 @@ const LocateOptions = ({ profile, setCoordinate, setLocation }) => {
     <View style={styles.row}>
       <Text style={styles.label}>Location:</Text>
       <Text style={styles.value}>
-        {!location ? constants.location : location}
+        {!currentLocation ? constants.location : currentLocation}
       </Text>
-      <LocateButton locateUserHandler={locateUserHandler} />
+      <LocateButton
+        locateUserHandler={locateUserHandler}
+        coordinate={coordinate}
+      />
     </View>
+  );
+};
+
+const StaticMap = ({ location }) => {
+  return (
+    <Image
+      source={{
+        uri: `https://maps.googleapis.com/maps/api/staticmap?center=${location.latitude},${location.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location.latitude},${location.longitude}&key=${MAPS_API_KEY}`,
+      }}
+      style={{ width: "100%", height: 200 }}
+    />
   );
 };
 
