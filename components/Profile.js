@@ -64,5 +64,6 @@ export {
   ProfileButton,
   StaticProfileField,
   CameraButton,
+  ProfileField,
   EditableProfileField,
 };

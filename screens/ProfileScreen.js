@@ -9,7 +9,7 @@ import {
   EditableProfileField,
   ProfileButton,
   ProfileField,
-  StaticField,
+  StaticProfileField,
 } from "../components/Profile";
 import ImageManager from "../components/ImageManager";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -130,7 +130,6 @@ export default function ProfileScreen() {
       setEditBio(profile.bio);
       setEditUsername(profile.username);
     }
-    console.log("we are editing", isEditing);
   };
 
   if (!profile) {
@@ -174,7 +173,7 @@ export default function ProfileScreen() {
               {location && <StaticMap location={location} />}
             </>
           ) : (
-            <StaticField profile={profile} />
+            <StaticProfileField profile={profile} />
           )}
         </View>
       </View>
