@@ -86,19 +86,19 @@ const LocationManager = () => {
         </View>
         <LocationManager />
       </PressableButton>
-      {/* {location && (
+      {location && (
         <Image
           source={{
             uri: `https://maps.googleapis.com/maps/api/staticmap?center=${location.latitude},${location.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location.latitude},${location.longitude}&key=${MAPS_API_KEY}`,
           }}
           style={{ width: "100%", height: 200 }}
         />
-      )} */}
-      {/* <Button
+      )}
+      <Button
         title="Let me choose on the map!"
         onPress={locationSelectionHandler}
       />
-      <Button title="Save Location" onPress={saveUser} /> */}
+      <Button title="Save Location" onPress={saveUser} />
     </>
   );
 };
