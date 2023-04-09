@@ -4,6 +4,7 @@ import PressableButton from "./PressableButton";
 import styles, { colors } from "../styles/profileStyles";
 import { AntDesign } from "@expo/vector-icons";
 import LocateOptions, { LocateButton } from "./LocateOptions";
+import { constants } from "./helper/Constants";
 
 const ProfileButton = ({ title, handler }) => {
   return (
@@ -33,20 +34,28 @@ const FieldPair = ({ label, value }) => {
 };
 
 const StaticProfileField = ({ profile }) => {
+  let location = profile.location;
+  if (!location?.adress) {
+    location = { address: constants.location };
+  }
+  console.log("static profile field location", location);
   return (
     <>
       <ProfileField label={"Username"} value={profile.username} />
       <ProfileField label={"Bio"} value={profile.bio} />
-      <ProfileField label={"Location"} value={profile.location.address} />
+      <ProfileField label={"Location"} value={location} />
     </>
   );
 };
 
-const ProfileField = ({ label, value, isEditting = false }) => {
+const ProfileField = ({ label, value }) => {
+  if (label === "Location" && value) {
+    value = constants.location;
+  }
+
   return (
     <View style={styles.row}>
       <FieldPair label={label} value={value} />
-      {isEditting && <LocateOptions />}
     </View>
   );
 };

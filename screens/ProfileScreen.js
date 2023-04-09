@@ -59,6 +59,7 @@ export default function ProfileScreen() {
             bio: "Please write about yourself",
             username: "New User",
             iconUri: defaultImgUri,
+            location: "",
           };
           setProfile(newProfile);
         } else {
@@ -132,9 +133,7 @@ export default function ProfileScreen() {
     }
   };
 
-  if (!profile) {
-    return <Text>Loading...</Text>;
-  }
+  if (!profile) return <Text>Loading...</Text>;
 
   return (
     <View style={styles.profileContainer}>
@@ -169,7 +168,10 @@ export default function ProfileScreen() {
                   multiline={true}
                 />
               </View>
-              <LocateOptions setLocation={setLocation} location={location} />
+              <LocateOptions
+                setLocation={setLocation}
+                location={profile.location}
+              />
               {location?.latitude && <StaticMap location={location} />}
             </>
           ) : (

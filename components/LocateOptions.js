@@ -7,6 +7,7 @@ import { Colors } from "../styles/Color";
 import { MaterialIcons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
 import styles from "../styles/profileStyles";
+import { constants } from "./helper/Constants";
 
 const LocateButton = ({ locateUserHandler }) => {
   const navigation = useNavigation();
@@ -124,7 +125,7 @@ const LocateOptions = ({ location, setLocation }) => {
     <View style={styles.row}>
       <Text style={styles.label}>Location:</Text>
       <Text style={styles.value}>
-        {!location.address ? "Vancouver" : location.address}
+        {!location?.address ? constants.location : location.address}
       </Text>
       <LocateButton locateUserHandler={locateUserHandler} />
     </View>
