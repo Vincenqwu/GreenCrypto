@@ -8,16 +8,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
 import styles from "../styles/profileStyles";
 
-const LocateButton = () => {
+const LocateButton = ({ locateUserHandler }) => {
   const navigation = useNavigation();
 
   const handleChooseLocation = () => {
     navigation.navigate("Map");
   };
 
-  const handleLocateUser = () => {
-    console.log("current user location");
-  };
   const handleLocateMe = () => {
     Alert.alert(
       "Use Current Location?",
@@ -25,7 +22,7 @@ const LocateButton = () => {
       [
         {
           text: "Yes, locate me",
-          onPress: handleLocateUser,
+          onPress: locateUserHandler,
         },
         {
           text: "Let me choose the location",
@@ -50,12 +47,23 @@ const LocateButton = () => {
   );
 };
 
-const LocateOptions = () => {
-  const [location, setLocation] = useState(null);
+const StaticMap = ({ location }) => {
+  return (
+    <Image
+      source={{
+        uri: `https://maps.googleapis.com/maps/api/staticmap?center=${location.latitude},${location.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location.latitude},${location.longitude}&key=${MAPS_API_KEY}`,
+      }}
+      style={{ width: "100%", height: 200 }}
+    />
+  );
+};
+
+const LocateOptions = ({ location, setLocation }) => {
+  // const [location, setLocation] = useState(null);
   const [permissionResponse, requestPermission] =
     Location.useForegroundPermissions();
 
-  async function verifyPermission() {
+  const verifyPermission = async () => {
     console.log(permissionResponse);
     if (permissionResponse.granted) {
       return true;
@@ -63,22 +71,35 @@ const LocateOptions = () => {
     const permissionResult = await requestPermission();
     // // this will be user's choice:
     return permissionResult.granted;
-  }
+  };
+
+  const locateUserHandler = async () => {
+    console.log("current user location");
+    const permissionReceived = await verifyPermission();
+    if (!permissionReceived) {
+      Alert.alert("You need to give location permission");
+      return;
+    }
+    try {
+      const result = await Location.getCurrentPositionAsync();
+      setLocation({
+        latitude: result.coords.latitude,
+        longitude: result.coords.longitude,
+      });
+    } catch (err) {
+      console.log("location handler ", err);
+    }
+  };
 
   return (
-    <View>
-      <LocateButton />
-      {location && (
-        <Image
-          source={{
-            uri: `https://maps.googleapis.com/maps/api/staticmap?center=${location.latitude},${location.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location.latitude},${location.longitude}&key=${MAPS_API_KEY}`,
-          }}
-          style={{ width: "100%", height: 200 }}
-        />
-      )}
-    </View>
+    <>
+      <View>
+        <LocateButton locateUserHandler={locateUserHandler} />
+        {location && <StaticMap location={location} />}
+      </View>
+    </>
   );
 };
 
 export default LocateOptions;
-export { LocateButton };
+export { LocateButton, StaticMap };

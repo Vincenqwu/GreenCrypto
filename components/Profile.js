@@ -23,14 +23,46 @@ const CameraButton = ({ handler }) => {
   );
 };
 
+const StaticProfileField = ({ profile }) => {
+  return (
+    <>
+      <ProfileField label={"Username"} value={profile.username} />
+      <ProfileField label={"Bio"} value={profile.bio} />
+      <ProfileField label={"Location"} value={"Earth"} />
+    </>
+  );
+};
+
 const ProfileField = ({ label, value, isEditting = false }) => {
   return (
-    <View style={[styles.row, { flexDirection: "row" }]}>
-      <Text style={styles.label}>{label}:</Text>
-      <Text style={styles.value}>{value} </Text>
+    <View style={styles.row}>
+      <FieldPair label={label} value={value} />
       {isEditting && <LocateOptions />}
     </View>
   );
 };
 
-export { ProfileButton, ProfileField, CameraButton };
+const FieldPair = ({ label, value }) => {
+  return (
+    <>
+      <Text style={styles.label}>{label}:</Text>
+      <Text style={styles.value}>{value} </Text>
+    </>
+  );
+};
+
+const EditableProfileField = ({ label, value }) => {
+  return (
+    <View style={styles.row}>
+      <FieldPair label={label} value={value} />
+      <LocateButton />
+    </View>
+  );
+};
+
+export {
+  ProfileButton,
+  StaticProfileField,
+  CameraButton,
+  EditableProfileField,
+};

@@ -5,10 +5,16 @@ import { auth, firestore } from "../Firebase/firebase-setup";
 import { signOut } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { updateUserProfile } from "../Firebase/firebaseHelper";
-import { ProfileButton, ProfileField } from "../components/Profile";
+import {
+  EditableProfileField,
+  ProfileButton,
+  ProfileField,
+  StaticField,
+} from "../components/Profile";
 import ImageManager from "../components/ImageManager";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../Firebase/firebase-setup";
+import { StaticMap } from "../components/LocateOptions";
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState(null);
@@ -16,6 +22,7 @@ export default function ProfileScreen() {
   const [editUsername, setEditUsername] = useState("");
   const [editBio, setEditBio] = useState("");
   const [profileId, setProfileId] = useState(null);
+  const [location, setLocation] = useState(null);
 
   // Icon Image Manager
   const defaultImgUri = "https://reactnative.dev/img/tiny_logo.png";
@@ -163,18 +170,12 @@ export default function ProfileScreen() {
                   multiline={true}
                 />
               </View>
+              <EditableProfileField label={"location"} value={"city"} />
+              {location && <StaticMap location={location} />}
             </>
           ) : (
-            <>
-              <ProfileField label={"Username"} value={profile.username} />
-              <ProfileField label={"Bio"} value={profile.bio} />
-            </>
+            <StaticField profile={profile} />
           )}
-          <ProfileField
-            label={"Location"}
-            value={"Earth"}
-            isEditting={isEditing}
-          />
         </View>
       </View>
       <View style={styles.footer}>
