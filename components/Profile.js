@@ -39,20 +39,17 @@ const StaticProfileField = ({ profile }) => {
     location = { address: constants.location };
   }
   console.log("static profile field location", location);
+
   return (
     <>
       <ProfileField label={"Username"} value={profile.username} />
       <ProfileField label={"Bio"} value={profile.bio} />
-      <ProfileField label={"Location"} value={location} />
+      <ProfileField label={"Location"} value={location.address} />
     </>
   );
 };
 
 const ProfileField = ({ label, value }) => {
-  if (label === "Location" && value) {
-    value = constants.location;
-  }
-
   return (
     <View style={styles.row}>
       <FieldPair label={label} value={value} />
