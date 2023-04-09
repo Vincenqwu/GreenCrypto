@@ -67,7 +67,11 @@ const LocateOptions = ({ location, setLocation }) => {
 
   useEffect(() => {
     getAddressFromCoords(location);
-  }, [address]);
+    // console.log("updated location: ", location);
+  }, [location]);
+  // useEffect(() => {
+  //   console.log("updated location: ", location);
+  // }, [location]);
 
   const verifyPermission = async () => {
     console.log(permissionResponse);
@@ -98,7 +102,6 @@ const LocateOptions = ({ location, setLocation }) => {
   };
 
   const getAddressFromCoords = async (coords) => {
-    console.log(coords);
     if (!coords) {
       return "No location selected";
     }

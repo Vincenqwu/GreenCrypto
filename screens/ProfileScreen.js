@@ -109,7 +109,7 @@ export default function ProfileScreen() {
           location: location,
         };
       }
-      console.log(newProfile);
+      console.log("saving profile:", newProfile);
 
       updateUserProfile(profileId, newProfile);
     }
