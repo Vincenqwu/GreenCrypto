@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { MAPS_API_KEY } from "@env";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { getUserLocation, saveUserLocation } from "../Firebase/firestoreHelper";
+import { getUserLocation, saveUserLocation } from "../Firebase/firebaseHelper";
 
 export default function LocationManager() {
   const navigation = useNavigation();
@@ -21,6 +21,7 @@ export default function LocationManager() {
     }
     fetchLocation();
   }, []);
+
   useEffect(() => {
     if (route.params) {
       setLocation(route.params.selectedLocation);
@@ -68,7 +69,7 @@ export default function LocationManager() {
     await saveUserLocation({ location });
     navigation.navigate("Home");
   };
-  //   const API_KEY = "AIzaSyChyBLJaRldLX6x4TMcLKn2Cmouswp8k0c";
+
   return (
     <View>
       <Button title="Locate Me!" onPress={locateUserHandler} />

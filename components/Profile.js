@@ -7,6 +7,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "../styles/Color";
 import { useNavigation } from "@react-navigation/native";
+import LocationManager from "./LocationManager";
 
 const ProfileButton = ({ title, handler }) => {
   return (
@@ -37,6 +38,7 @@ const ProfileField = ({ label, value, isEditting = false }) => {
             />
             <Text style={styles.locateMe}>Locate Me</Text>
           </View>
+          <LocationManager />
         </PressableButton>
       )}
     </View>

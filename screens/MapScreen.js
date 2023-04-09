@@ -5,14 +5,17 @@ import styles from "../styles/styles";
 
 const MapScreen = ({ navigation, route }) => {
   const [selectedLocation, setSelectedLocation] = useState(null);
+  console.log("route", route.params);
 
   return (
     <>
       <MapView
         onPress={(event) => {
+          const coordinate = event.nativeEvent.coordinate;
+          console.log("marker:", coordinate);
           setSelectedLocation({
-            latitude: event.nativeEvent.coordinate.latitude,
-            longitude: event.nativeEvent.coordinate.longitude,
+            latitude: coordinate.latitude,
+            longitude: coordinate.longitude,
           });
         }}
         style={styles.container}
@@ -22,7 +25,7 @@ const MapScreen = ({ navigation, route }) => {
             : 37.78825,
           longitude: route.params
             ? route.params.currentLocation.longitude
-            : -122.4324,
+            : -123.115732,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
