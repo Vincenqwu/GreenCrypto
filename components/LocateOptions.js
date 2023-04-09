@@ -50,7 +50,6 @@ const LocateButton = ({ locateUserHandler }) => {
 };
 
 const StaticMap = ({ location }) => {
-  console.log("static map called", location);
   return (
     <Image
       source={{
@@ -65,17 +64,11 @@ const LocateOptions = ({ profile, setCoordinate, setLocation }) => {
   const [address, setAddress] = useState(null);
   const [permissionResponse, requestPermission] =
     Location.useForegroundPermissions();
-  console.log("updated coordinate: ", coordinate);
 
   const coordinate = profile.coordinate;
   const location = profile.location;
 
-  useEffect(() => {
-    console.log("updated address: ", address);
-  }, [coordinate]);
-
   const verifyPermission = async () => {
-    console.log(permissionResponse);
     if (permissionResponse.granted) {
       return true;
     }

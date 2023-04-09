@@ -8,9 +8,8 @@ export const getAddressFromCoords = async (coords) => {
 
   try {
     const response = await fetch(url);
-
     const data = await response.json();
-    // console.log(data);
+
     if (!data || data.status === "ZERO_RESULTS") {
       return null;
     }

@@ -41,8 +41,6 @@ export default function ProfileScreen() {
     setHasNewPhoto(false);
   };
 
-  console.log("profile: ", profile);
-
   const currentUser = auth.currentUser;
   useEffect(() => {
     const unsubscribe = onSnapshot(

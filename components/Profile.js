@@ -35,16 +35,15 @@ const FieldPair = ({ label, value }) => {
 
 const StaticProfileField = ({ profile }) => {
   let location = profile.location;
-  if (!location?.adress) {
-    location = { address: constants.location };
+  if (!location) {
+    location = constants.location;
   }
-  console.log("static profile field location", location);
 
   return (
     <>
       <ProfileField label={"Username"} value={profile.username} />
       <ProfileField label={"Bio"} value={profile.bio} />
-      <ProfileField label={"Location"} value={profile.location} />
+      <ProfileField label={"Location"} value={location} />
     </>
   );
 };
