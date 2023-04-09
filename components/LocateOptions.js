@@ -103,15 +103,15 @@ const LocateOptions = ({ profile, setCoordinate, setLocation }) => {
     setCurrentLocation(address);
   };
 
-  console.log(
-    "coordinate:",
-    coordinate,
-    ",\n",
-    "location:",
-    location,
-    ", currentLocation:",
-    currentLocation
-  );
+  // console.log(
+  //   "coordinate:",
+  //   coordinate,
+  //   ",\n",
+  //   "location:",
+  //   location,
+  //   ", currentLocation:",
+  //   currentLocation
+  // );
 
   // useEffect(() => {
   //   const updateAllLocations = async () => {

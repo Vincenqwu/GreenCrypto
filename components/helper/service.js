@@ -2,7 +2,7 @@ import { MAPS_API_KEY } from "@env";
 
 export const getAddressFromCoords = async (coords) => {
   if (!coords) {
-    return "No location selected";
+    return "Not located";
   }
   const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.latitude},${coords.longitude}&key=${MAPS_API_KEY}`;
 

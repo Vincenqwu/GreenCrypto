@@ -43,7 +43,10 @@ export default function ProfileScreen({ route }) {
     setHasNewPhoto(false);
   };
 
-  // console.log("profile screen route params:", route.params);
+  console.log("route coords:", route.params);
+  console.log("location:", location);
+  console.log("-".repeat(20), "ProfileScreen");
+
   useEffect(() => {
     let routeParams = route.params;
     if (routeParams) {
@@ -55,14 +58,7 @@ export default function ProfileScreen({ route }) {
     const updateAllLocations = async () => {
       const address = await getAddressFromCoords(coordinate);
       setLocation(address);
-      console.log(
-        "updated location: ",
-        location,
-        ", address: ",
-        address,
-        ",\n coordinate: ",
-        coordinate
-      );
+      console.log("address:", address);
     };
     return () => updateAllLocations();
   }, [coordinate]);
