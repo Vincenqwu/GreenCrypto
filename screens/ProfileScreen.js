@@ -123,6 +123,7 @@ export default function ProfileScreen() {
       setEditBio(profile.bio);
       setEditUsername(profile.username);
     }
+    console.log("we are editing", isEditing);
   };
 
   if (!profile) {

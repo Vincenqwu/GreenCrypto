@@ -1,14 +1,18 @@
-import { View, Button, Alert, Image } from "react-native";
+import { View, Text, Button, Alert, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { MAPS_API_KEY } from "@env";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getUserLocation, saveUserLocation } from "../Firebase/firebaseHelper";
+import styles from "../styles/profileStyles";
+import PressableButton from "./PressableButton";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Colors } from "../styles/Color";
 
-export default function LocationManager() {
+const LocationManager = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  console.log(route.params);
+  //   console.log("route", route.params);
 
   useEffect(() => {
     async function fetchLocation() {
@@ -27,6 +31,7 @@ export default function LocationManager() {
       setLocation(route.params.selectedLocation);
     }
   }, [route]);
+
   const [location, setLocation] = useState(null);
   const [permissionResponse, requestPermission] =
     Location.useForegroundPermissions();
@@ -71,21 +76,33 @@ export default function LocationManager() {
   };
 
   return (
-    <View>
-      <Button title="Locate Me!" onPress={locateUserHandler} />
-      {location && (
+    <>
+      <PressableButton pressHandler={locateUserHandler}>
+        <View style={styles.editLocation}>
+          <MaterialIcons
+            name="edit-location"
+            size={22}
+            color={Colors.buttonColor}
+          />
+          <Text style={styles.locateMe}>Locate Me</Text>
+        </View>
+        <LocationManager />
+      </PressableButton>
+      {/* {location && (
         <Image
           source={{
             uri: `https://maps.googleapis.com/maps/api/staticmap?center=${location.latitude},${location.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location.latitude},${location.longitude}&key=${MAPS_API_KEY}`,
           }}
           style={{ width: "100%", height: 200 }}
         />
-      )}
-      <Button
+      )} */}
+      {/* <Button
         title="Let me choose on the map!"
         onPress={locationSelectionHandler}
       />
-      <Button title="Save Location" onPress={saveUser} />
-    </View>
+      <Button title="Save Location" onPress={saveUser} /> */}
+    </>
   );
-}
+};
+
+export default LocationManager;
