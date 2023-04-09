@@ -103,28 +103,6 @@ const LocateOptions = ({ profile, setCoordinate, setLocation }) => {
     setCurrentLocation(address);
   };
 
-  // console.log(
-  //   "coordinate:",
-  //   coordinate,
-  //   ",\n",
-  //   "location:",
-  //   location,
-  //   ", currentLocation:",
-  //   currentLocation
-  // );
-
-  // useEffect(() => {
-  //   const updateAllLocations = async () => {
-  //     const address = await getAddressFromCoords(profile.coordinate);
-  //     setCoordinate(profile.coordinate);
-  //     setLocation(address);
-  //     setCurrentLocation(address);
-
-  //     console.log("updated coordinate?");
-  //   };
-  //   return () => updateAllLocations();
-  // }, [profile.coordinate]);
-
   // useEffect(() => {
   //   if (coordinate) {
   //     updateLocationByCoords(coordinate);

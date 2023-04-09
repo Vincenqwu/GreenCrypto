@@ -44,24 +44,20 @@ export default function ProfileScreen({ route }) {
   };
 
   console.log("route coords:", route.params);
-  console.log("location:", location);
-  console.log("-".repeat(20), "ProfileScreen");
+  // console.log("-".repeat(20), "routes");
 
   useEffect(() => {
     let routeParams = route.params;
     if (routeParams) {
       setCoordinate(routeParams.selectedLocation);
+      getAddressFromCoords(routeParams.selectedLocation)
+        .then((res) => {
+          setLocation(res);
+          // setCurrentLocation(res);
+        })
+        .catch((error) => console.log(error));
     }
   }, [route]);
-
-  useEffect(() => {
-    const updateAllLocations = async () => {
-      const address = await getAddressFromCoords(coordinate);
-      setLocation(address);
-      console.log("address:", address);
-    };
-    return () => updateAllLocations();
-  }, [coordinate]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
