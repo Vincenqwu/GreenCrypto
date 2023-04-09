@@ -1,5 +1,5 @@
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { storage } from "./firebase-setup";
+import { storage } from "../../Firebase/firebase-setup";
 
 const fetchImageData = async (uri) => {
   // console.log("local:", uri); //local uri on the device

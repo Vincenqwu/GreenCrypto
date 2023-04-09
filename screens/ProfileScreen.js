@@ -6,16 +6,15 @@ import { signOut } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { updateUserProfile } from "../Firebase/firebaseHelper";
 import {
-  EditableProfileField,
   ProfileButton,
   ProfileField,
   StaticProfileField,
 } from "../components/Profile";
 import ImageManager from "../components/ImageManager";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, getDownloadURL } from "firebase/storage";
 import { storage } from "../Firebase/firebase-setup";
 import LocateOptions, { StaticMap } from "../components/LocateOptions";
-import { fetchImageData } from "../Firebase/ImageHelper";
+import { fetchImageData } from "../components/helper/image";
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState(null);
@@ -23,7 +22,8 @@ export default function ProfileScreen() {
   const [editUsername, setEditUsername] = useState("");
   const [editBio, setEditBio] = useState("");
   const [profileId, setProfileId] = useState(null);
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(""); // address string. eg. San Francisco, CA
+  const [coordinate, setCoordinate] = useState(null);
 
   // Icon Image Manager
   const defaultImgUri = "https://reactnative.dev/img/tiny_logo.png";
@@ -59,7 +59,8 @@ export default function ProfileScreen() {
             bio: "Please write about yourself",
             username: "New User",
             iconUri: defaultImgUri,
-            location: "",
+            location: location,
+            coordinate: coordinate,
           };
           setProfile(newProfile);
         } else {
@@ -90,6 +91,7 @@ export default function ProfileScreen() {
       username: editUsername,
       bio: editBio,
       location: location,
+      coordinate: coordinate,
     };
     if (profileId) {
       if (hasNewPhoto) {
@@ -103,10 +105,16 @@ export default function ProfileScreen() {
           iconUri: url,
         };
       }
-      if (location) {
+      if (location !== "") {
         newProfile = {
           ...newProfile,
           location: location,
+        };
+      }
+      if (coordinate !== {}) {
+        newProfile = {
+          ...newProfile,
+          coordinate: coordinate,
         };
       }
       console.log("saving profile:", newProfile);
@@ -169,10 +177,11 @@ export default function ProfileScreen() {
                 />
               </View>
               <LocateOptions
+                setCoordinate={setCoordinate}
+                profile={profile}
                 setLocation={setLocation}
-                location={profile.location}
               />
-              {location?.latitude && <StaticMap location={location} />}
+              {coordinate && <StaticMap location={coordinate} />}
             </>
           ) : (
             <StaticProfileField profile={profile} />

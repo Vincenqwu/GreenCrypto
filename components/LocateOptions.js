@@ -7,7 +7,8 @@ import { Colors } from "../styles/Color";
 import { MaterialIcons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
 import styles from "../styles/profileStyles";
-import { constants } from "./helper/Constants";
+import { constants } from "./helper/constants";
+import { getAddressFromCoords } from "./helper/service";
 
 const LocateButton = ({ locateUserHandler }) => {
   const navigation = useNavigation();
@@ -60,18 +61,18 @@ const StaticMap = ({ location }) => {
   );
 };
 
-const LocateOptions = ({ location, setLocation }) => {
-  const [address, setAddress] = useState("");
+const LocateOptions = ({ profile, setCoordinate, setLocation }) => {
+  const [address, setAddress] = useState(null);
   const [permissionResponse, requestPermission] =
     Location.useForegroundPermissions();
+  console.log("updated coordinate: ", coordinate);
+
+  const coordinate = profile.coordinate;
+  const location = profile.location;
 
   useEffect(() => {
-    getAddressFromCoords(location);
-    // console.log("updated location: ", location);
-  }, [location]);
-  // useEffect(() => {
-  //   console.log("updated location: ", location);
-  // }, [location]);
+    console.log("updated address: ", address);
+  }, [coordinate]);
 
   const verifyPermission = async () => {
     console.log(permissionResponse);
@@ -79,12 +80,10 @@ const LocateOptions = ({ location, setLocation }) => {
       return true;
     }
     const permissionResult = await requestPermission();
-    // // this will be user's choice:
     return permissionResult.granted;
   };
 
   const locateUserHandler = async () => {
-    console.log("current user location");
     const permissionReceived = await verifyPermission();
     if (!permissionReceived) {
       Alert.alert("You need to give location permission");
@@ -92,35 +91,17 @@ const LocateOptions = ({ location, setLocation }) => {
     }
     try {
       const result = await Location.getCurrentPositionAsync();
-      setLocation({
+      let coord = {
         latitude: result.coords.latitude,
         longitude: result.coords.longitude,
-      });
+      };
+      setCoordinate(coord);
+
+      const address = await getAddressFromCoords(coord);
+      setAddress(address);
+      setLocation(address);
     } catch (err) {
       console.log("location handler ", err);
-    }
-  };
-
-  const getAddressFromCoords = async (coords) => {
-    if (!coords) {
-      return "No location selected";
-    }
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.latitude},${coords.longitude}&key=${MAPS_API_KEY}`;
-
-    try {
-      const response = await fetch(url);
-
-      const data = await response.json();
-      console.log(data);
-      if (!data || data.status === "ZERO_RESULTS") {
-        return null;
-      }
-      const fullAddress = data.results[0].formatted_address;
-      const res = fullAddress.split(",")[1];
-      setAddress(res);
-      setLocation({ ...location, address: res });
-    } catch (err) {
-      console.log("fetch address error: ", err);
     }
   };
 
@@ -128,7 +109,7 @@ const LocateOptions = ({ location, setLocation }) => {
     <View style={styles.row}>
       <Text style={styles.label}>Location:</Text>
       <Text style={styles.value}>
-        {!location?.address ? constants.location : location.address}
+        {!location ? constants.location : location}
       </Text>
       <LocateButton locateUserHandler={locateUserHandler} />
     </View>
