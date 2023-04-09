@@ -21,6 +21,7 @@ const LocateButton = ({ locateUserHandler }) => {
     Alert.alert(
       "Use Current Location?",
       "Or choose one on your own?",
+
       [
         {
           text: "Yes, locate me",
@@ -29,6 +30,12 @@ const LocateButton = ({ locateUserHandler }) => {
         {
           text: "Let me choose the location",
           onPress: handleChooseLocation,
+          style: "default",
+        },
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel",
         },
       ],
       { cancelable: true }
