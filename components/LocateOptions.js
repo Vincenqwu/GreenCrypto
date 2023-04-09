@@ -7,7 +7,6 @@ import { Colors } from "../styles/Color";
 import { MaterialIcons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
 import styles from "../styles/profileStyles";
-import { FieldPair } from "./Profile";
 
 const LocateButton = ({ locateUserHandler }) => {
   const navigation = useNavigation();
@@ -60,9 +59,13 @@ const StaticMap = ({ location }) => {
 };
 
 const LocateOptions = ({ location, setLocation }) => {
-  // const [location, setLocation] = useState(null);
+  const [address, setAddress] = useState("Vancouver, BC");
   const [permissionResponse, requestPermission] =
     Location.useForegroundPermissions();
+
+  useEffect(() => {
+    getAddressFromCoords(location);
+  }, [location]);
 
   const verifyPermission = async () => {
     console.log(permissionResponse);
@@ -92,9 +95,29 @@ const LocateOptions = ({ location, setLocation }) => {
     }
   };
 
+  const getAddressFromCoords = async (coords) => {
+    console.log(coords);
+    if (!coords) {
+      return "No location selected";
+    }
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.latitude},${coords.longitude}&key=${MAPS_API_KEY}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    if (!data || data.status === "ZERO_RESULTS") {
+      return null;
+    }
+
+    const res = data.results[0].formatted_address;
+    console.log(typeof res);
+    setAddress(res);
+    return res;
+  };
+
   return (
     <View style={styles.row}>
-      <FieldPair label={"Location"} value={location.latitude} />
+      <Text style={styles.label}>Location:</Text>
+      <Text style={styles.value}>{!location ? "Vancouver" : address}</Text>
       <LocateButton locateUserHandler={locateUserHandler} />
     </View>
   );

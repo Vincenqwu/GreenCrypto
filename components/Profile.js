@@ -23,6 +23,15 @@ const CameraButton = ({ handler }) => {
   );
 };
 
+const FieldPair = ({ label, value }) => {
+  return (
+    <>
+      <Text style={styles.label}>{label}:</Text>
+      <Text style={styles.value}>{value} </Text>
+    </>
+  );
+};
+
 const StaticProfileField = ({ profile }) => {
   return (
     <>
@@ -42,15 +51,6 @@ const ProfileField = ({ label, value, isEditting = false }) => {
   );
 };
 
-const FieldPair = ({ label, value }) => {
-  return (
-    <>
-      <Text style={styles.label}>{label}:</Text>
-      <Text style={styles.value}>{value} </Text>
-    </>
-  );
-};
-
 const EditableProfileField = ({ label, value }) => {
   return (
     <View style={styles.row}>
@@ -65,6 +65,5 @@ export {
   StaticProfileField,
   CameraButton,
   ProfileField,
-  FieldPair,
   EditableProfileField,
 };
