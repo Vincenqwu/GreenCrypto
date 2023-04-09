@@ -37,7 +37,7 @@ const StaticProfileField = ({ profile }) => {
     <>
       <ProfileField label={"Username"} value={profile.username} />
       <ProfileField label={"Bio"} value={profile.bio} />
-      <ProfileField label={"Location"} value={"Earth"} />
+      <ProfileField label={"Location"} value={profile.location.address} />
     </>
   );
 };

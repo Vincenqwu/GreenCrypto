@@ -48,6 +48,7 @@ const LocateButton = ({ locateUserHandler }) => {
 };
 
 const StaticMap = ({ location }) => {
+  console.log("static map called", location);
   return (
     <Image
       source={{
@@ -59,13 +60,13 @@ const StaticMap = ({ location }) => {
 };
 
 const LocateOptions = ({ location, setLocation }) => {
-  const [address, setAddress] = useState("Vancouver, BC");
+  const [address, setAddress] = useState("");
   const [permissionResponse, requestPermission] =
     Location.useForegroundPermissions();
 
   useEffect(() => {
     getAddressFromCoords(location);
-  }, [location]);
+  }, [address]);
 
   const verifyPermission = async () => {
     console.log(permissionResponse);
@@ -101,23 +102,30 @@ const LocateOptions = ({ location, setLocation }) => {
       return "No location selected";
     }
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.latitude},${coords.longitude}&key=${MAPS_API_KEY}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-    if (!data || data.status === "ZERO_RESULTS") {
-      return null;
-    }
 
-    const res = data.results[0].formatted_address;
-    console.log(typeof res);
-    setAddress(res);
-    return res;
+    try {
+      const response = await fetch(url);
+
+      const data = await response.json();
+      console.log(data);
+      if (!data || data.status === "ZERO_RESULTS") {
+        return null;
+      }
+      const fullAddress = data.results[0].formatted_address;
+      const res = fullAddress.split(",")[1];
+      setAddress(res);
+      setLocation({ ...location, address: res });
+    } catch (err) {
+      console.log("fetch address error: ", err);
+    }
   };
 
   return (
     <View style={styles.row}>
       <Text style={styles.label}>Location:</Text>
-      <Text style={styles.value}>{!location ? "Vancouver" : address}</Text>
+      <Text style={styles.value}>
+        {!location.address ? "Vancouver" : location.address}
+      </Text>
       <LocateButton locateUserHandler={locateUserHandler} />
     </View>
   );

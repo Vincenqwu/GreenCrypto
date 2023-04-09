@@ -23,7 +23,7 @@ export default function ProfileScreen() {
   const [editUsername, setEditUsername] = useState("");
   const [editBio, setEditBio] = useState("");
   const [profileId, setProfileId] = useState(null);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState("");
 
   // Icon Image Manager
   const defaultImgUri = "https://reactnative.dev/img/tiny_logo.png";
@@ -41,7 +41,7 @@ export default function ProfileScreen() {
     setHasNewPhoto(false);
   };
 
-  console.log("location: ", location);
+  console.log("profile: ", profile);
 
   const currentUser = auth.currentUser;
   useEffect(() => {
@@ -88,6 +88,7 @@ export default function ProfileScreen() {
       ...profile,
       username: editUsername,
       bio: editBio,
+      location: location,
     };
     if (profileId) {
       if (hasNewPhoto) {
@@ -99,6 +100,12 @@ export default function ProfileScreen() {
         newProfile = {
           ...newProfile,
           iconUri: url,
+        };
+      }
+      if (location) {
+        newProfile = {
+          ...newProfile,
+          location: location,
         };
       }
       console.log(newProfile);
@@ -163,7 +170,7 @@ export default function ProfileScreen() {
                 />
               </View>
               <LocateOptions setLocation={setLocation} location={location} />
-              {location && <StaticMap location={location} />}
+              {location?.latitude && <StaticMap location={location} />}
             </>
           ) : (
             <StaticProfileField profile={profile} />
