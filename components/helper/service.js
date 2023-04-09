@@ -14,6 +14,7 @@ export const getAddressFromCoords = async (coords) => {
       return null;
     }
     const fullAddress = data.results[0].formatted_address;
+    console.log(fullAddress);
     const res = fullAddress.split(",")[1];
 
     return res.trim();

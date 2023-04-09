@@ -15,8 +15,12 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { storage } from "../Firebase/firebase-setup";
 import LocateOptions, { StaticMap } from "../components/LocateOptions";
 import { fetchImageData } from "../components/helper/image";
+import { getAddressFromCoords } from "../components/helper/service";
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ route }) {
+  const currentUser = auth.currentUser;
+  const defaultImgUri = "https://reactnative.dev/img/tiny_logo.png";
+
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editUsername, setEditUsername] = useState("");
@@ -24,9 +28,7 @@ export default function ProfileScreen() {
   const [profileId, setProfileId] = useState(null);
   const [location, setLocation] = useState(""); // address string. eg. San Francisco, CA
   const [coordinate, setCoordinate] = useState(null);
-
   // Icon Image Manager
-  const defaultImgUri = "https://reactnative.dev/img/tiny_logo.png";
   const [imageUri, setImageUri] = useState(defaultImgUri);
   const [hasNewPhoto, setHasNewPhoto] = useState(false);
 
@@ -41,7 +43,30 @@ export default function ProfileScreen() {
     setHasNewPhoto(false);
   };
 
-  const currentUser = auth.currentUser;
+  // console.log("profile screen route params:", route.params);
+  useEffect(() => {
+    let routeParams = route.params;
+    if (routeParams) {
+      setCoordinate(routeParams.selectedLocation);
+    }
+  }, [route]);
+
+  useEffect(() => {
+    const updateAllLocations = async () => {
+      const address = await getAddressFromCoords(coordinate);
+      setLocation(address);
+      console.log(
+        "updated location: ",
+        location,
+        ", address: ",
+        address,
+        ",\n coordinate: ",
+        coordinate
+      );
+    };
+    return () => updateAllLocations();
+  }, [coordinate]);
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(

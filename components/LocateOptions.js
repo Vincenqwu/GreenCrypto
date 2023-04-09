@@ -15,7 +15,7 @@ const LocateButton = ({ locateUserHandler, coordinate }) => {
 
   const handleChooseLocation = () => {
     if (coordinate) {
-      navigation.navigate("Map", { coordinate: coordinate });
+      navigation.navigate("Map", { currentLocation: coordinate });
     } else {
       navigation.navigate("Map");
     }
@@ -91,13 +91,45 @@ const LocateOptions = ({ profile, setCoordinate, setLocation }) => {
       };
       setCoordinate(coord);
 
-      const address = await getAddressFromCoords(coord);
-      setLocation(address);
-      setCurrentLocation(address);
+      updateLocationByCoords(coord);
     } catch (err) {
       console.log("location handler ", err);
     }
   };
+
+  const updateLocationByCoords = async (coords) => {
+    const address = await getAddressFromCoords(coords);
+    setLocation(address);
+    setCurrentLocation(address);
+  };
+
+  console.log(
+    "coordinate:",
+    coordinate,
+    ",\n",
+    "location:",
+    location,
+    ", currentLocation:",
+    currentLocation
+  );
+
+  // useEffect(() => {
+  //   const updateAllLocations = async () => {
+  //     const address = await getAddressFromCoords(profile.coordinate);
+  //     setCoordinate(profile.coordinate);
+  //     setLocation(address);
+  //     setCurrentLocation(address);
+
+  //     console.log("updated coordinate?");
+  //   };
+  //   return () => updateAllLocations();
+  // }, [profile.coordinate]);
+
+  // useEffect(() => {
+  //   if (coordinate) {
+  //     updateLocationByCoords(coordinate);
+  //   }
+  // }, [coordinate]);
 
   return (
     <View style={styles.row}>
