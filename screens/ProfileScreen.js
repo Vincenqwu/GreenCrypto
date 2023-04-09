@@ -14,7 +14,7 @@ import {
 import ImageManager from "../components/ImageManager";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../Firebase/firebase-setup";
-import { StaticMap } from "../components/LocateOptions";
+import LocateOptions, { StaticMap } from "../components/LocateOptions";
 import { fetchImageData } from "../Firebase/ImageHelper";
 
 export default function ProfileScreen() {
@@ -40,6 +40,8 @@ export default function ProfileScreen() {
     setIsEditing(false);
     setHasNewPhoto(false);
   };
+
+  console.log("location: ", location);
 
   const currentUser = auth.currentUser;
   useEffect(() => {
@@ -76,16 +78,6 @@ export default function ProfileScreen() {
       unsubscribe();
     };
   }, [currentUser]);
-
-  // const fetchImageData = async (uri) => {
-  //   // console.log("local:", uri); //local uri on the device
-  //   const response = await fetch(uri);
-  //   const imageBlob = await response.blob(); //image data
-  //   const imageName = uri.substring(uri.lastIndexOf("/") + 1);
-  //   const imageRef = ref(storage, `images/${imageName}`);
-  //   const uploadResult = await uploadBytesResumable(imageRef, imageBlob);
-  //   return uploadResult.metadata.fullPath; //path to the image on the storage
-  // };
 
   const handleSave = async (uri) => {
     setIsEditing(false);
@@ -170,7 +162,7 @@ export default function ProfileScreen() {
                   multiline={true}
                 />
               </View>
-              <EditableProfileField label={"location"} value={"city"} />
+              <LocateOptions setLocation={setLocation} location={location} />
               {location && <StaticMap location={location} />}
             </>
           ) : (

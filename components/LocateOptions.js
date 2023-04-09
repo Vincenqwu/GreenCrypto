@@ -7,6 +7,7 @@ import { Colors } from "../styles/Color";
 import { MaterialIcons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
 import styles from "../styles/profileStyles";
+import { FieldPair } from "./Profile";
 
 const LocateButton = ({ locateUserHandler }) => {
   const navigation = useNavigation();
@@ -92,12 +93,10 @@ const LocateOptions = ({ location, setLocation }) => {
   };
 
   return (
-    <>
-      <View>
-        <LocateButton locateUserHandler={locateUserHandler} />
-        {location && <StaticMap location={location} />}
-      </View>
-    </>
+    <View style={styles.row}>
+      <FieldPair label={"Location"} value={location.latitude} />
+      <LocateButton locateUserHandler={locateUserHandler} />
+    </View>
   );
 };
 
