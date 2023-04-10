@@ -34,19 +34,19 @@ Members Contribution:
 #### Chen Qiu
 
      #Camera use#
-     ![image choose](./assets/image1.jpg)
-     ![profile image changed](./assets/image2.jpg)
+     ![image choose](./assets/image1.png)
+     ![profile image changed](./assets/image2.png)
 
      #Location use#
-     ![Locate Me](./assets/location1.jpg)
-     ![Choose a location](./assets/location2.jpg)
+     ![Locate Me](./assets/location1.png)
+     ![Choose a location](./assets/location2.png)
 
 #### Maokun Sun
 
       #Authentication#
-      ![Log-in authentication](./assets/authentication.jpg)
+      ![Log-in authentication](./assets/authentication.png)
       #HomeCryptoMarket#
-      ![Home Page](./assets/CryptoHomePage.jpg)
+      ![Home Page](./assets/CryptoHomePage.png)
       #ReadMe Update#
       #FrontEnd Style Adjustment#
 
@@ -55,7 +55,7 @@ Members Contribution:
       #External API use#
        https://api.coingecko.com/api/
       #Coin Action#
-      ![Coin Detail](./assets/CoinDetail.jpg)
-      ![Search Coin](./assets/SearchCoin.jpg)
-      ![Buy Coin](./assets/BuyCoin.jpg)
-      ![My Activity List](./assets/MyactivityList.jpg)
+      ![Coin Detail](./assets/CoinDetail.png)
+      ![Search Coin](./assets/SearchCoin.png)
+      ![Buy Coin](./assets/BuyCoin.png)
+      ![My Activity List](./assets/MyactivityList.png)
