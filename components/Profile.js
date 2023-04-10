@@ -4,7 +4,7 @@ import PressableButton from "./PressableButton";
 import styles, { colors } from "../styles/profileStyles";
 import { AntDesign } from "@expo/vector-icons";
 import LocateOptions, { LocateButton } from "./LocateOptions";
-import { constants } from "./helper/constants";
+import { constants } from "./helper/service";
 
 const ProfileButton = ({ title, handler }) => {
   return (

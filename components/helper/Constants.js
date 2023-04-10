@@ -1,3 +1,5 @@
-export const constants = {
+const constants = {
   location: "Earth",
 };
+
+export { constants };
