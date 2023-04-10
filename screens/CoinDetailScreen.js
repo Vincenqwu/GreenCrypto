@@ -7,7 +7,7 @@ import PressableButton from "../components/PressableButton";
 import { createActivity } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
 import { AntDesign } from "@expo/vector-icons";
-
+import {gestureHandlerRootHOC} from "react-native-gesture-handler";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -102,67 +102,70 @@ export default function CoinDetailScreen({ route, navigation }) {
     );
   }
 
+  const ChartView = gestureHandlerRootHOC(() => (
+    <View>
+    <View style={styles.priceContainer}>
+      <View>
+        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{name}</Text>
+        <Text style={{ fontSize: 16, color: trendColor }}>{current_price.usd}</Text>
+      </View>
+      <View
+          style={{
+            backgroundColor: trendColor,
+            paddingHorizontal: 3,
+            paddingVertical: 8,
+            borderRadius: 5,
+            flexDirection: "row",
+          }}
+        >
+          <AntDesign
+            name={price_change_percentage_24h < 0 ? "caretdown" : "caretup"}
+            size={12}
+            color={"white"}
+            style={{ alignSelf: "center", marginRight: 5 }}
+          />
+          <Text style={styles.priceChange}>
+            {price_change_percentage_24h?.toFixed(2)}%
+          </Text>
+        </View>
+    </View>
+    <LineChart.Provider
+      data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
+    >
+      <LineChart height={screenWidth / 2} width={screenWidth}>
+        <LineChart.Path color={graphColor}>
+          <LineChart.Gradient color={graphColor} />
+        </LineChart.Path>
+        <LineChart.CursorLine color={graphColor} />
+        <LineChart.CursorCrosshair>
+          <LineChart.Tooltip textStyle={styles.lineChart} />
+          <LineChart.Tooltip position="bottom" >
+            <LineChart.DatetimeText />
+          </LineChart.Tooltip>
+        </LineChart.CursorCrosshair>
+      </LineChart>
+
+    </LineChart.Provider>
+    <View style={styles.buttonContainer}>
+      <PressableButton
+        pressHandler={() => buyCrypto(coinId, 0.5)}
+        style={styles.buyButtonStyle}
+      >
+        <Text style={styles.buttonTextStyle}>Buy Coin</Text>
+      </PressableButton>
+      <PressableButton
+        pressHandler={() => console.log("Sell Finished")}
+        style={styles.sellButtonStyle}
+      >
+        <Text style={styles.buttonTextStyle}>Sell Coin</Text>
+      </PressableButton>
+    </View>
+
+  </View>
+  ));
 
   return (
-    <View>
-      <View style={styles.priceContainer}>
-        <View>
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{name}</Text>
-          <Text style={{ fontSize: 16, color: trendColor }}>{current_price.usd}</Text>
-        </View>
-        <View
-            style={{
-              backgroundColor: trendColor,
-              paddingHorizontal: 3,
-              paddingVertical: 8,
-              borderRadius: 5,
-              flexDirection: "row",
-            }}
-          >
-            <AntDesign
-              name={price_change_percentage_24h < 0 ? "caretdown" : "caretup"}
-              size={12}
-              color={"white"}
-              style={{ alignSelf: "center", marginRight: 5 }}
-            />
-            <Text style={styles.priceChange}>
-              {price_change_percentage_24h?.toFixed(2)}%
-            </Text>
-          </View>
-      </View>
-      <LineChart.Provider
-        data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
-      >
-        <LineChart height={screenWidth / 2} width={screenWidth}>
-          <LineChart.Path color={graphColor}>
-            <LineChart.Gradient color={graphColor} />
-          </LineChart.Path>
-          <LineChart.CursorLine color={graphColor} />
-          <LineChart.CursorCrosshair>
-            <LineChart.Tooltip textStyle={styles.lineChart} />
-            <LineChart.Tooltip position="bottom" >
-              <LineChart.DatetimeText />
-            </LineChart.Tooltip>
-          </LineChart.CursorCrosshair>
-        </LineChart>
-
-      </LineChart.Provider>
-      <View style={styles.buttonContainer}>
-        <PressableButton
-          pressHandler={() => buyCrypto(coinId, 0.5)}
-          style={styles.buyButtonStyle}
-        >
-          <Text style={styles.buttonTextStyle}>Buy Coin</Text>
-        </PressableButton>
-        <PressableButton
-          pressHandler={() => console.log("Sell Finished")}
-          style={styles.sellButtonStyle}
-        >
-          <Text style={styles.buttonTextStyle}>Sell Coin</Text>
-        </PressableButton>
-      </View>
-
-    </View>
+    <ChartView />
   )
 }
 
