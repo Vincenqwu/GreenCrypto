@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
-const colors = {
+
+export const colors = {
   bgColor: "#3795BD",
   highlight: "#FDFF00",
   inactive: "#BDCDD6",
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    marginBottom: 5,
+    marginBottom: 6,
   },
   label: {
     fontSize: 16,
@@ -94,6 +95,16 @@ const styles = StyleSheet.create({
   },
   camera: {
     marginHorizontal: 10,
+  },
+  editLocation: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 1,
+  },
+  locateMe: {
+    marginLeft: 5,
+    color: colors.btnColor,
+    textDecorationLine: "underline",
   },
 });
 

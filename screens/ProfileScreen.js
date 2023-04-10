@@ -5,20 +5,30 @@ import { auth, firestore } from "../Firebase/firebase-setup";
 import { signOut } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { updateUserProfile } from "../Firebase/firebaseHelper";
-import { ProfileButton, ProfileField } from "../components/Profile";
+import {
+  ProfileButton,
+  ProfileField,
+  StaticProfileField,
+} from "../components/Profile";
 import ImageManager from "../components/ImageManager";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, getDownloadURL } from "firebase/storage";
 import { storage } from "../Firebase/firebase-setup";
+import LocateOptions, { StaticMap } from "../components/LocateOptions";
+import { fetchImageData } from "../components/helper/image";
+import { getAddressFromCoords } from "../components/helper/service";
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ route }) {
+  const currentUser = auth.currentUser;
+  const defaultImgUri = "https://reactnative.dev/img/tiny_logo.png";
+
   const [profile, setProfile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editUsername, setEditUsername] = useState("");
   const [editBio, setEditBio] = useState("");
   const [profileId, setProfileId] = useState(null);
-
+  const [location, setLocation] = useState(""); // address string. eg. San Francisco, CA
+  const [coordinate, setCoordinate] = useState(null);
   // Icon Image Manager
-  const defaultImgUri = "https://reactnative.dev/img/tiny_logo.png";
   const [imageUri, setImageUri] = useState(defaultImgUri);
   const [hasNewPhoto, setHasNewPhoto] = useState(false);
 
@@ -33,7 +43,22 @@ export default function ProfileScreen() {
     setHasNewPhoto(false);
   };
 
-  const currentUser = auth.currentUser;
+  console.log("route coords:", route.params);
+  // console.log("-".repeat(20), "routes");
+
+  useEffect(() => {
+    let routeParams = route.params;
+    if (routeParams) {
+      setCoordinate(routeParams.selectedLocation);
+      getAddressFromCoords(routeParams.selectedLocation)
+        .then((res) => {
+          setLocation(res);
+          // setCurrentLocation(res);
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [route]);
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
@@ -49,6 +74,8 @@ export default function ProfileScreen() {
             bio: "Please write about yourself",
             username: "New User",
             iconUri: defaultImgUri,
+            location: location,
+            coordinate: coordinate,
           };
           setProfile(newProfile);
         } else {
@@ -69,16 +96,6 @@ export default function ProfileScreen() {
     };
   }, [currentUser]);
 
-  const fetchImageData = async (uri) => {
-    // console.log("local:", uri); //local uri on the device
-    const response = await fetch(uri);
-    const imageBlob = await response.blob(); //image data
-    const imageName = uri.substring(uri.lastIndexOf("/") + 1);
-    const imageRef = ref(storage, `images/${imageName}`);
-    const uploadResult = await uploadBytesResumable(imageRef, imageBlob);
-    return uploadResult.metadata.fullPath; //path to the image on the storage
-  };
-
   const handleSave = async (uri) => {
     setIsEditing(false);
     setEditBio(editBio);
@@ -88,6 +105,8 @@ export default function ProfileScreen() {
       ...profile,
       username: editUsername,
       bio: editBio,
+      location: location,
+      coordinate: coordinate,
     };
     if (profileId) {
       if (hasNewPhoto) {
@@ -101,7 +120,19 @@ export default function ProfileScreen() {
           iconUri: url,
         };
       }
-      console.log(newProfile);
+      if (location !== "") {
+        newProfile = {
+          ...newProfile,
+          location: location,
+        };
+      }
+      if (coordinate !== {}) {
+        newProfile = {
+          ...newProfile,
+          coordinate: coordinate,
+        };
+      }
+      console.log("saving profile:", newProfile);
 
       updateUserProfile(profileId, newProfile);
     }
@@ -125,9 +156,7 @@ export default function ProfileScreen() {
     }
   };
 
-  if (!profile) {
-    return <Text>Loading...</Text>;
-  }
+  if (!profile) return <Text>Loading...</Text>;
 
   return (
     <View style={styles.profileContainer}>
@@ -162,14 +191,17 @@ export default function ProfileScreen() {
                   multiline={true}
                 />
               </View>
+              <LocateOptions
+                setCoordinate={setCoordinate}
+                profile={profile}
+                setLocation={setLocation}
+                location={location}
+              />
+              {coordinate && <StaticMap location={coordinate} />}
             </>
           ) : (
-            <>
-              <ProfileField label={"Username"} value={profile.username} />
-              <ProfileField label={"Bio"} value={profile.bio} />
-            </>
+            <StaticProfileField profile={profile} />
           )}
-          <ProfileField label={"Location"} value={"Earth"} />
         </View>
       </View>
       <View style={styles.footer}>
