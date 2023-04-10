@@ -22,3 +22,7 @@ export const getAddressFromCoords = async (coords) => {
     console.log("fetch address error: ", err);
   }
 };
+
+export const constants = {
+  location: "Earth",
+};
