@@ -16,7 +16,7 @@ export default function LoginScreen({ navigation }) {
     }
   };
   const signupHandler = () => {
-    navigation.replace("Signup");
+    navigation.navigate("Signup");
   };
   return (
     <View>

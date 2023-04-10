@@ -1,13 +1,21 @@
-import { View, Text, Image, Dimensions, ActivityIndicator, StyleSheet, Alert } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { getCryptoData, getCryptoHistoricalData } from '../api/request'
+import {
+  View,
+  Text,
+  Image,
+  Dimensions,
+  ActivityIndicator,
+  StyleSheet,
+  Alert,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { getCryptoData, getCryptoHistoricalData } from "../api/request";
 import { LineChart } from "react-native-wagmi-charts";
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome } from "@expo/vector-icons";
 import PressableButton from "../components/PressableButton";
 import { createActivity } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
 import { AntDesign } from "@expo/vector-icons";
-import {gestureHandlerRootHOC} from "react-native-gesture-handler";
+import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -21,15 +29,25 @@ export default function CoinDetailScreen({ route, navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image source={{ uri: coinData?.image?.small }} style={{ width: 30, height: 30, marginRight: 10 }} />
-          <Text>{coinData?.symbol.toUpperCase()}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Image
+            source={{ uri: coinData?.image?.small }}
+            style={{ width: 30, height: 30, marginRight: 10 }}
+          />
+          <Text style={{ color: "white" }}>
+            {coinData?.symbol.toUpperCase()}
+          </Text>
         </View>
       ),
       headerRight: () => (
-        <FontAwesome name="star-o" size={24} color="red" style={{ marginRight: 10 }} />
+        <FontAwesome
+          name="star-o"
+          size={24}
+          color="red"
+          style={{ marginRight: 10 }}
+        />
       ),
-      headerBackTitleVisible: false
+      headerBackTitleVisible: false,
     });
   }, [navigation, coinData]);
 
@@ -41,7 +59,7 @@ export default function CoinDetailScreen({ route, navigation }) {
   const getCoinData = async () => {
     const responseData = await getCryptoData(coinId);
     setCoinData(responseData);
-  }
+  };
 
   const getCoinHistoricalData = async (coinId, selectedRangeValue) => {
     const responseData = await getCryptoHistoricalData(
@@ -71,7 +89,8 @@ export default function CoinDetailScreen({ route, navigation }) {
 
   const { prices } = historicalData;
   const graphColor = current_price.usd > prices[0][1] ? "#16c784" : "#ea3943";
-  const trendColor = price_change_percentage_24h < 0 ? "#ea3943" : "#16c784" || "white";
+  const trendColor =
+    price_change_percentage_24h < 0 ? "#ea3943" : "#16c784" || "white";
 
   async function buyCrypto(coinId, amount) {
     const coinData = await getCryptoData(coinId);
@@ -104,12 +123,14 @@ export default function CoinDetailScreen({ route, navigation }) {
 
   const ChartView = gestureHandlerRootHOC(() => (
     <View>
-    <View style={styles.priceContainer}>
-      <View>
-        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{name}</Text>
-        <Text style={{ fontSize: 16, color: trendColor }}>{current_price.usd}</Text>
-      </View>
-      <View
+      <View style={styles.priceContainer}>
+        <View>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>{name}</Text>
+          <Text style={{ fontSize: 16, color: trendColor }}>
+            {current_price.usd}
+          </Text>
+        </View>
+        <View
           style={{
             backgroundColor: trendColor,
             paddingHorizontal: 3,
@@ -128,55 +149,50 @@ export default function CoinDetailScreen({ route, navigation }) {
             {price_change_percentage_24h?.toFixed(2)}%
           </Text>
         </View>
-    </View>
-    <LineChart.Provider
-      data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
-    >
-      <LineChart height={screenWidth / 2} width={screenWidth}>
-        <LineChart.Path color={graphColor}>
-          <LineChart.Gradient color={graphColor} />
-        </LineChart.Path>
-        <LineChart.CursorLine color={graphColor} />
-        <LineChart.CursorCrosshair>
-          <LineChart.Tooltip textStyle={styles.lineChart} />
-          <LineChart.Tooltip position="bottom" >
-            <LineChart.DatetimeText />
-          </LineChart.Tooltip>
-        </LineChart.CursorCrosshair>
-      </LineChart>
-
-    </LineChart.Provider>
-    <View style={styles.buttonContainer}>
-      <PressableButton
-        pressHandler={() => buyCrypto(coinId, 0.5)}
-        style={styles.buyButtonStyle}
+      </View>
+      <LineChart.Provider
+        data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
       >
-        <Text style={styles.buttonTextStyle}>Buy Coin</Text>
-      </PressableButton>
-      <PressableButton
-        pressHandler={() => console.log("Sell Finished")}
-        style={styles.sellButtonStyle}
-      >
-        <Text style={styles.buttonTextStyle}>Sell Coin</Text>
-      </PressableButton>
+        <LineChart height={screenWidth / 2} width={screenWidth}>
+          <LineChart.Path color={graphColor}>
+            <LineChart.Gradient color={graphColor} />
+          </LineChart.Path>
+          <LineChart.CursorLine color={graphColor} />
+          <LineChart.CursorCrosshair>
+            <LineChart.Tooltip textStyle={styles.lineChart} />
+            <LineChart.Tooltip position="bottom">
+              <LineChart.DatetimeText />
+            </LineChart.Tooltip>
+          </LineChart.CursorCrosshair>
+        </LineChart>
+      </LineChart.Provider>
+      <View style={styles.buttonContainer}>
+        <PressableButton
+          pressHandler={() => buyCrypto(coinId, 0.5)}
+          style={styles.buyButtonStyle}
+        >
+          <Text style={styles.buttonTextStyle}>Buy Coin</Text>
+        </PressableButton>
+        <PressableButton
+          pressHandler={() => console.log("Sell Finished")}
+          style={styles.sellButtonStyle}
+        >
+          <Text style={styles.buttonTextStyle}>Sell Coin</Text>
+        </PressableButton>
+      </View>
     </View>
-
-  </View>
   ));
 
-  return (
-    <ChartView />
-  )
+  return <ChartView />;
 }
-
 
 const styles = StyleSheet.create({
   lineChart: {
-    backgroundColor: 'black',
+    backgroundColor: "black",
     borderRadius: 4,
-    color: 'white',
+    color: "white",
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     padding: 4,
   },
   buyButtonStyle: {
@@ -187,8 +203,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 10,
     width: 150,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   sellButtonStyle: {
     marginTop: 10,
@@ -198,8 +214,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 10,
     width: 150,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonTextStyle: {
     color: "white",
