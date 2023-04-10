@@ -7,7 +7,7 @@ import { Colors } from "../styles/Color";
 import { MaterialIcons } from "@expo/vector-icons";
 import PressableButton from "./PressableButton";
 import styles from "../styles/profileStyles";
-import { constants } from "./helper/Constants";
+import { constants } from "./helper/constants";
 import { getAddressFromCoords } from "./helper/service";
 
 const LocateButton = ({ locateUserHandler, coordinate }) => {
