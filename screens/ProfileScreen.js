@@ -195,6 +195,7 @@ export default function ProfileScreen({ route }) {
                 setCoordinate={setCoordinate}
                 profile={profile}
                 setLocation={setLocation}
+                location={location}
               />
               {coordinate && <StaticMap location={coordinate} />}
             </>

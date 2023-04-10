@@ -60,11 +60,11 @@ const LocateButton = ({ locateUserHandler, coordinate }) => {
   );
 };
 
-const LocateOptions = ({ profile, setCoordinate, setLocation }) => {
-  const location = profile.location;
+const LocateOptions = ({ profile, setCoordinate, location, setLocation }) => {
+  const originalLocation = profile.location;
   const coordinate = profile.coordinate;
 
-  const [currentLocation, setCurrentLocation] = useState(location);
+  const [currentLocation, setCurrentLocation] = useState(originalLocation);
 
   const [permissionResponse, requestPermission] =
     Location.useForegroundPermissions();
@@ -91,23 +91,19 @@ const LocateOptions = ({ profile, setCoordinate, setLocation }) => {
       };
       setCoordinate(coord);
 
-      updateLocationByCoords(coord);
+      const address = await getAddressFromCoords(coord);
+      setLocation(address);
+      setCurrentLocation(address);
     } catch (err) {
       console.log("location handler ", err);
     }
   };
 
-  const updateLocationByCoords = async (coords) => {
-    const address = await getAddressFromCoords(coords);
-    setLocation(address);
-    setCurrentLocation(address);
-  };
-
-  // useEffect(() => {
-  //   if (coordinate) {
-  //     updateLocationByCoords(coordinate);
-  //   }
-  // }, [coordinate]);
+  useEffect(() => {
+    if (location) {
+      setCurrentLocation(location);
+    }
+  }, [location]);
 
   return (
     <View style={styles.row}>
