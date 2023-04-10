@@ -34,7 +34,7 @@ Members Contribution:
 #### Chen Qiu
 
      #Camera use#
-     ![image choose](./assets/image1.png)
+     ![image choose]https://github.com/Vincenqwu/GreenCrypto/blob/ReadmeIteration2/assets/Image1.png
      ![profile image changed](./assets/image2.png)
 
      #Location use#
