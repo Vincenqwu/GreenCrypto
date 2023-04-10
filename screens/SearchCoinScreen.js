@@ -39,7 +39,7 @@ export default function SearchCoinScreen({ navigation }) {
 
   const handlePress = (coin) => {
     console.log(coin);
-    navigation.navigate('Details', { id: coin.id, symbol: coin.symbol });
+    navigation.navigate('Details', { coinId: coin.id });
   }
 
   return (

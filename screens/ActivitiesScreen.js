@@ -1,6 +1,6 @@
-import { View, Text, Switch, StyleSheet } from "react-native";
-import React, { useState, useEffect } from "react";
-import { onSnapshot, collection, query, where } from "firebase/firestore";
+import { View, Text, Switch, StyleSheet, ActivityIndicator } from "react-native"
+import React, { useState, useEffect } from "react"
+import { onSnapshot, collection, query, where, orderBy } from "firebase/firestore";
 import { auth, firestore } from "../Firebase/firebase-setup";
 import PublicPosts from "../components/PublicPosts";
 import MyActivities from "../components/MyActivities";
@@ -8,10 +8,15 @@ import MyActivities from "../components/MyActivities";
 export default function ActivitiesScreen() {
   const [currentPage, setCurrentPage] = useState("myActivities");
   const [posts, setPosts] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(collection(firestore, "posts")),
+    const unsubscribePosts = onSnapshot(
+      query(
+        collection(firestore, "posts"),
+        orderBy("timestamp", "desc"),
+      ),
       (querySnapshot) => {
         if (querySnapshot.empty) {
           // no data
@@ -31,8 +36,34 @@ export default function ActivitiesScreen() {
         console.log("onsnapshot error: ", error);
       }
     );
+    const unsubscribeActivities = onSnapshot(
+      query(
+        collection(firestore, "activities"),
+        where("userId", "==", auth.currentUser.uid),
+        orderBy("timestamp", "desc"),
+      ),
+      (querySnapshot) => {
+        if (querySnapshot.empty) {
+          // no data
+          setActivities([]);
+        } else {
+          let docs = [];
+          // update activities array
+          querySnapshot.docs.forEach((snap) => {
+            // console.log(snap.id);
+            docs.push({ ...snap.data(), id: snap.id });
+          });
+          setActivities(docs);
+        }
+        setLoading(false);
+      },
+      (error) => {
+        console.log("onsnapshot error: ", error);
+      }
+    );
     return () => {
-      unsubscribe();
+      unsubscribePosts();
+      unsubscribeActivities();
     };
   }, []);
 
@@ -43,19 +74,13 @@ export default function ActivitiesScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.switchContainer}>
-        <Text style={styles.switchTitles}>
-          {currentPage === "myActivities" ? "My Activities" : "Public Posts"}
-        </Text>
-        <Switch
-          value={currentPage === "PublicPosts"}
-          onValueChange={handlePageChange}
-        />
+        <Text style={styles.switchTitles}>{currentPage === "myActivities" ? "My Activities" : "Public Posts"}</Text>
+        <Switch value={currentPage === "PublicPosts"} onValueChange={handlePageChange} />
       </View>
-      {currentPage === "myActivities" ? (
-        <MyActivities posts={posts} />
-      ) : (
-        <PublicPosts posts={posts} />
-      )}
+      {loading ? <ActivityIndicator size="large" color="#0000ff" />
+        :
+        (currentPage === "myActivities" ? <MyActivities activities={activities} posts={posts} /> : <PublicPosts posts={posts} />)
+      }
     </View>
   );
 }

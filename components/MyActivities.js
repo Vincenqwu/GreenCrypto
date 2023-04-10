@@ -6,47 +6,14 @@ import {
   Pressable,
   Alert,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import { onSnapshot, collection, query, where } from "firebase/firestore";
-import { auth, firestore } from "../Firebase/firebase-setup";
+import React from "react";
 import {
   createPost,
   editActivity,
   deletePost,
 } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
-export default function MyActivities({ posts }) {
-  const [activities, setActivities] = useState([]);
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(firestore, "activities"),
-        where("userId", "==", auth.currentUser.uid)
-      ),
-      (querySnapshot) => {
-        if (querySnapshot.empty) {
-          // no data
-          setActivities([]);
-        } else {
-          let docs = [];
-          // update activities array
-          querySnapshot.docs.forEach((snap) => {
-            console.log(snap.id);
-            docs.push({ ...snap.data(), id: snap.id });
-          });
-          console.log(docs);
-          setActivities(docs);
-        }
-      },
-      (error) => {
-        console.log("onsnapshot error: ", error);
-      }
-    );
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+export default function MyActivities({ activities, posts }) {
 
   function addToPost(activityItem) {
     Alert.alert(
@@ -130,6 +97,7 @@ export default function MyActivities({ posts }) {
                 <Text style={styles.createPostButtonText}>Create Post</Text>
               </Pressable>
             )}
+
           </View>
         );
       }}
