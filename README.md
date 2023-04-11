@@ -1,61 +1,72 @@
 # GreenCrypto
 
-## Team member: Chen Qiu, Maokun Sun, Qiuan Wu
+## Team members: Chen Qiu, Maokun Sun, Qiuan Wu
 
 ### Iteration 1
 
-Finish 2 navigators and basis of CRUD operations to Firestore
+Finished 2 navigators and basis of CRUD operations to Firestore.
 
-Members Contribution:
+Members' Contributions:
 
-#### Chen Qiu
+### Chen Qiu
 
-Draft Profile Page, connection to Firestore and fullfill create and update profile;
+Drafted the Profile Page, connected it to Firestore, and fulfilled create and update profile functions.
 
-#### Maokun Sun
+### Maokun Sun
 
-Homepage BTC coin shown and app style/Icon set-up;
+Homepage BTC coin shown and app style/icon set-up.
 
-#### Qiuan Wu
+### Qiuan Wu
 
-Create activity list and fullfill add/remove activity function
+Created activity list and fulfilled add/remove activity functions.
 
 ### Iteration 2
 
-Finish Functions:
+Finished Functions:
 
 1. External API use
 2. Authentication
 3. Camera use
 4. Location use
 
-Members Contribution:
+Members' Contributions:
+<br>
 
-#### Chen Qiu
+### Chen Qiu
 
-     #Camera use#
-     ![image choose]https://github.com/Vincenqwu/GreenCrypto/blob/ReadmeIteration2/assets/Image1.png
-     ![profile image changed](./assets/image2.png)
+#### Camera use
 
-     #Location use#
-     ![Locate Me](./assets/location1.png)
-     ![Choose a location](./assets/location2.png)
+<img src="./assets/Image1.png" alt="image choose" width="400"/>
+<img src="./assets/Image2.png" alt="profile image changed" width="400"/>
 
-#### Maokun Sun
+#### Location use
 
-      #Authentication#
-      ![Log-in authentication](./assets/authentication.png)
-      #HomeCryptoMarket#
-      ![Home Page](./assets/CryptoHomePage.png)
-      #ReadMe Update#
-      #FrontEnd Style Adjustment#
+<img src="./assets/Location1.png" alt="Locate Me" width="400"/>
+<img src="./assets/location2.png" alt="Choose a location" width="400"/>
 
-#### Qiuan Wu
+<br>
 
-      #External API use#
-       https://api.coingecko.com/api/
-      #Coin Action#
-      ![Coin Detail](./assets/CoinDetail.png)
-      ![Search Coin](./assets/SearchCoin.png)
-      ![Buy Coin](./assets/BuyCoin.png)
-      ![My Activity List](./assets/MyactivityList.png)
+### Maokun Sun
+
+#### Authentication
+
+<img src="./assets/authentication.png" alt="Log-in authentication" width="400"/>
+
+#### HomeCryptoMarket
+
+<img src="./assets/CryptoHomePage.png" alt="Home Page" width="400"/>
+
+<br>
+
+### Qiuan Wu
+
+#### External API use
+
+https://api.coingecko.com/api/
+
+#### Coin Action
+
+<img src="./assets/CoinDetail.png" alt="Coin Detail" width="400"/>
+<img src="./assets/SearchCoin.png" alt="Search Coin" width="400"/>
+<img src="./assets/BuyCoin.png" alt="Buy Coin" width="400"/>
+<img src="./assets/MyactivityList.png" alt="My Activity List" width="400"/>
