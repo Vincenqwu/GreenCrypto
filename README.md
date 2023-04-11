@@ -42,7 +42,7 @@ Members' Contributions:
 #### Location use
 
 <img src="./assets/Location1.png" alt="Locate Me" width="400"/>
-<img src="./assets/Location2.png" alt="Choose a location" width="400"/>
+<img src="./assets/location2.png" alt="Choose a location" width="400"/>
 
 <br>
 
