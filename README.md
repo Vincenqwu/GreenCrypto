@@ -66,7 +66,7 @@ https://api.coingecko.com/api/
 
 #### Coin Action
 
-<img src="./assets/CoinDetail.png" alt="Coin Detail" width="00"/>
+<img src="./assets/CoinDetail.png" alt="Coin Detail" width="400"/>
 <img src="./assets/SearchCoin.png" alt="Search Coin" width="400"/>
 <img src="./assets/BuyCoin.png" alt="Buy Coin" width="400"/>
 <img src="./assets/MyactivityList.png" alt="My Activity List" width="400"/>
