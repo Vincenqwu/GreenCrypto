@@ -37,12 +37,12 @@ Members' Contributions:
 #### Camera use
 
 <img src="./assets/Image1.png" alt="image choose" width="400"/>
-<img src="./assets/image2.png" alt="profile image changed" width="400"/>
+<img src="./assets/Image2.png" alt="profile image changed" width="400"/>
 
 #### Location use
 
-<img src="./assets/location1.png" alt="Locate Me" width="400"/>
-<img src="./assets/location2.png" alt="Choose a location" width="400"/>
+<img src="./assets/Location1.png" alt="Locate Me" width="400"/>
+<img src="./assets/Location2.png" alt="Choose a location" width="400"/>
 
 <br>
 
