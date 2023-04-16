@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Alert,
+  Button,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { getCryptoData, getCryptoHistoricalData } from "../api/request";
@@ -16,6 +17,8 @@ import { createActivity } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
 import { AntDesign } from "@expo/vector-icons";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
+import BuyPopup from "../components/BuyPopup";
+import SellPopup from "../components/SellPopup";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -23,6 +26,8 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [coinData, setCoinData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
   const [selectedRangeValue, setSelectedRangeValue] = useState(1);
+  const [isBuyPopupVisible, setIsBuyPopupVisible] = useState(false);
+  const [isSellPopupVisible, setIsSellPopupVisible] = useState(false);
 
   const screenWidth = Dimensions.get("window").width;
 
@@ -99,33 +104,30 @@ export default function CoinDetailScreen({ route, navigation }) {
   const trendColor =
     price_change_percentage_24h < 0 ? "#ea3943" : "#16c784" || "white";
 
-  async function buyCrypto(coinId, amount) {
+  async function handleBuy(amount) {
     const coinData = await getCryptoData(coinId);
+    const newActivity = {
+      action: "buy",
+      coinId: coinId,
+      amount: amount,
+      price: coinData.market_data.current_price.usd,
+      timestamp: coinData.last_updated,
+    };
+    console.log(newActivity);
+    createActivity(newActivity);
+  }
 
-    Alert.alert(
-      "Buy Bitcoin?",
-      `Are you sure you want to buy 0.5 ${name} at $${coinData.market_data.current_price.usd}?`,
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            const newActivity = {
-              action: "buy",
-              coinId: coinId,
-              amount: amount,
-              price: coinData.market_data.current_price.usd,
-              timestamp: coinData.last_updated,
-            };
-            console.log(newActivity);
-            createActivity(newActivity);
-          },
-        },
-      ]
-    );
+  async function handleSell(amount) {
+    const coinData = await getCryptoData(coinId);
+    const newActivity = {
+      action: "sell",
+      coinId: coinId,
+      amount: amount,
+      price: coinData.market_data.current_price.usd,
+      timestamp: coinData.last_updated,
+    };
+    console.log(newActivity);
+    createActivity(newActivity);
   }
 
   const ChartView = gestureHandlerRootHOC(() => (
@@ -201,17 +203,22 @@ export default function CoinDetailScreen({ route, navigation }) {
         </View>
       <View style={styles.buttonContainer}>
         <PressableButton
-          pressHandler={() => buyCrypto(coinId, 0.5)}
+          pressHandler={() => {setIsBuyPopupVisible(true)
+          console.log("Buy Pressed")}}
           style={styles.buyButtonStyle}
         >
           <Text style={styles.buttonTextStyle}>Buy Coin</Text>
         </PressableButton>
         <PressableButton
-          pressHandler={() => console.log("Sell Finished")}
+          pressHandler={() =>{
+          setIsSellPopupVisible(true)
+          console.log("Sell Pressed")}}
           style={styles.sellButtonStyle}
         >
           <Text style={styles.buttonTextStyle}>Sell Coin</Text>
         </PressableButton>
+        <BuyPopup visible={isBuyPopupVisible} onClose={() => setIsBuyPopupVisible(false)} onSubmit={handleBuy} />
+        <SellPopup visible={isSellPopupVisible} onClose={() => setIsSellPopupVisible(false)} onSubmit={handleSell} />
       </View>
     </View>
   ));
