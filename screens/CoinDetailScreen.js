@@ -87,6 +87,13 @@ export default function CoinDetailScreen({ route, navigation }) {
     },
   } = coinData;
 
+  const market_cap = coinData.market_data.market_cap.usd;
+  const vol_24h = coinData.market_data.total_volume.usd;
+  const circulating_supply = coinData.market_data.circulating_supply;
+  const total_supply = coinData.market_data.total_supply;
+  const max_supply = coinData.market_data.max_supply;
+  const fully_diluted_valuation = coinData.market_data.fully_diluted_valuation.usd;
+
   const { prices } = historicalData;
   const graphColor = current_price.usd > prices[0][1] ? "#16c784" : "#ea3943";
   const trendColor =
@@ -125,7 +132,7 @@ export default function CoinDetailScreen({ route, navigation }) {
     <View>
       <View style={styles.priceContainer}>
         <View>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>{name}</Text>
+          <Text style={styles.nameStyle}>{name}</Text>
           <Text style={{ fontSize: 16, color: trendColor }}>
             {current_price.usd}
           </Text>
@@ -166,6 +173,32 @@ export default function CoinDetailScreen({ route, navigation }) {
           </LineChart.CursorCrosshair>
         </LineChart>
       </LineChart.Provider>
+      <View style={styles.infoContainer}>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Market Cap</Text>
+            <Text style={styles.infoItemValue}>${market_cap? market_cap : "N/A"} </Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Volume 24h</Text>
+            <Text style={styles.infoItemValue}>${vol_24h? vol_24h : "N/A"} </Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
+            <Text style={styles.infoItemValue}>${fully_diluted_valuation? fully_diluted_valuation : "N/A"} </Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Circulating Supply</Text>
+            <Text style={styles.infoItemValue}>{circulating_supply? circulating_supply : "N/A"}</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Total Supply</Text>
+            <Text style={styles.infoItemValue}>{total_supply? total_supply : "N/A"}</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Max Supply</Text>
+            <Text style={styles.infoItemValue}>{max_supply? max_supply: "N/A"}</Text>
+          </View>
+        </View>
       <View style={styles.buttonContainer}>
         <PressableButton
           pressHandler={() => buyCrypto(coinId, 0.5)}
@@ -187,6 +220,10 @@ export default function CoinDetailScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  nameStyle: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
   lineChart: {
     backgroundColor: "black",
     borderRadius: 4,
@@ -238,5 +275,24 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 17,
     fontWeight: "500",
+  },
+  infoContainer: {
+    borderRadius: 10,
+    marginTop: 20,
+    marginHorizontal: 20,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  infoItemTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  infoItemValue: {
+    fontSize: 16,
+    color: '#555',
   },
 });
