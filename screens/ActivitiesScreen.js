@@ -1,15 +1,22 @@
-import { View, Text, Switch, StyleSheet, ActivityIndicator } from "react-native"
+import { View, Text, Switch, StyleSheet, ActivityIndicator, Dimensions } from "react-native"
 import React, { useState, useEffect } from "react"
 import { onSnapshot, collection, query, where, orderBy } from "firebase/firestore";
 import { auth, firestore } from "../Firebase/firebase-setup";
 import PublicPosts from "../components/PublicPosts";
 import MyActivities from "../components/MyActivities";
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { Colors } from "../styles/Color";
 
 export default function ActivitiesScreen() {
-  const [currentPage, setCurrentPage] = useState("myActivities");
   const [posts, setPosts] = useState([]);
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'myActivities', title: 'My Activities' },
+    { key: 'publicPosts', title: 'Public Activities' },
+  ]);
+
 
   useEffect(() => {
     const unsubscribePosts = onSnapshot(
@@ -67,19 +74,28 @@ export default function ActivitiesScreen() {
     };
   }, []);
 
-  const handlePageChange = (value) => {
-    setCurrentPage(value ? "PublicPosts" : "myActivities");
-  };
+  const renderScene = SceneMap({
+    myActivities: () => <MyActivities activities={activities} posts={posts} />,
+    publicPosts: () => <PublicPosts posts={posts} />,
+  });
 
   return (
     <View style={styles.container}>
-      <View style={styles.switchContainer}>
-        <Text style={styles.switchTitles}>{currentPage === "myActivities" ? "My Activities" : "Public Posts"}</Text>
-        <Switch value={currentPage === "PublicPosts"} onValueChange={handlePageChange} />
-      </View>
       {loading ? <ActivityIndicator size="large" color="#0000ff" />
         :
-        (currentPage === "myActivities" ? <MyActivities activities={activities} posts={posts} /> : <PublicPosts posts={posts} />)
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{ width: Dimensions.get('window').width }}
+          renderTabBar={props => (
+            <TabBar
+              {...props}
+              style={styles.tabStyle}
+            />
+          )}
+          
+        />
       }
     </View>
   );
@@ -91,14 +107,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f7f7f7",
     paddingBottom: 100,
   },
-  switchContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    margin: 10,
-  },
-  switchTitles: {
-    fontSize: 20,
-    fontWeight: "bold",
+  tabStyle: {
+    backgroundColor: Colors.barColor,
   },
 });
