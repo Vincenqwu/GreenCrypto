@@ -5,7 +5,7 @@ import {
   Dimensions,
   ActivityIndicator,
   StyleSheet,
-  Alert,
+  SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { getCryptoData, getCryptoHistoricalData } from "../api/request";
@@ -15,14 +15,18 @@ import PressableButton from "../components/PressableButton";
 import { createActivity } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
 import { AntDesign } from "@expo/vector-icons";
-import { gestureHandlerRootHOC } from "react-native-gesture-handler";
+import BuyPopup from "../components/BuyPopup";
+import SellPopup from "../components/SellPopup";
+import { MemorizedFilter } from "../components/FilterOptions";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
   const [loading, setLoading] = useState(false);
   const [coinData, setCoinData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
-  const [selectedRangeValue, setSelectedRangeValue] = useState(1);
+  const [selectedRangeValue, setSelectedRangeValue] = useState("1");
+  const [isBuyPopupVisible, setIsBuyPopupVisible] = useState(false);
+  const [isSellPopupVisible, setIsSellPopupVisible] = useState(false);
 
   const screenWidth = Dimensions.get("window").width;
 
@@ -53,25 +57,52 @@ export default function CoinDetailScreen({ route, navigation }) {
 
   useEffect(() => {
     getCoinData();
-    getCoinHistoricalData(coinId, 1);
+    getCoinHistoricalData(coinId, 1, "hourly");
   }, []);
 
-  const getCoinData = async () => {
-    const responseData = await getCryptoData(coinId);
-    setCoinData(responseData);
+  const onFilterOptionChange = (range) => {
+    setSelectedRangeValue(range);
+    if (range > 30) {
+      getCoinHistoricalData(coinId, range, "daily");
+      return;
+    }
+
+    getCoinHistoricalData(coinId, range, "hourly");
   };
 
-  const getCoinHistoricalData = async (coinId, selectedRangeValue) => {
+  const handleFilterOption = React.useCallback(
+    (range) => onFilterOptionChange(range),
+    []
+  );
+
+  const filterArray = [
+    { days: "1", label: "1d" },
+    { days: "7", label: "7d" },
+    { days: "30", label: "30d" },
+    { days: "365", label: "1y" },
+    { days: "max", label: "All" },
+  ];
+
+  const getCoinData = async () => {
+    setLoading(true);
+    const responseData = await getCryptoData(coinId);
+    setCoinData(responseData);
+    setLoading(false);
+  };
+
+  const getCoinHistoricalData = async (coinId, selectedRangeValue, interval) => {
     const responseData = await getCryptoHistoricalData(
       coinId,
-      selectedRangeValue
+      selectedRangeValue,
+      interval
     );
     setHistoricalData(responseData);
   };
 
-  if (!historicalData || !coinData) {
+  if (loading || !historicalData || !coinData) {
     return <ActivityIndicator size="large" />;
   }
+
 
   const {
     name,
@@ -80,52 +111,53 @@ export default function CoinDetailScreen({ route, navigation }) {
     market_data: {
       current_price,
       price_change_percentage_24h,
-      price_change_percentage_7d,
-      price_change_percentage_14d,
-      price_change_percentage_30d,
-      price_change_percentage_1y,
     },
   } = coinData;
+
+  const market_cap = coinData.market_data.market_cap.usd;
+  const vol_24h = coinData.market_data.total_volume.usd;
+  const circulating_supply = coinData.market_data.circulating_supply;
+  const total_supply = coinData.market_data.total_supply;
+  const max_supply = coinData.market_data.max_supply;
+  const fully_diluted_valuation = coinData.market_data.fully_diluted_valuation.usd;
 
   const { prices } = historicalData;
   const graphColor = current_price.usd > prices[0][1] ? "#16c784" : "#ea3943";
   const trendColor =
     price_change_percentage_24h < 0 ? "#ea3943" : "#16c784" || "white";
 
-  async function buyCrypto(coinId, amount) {
+  async function handleBuy(amount) {
     const coinData = await getCryptoData(coinId);
-
-    Alert.alert(
-      "Buy Bitcoin?",
-      `Are you sure you want to buy 0.5 ${name} at $${coinData.market_data.current_price.usd}?`,
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            const newActivity = {
-              action: "buy",
-              coinId: coinId,
-              amount: amount,
-              price: coinData.market_data.current_price.usd,
-              timestamp: coinData.last_updated,
-            };
-            console.log(newActivity);
-            createActivity(newActivity);
-          },
-        },
-      ]
-    );
+    const newActivity = {
+      action: "buy",
+      coinId: coinId,
+      amount: amount,
+      price: coinData.market_data.current_price.usd,
+      timestamp: coinData.last_updated,
+    };
+    console.log(newActivity);
+    createActivity(newActivity);
   }
 
-  const ChartView = gestureHandlerRootHOC(() => (
-    <View>
+  async function handleSell(amount) {
+    const coinData = await getCryptoData(coinId);
+    const newActivity = {
+      action: "sell",
+      coinId: coinId,
+      amount: amount,
+      price: coinData.market_data.current_price.usd,
+      timestamp: coinData.last_updated,
+    };
+    console.log(newActivity);
+    createActivity(newActivity);
+  }
+
+  return (
+    // <ChartView />
+    <SafeAreaView style={styles.container}>
       <View style={styles.priceContainer}>
         <View>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>{name}</Text>
+          <Text style={styles.nameStyle}>{name}</Text>
           <Text style={{ fontSize: 16, color: trendColor }}>
             {current_price.usd}
           </Text>
@@ -150,6 +182,18 @@ export default function CoinDetailScreen({ route, navigation }) {
           </Text>
         </View>
       </View>
+      <View style={styles.filterContainer}>
+        {filterArray.map((item) => (
+          <MemorizedFilter
+            days={item.days}
+            label={item.label}
+            selectedRange={selectedRangeValue}
+            setSelectedRange={handleFilterOption}
+            key={item.label}
+          />
+        ))}
+      </View>
+
       <LineChart.Provider
         data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
       >
@@ -166,27 +210,66 @@ export default function CoinDetailScreen({ route, navigation }) {
           </LineChart.CursorCrosshair>
         </LineChart>
       </LineChart.Provider>
+      <View style={styles.infoContainer}>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Market Cap</Text>
+          <Text style={styles.infoItemValue}>{market_cap ? "$" + market_cap : "N/A"} </Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Volume 24h</Text>
+          <Text style={styles.infoItemValue}>{vol_24h ? "$" + vol_24h : "N/A"} </Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
+          <Text style={styles.infoItemValue}>{fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"} </Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Circulating Supply</Text>
+          <Text style={styles.infoItemValue}>{circulating_supply ? circulating_supply : "N/A"}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Total Supply</Text>
+          <Text style={styles.infoItemValue}>{total_supply ? total_supply : "N/A"}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Max Supply</Text>
+          <Text style={styles.infoItemValue}>{max_supply ? max_supply : "N/A"}</Text>
+        </View>
+      </View>
       <View style={styles.buttonContainer}>
         <PressableButton
-          pressHandler={() => buyCrypto(coinId, 0.5)}
+          pressHandler={() => {
+            setIsBuyPopupVisible(true)
+            console.log("Buy Pressed")
+          }}
           style={styles.buyButtonStyle}
         >
           <Text style={styles.buttonTextStyle}>Buy Coin</Text>
         </PressableButton>
         <PressableButton
-          pressHandler={() => console.log("Sell Finished")}
+          pressHandler={() => {
+            setIsSellPopupVisible(true)
+            console.log("Sell Pressed")
+          }}
           style={styles.sellButtonStyle}
         >
           <Text style={styles.buttonTextStyle}>Sell Coin</Text>
         </PressableButton>
+        <BuyPopup visible={isBuyPopupVisible} onClose={() => setIsBuyPopupVisible(false)} onSubmit={handleBuy} />
+        <SellPopup visible={isSellPopupVisible} onClose={() => setIsSellPopupVisible(false)} onSubmit={handleSell} />
       </View>
-    </View>
-  ));
-
-  return <ChartView />;
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  nameStyle: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
   lineChart: {
     backgroundColor: "black",
     borderRadius: 4,
@@ -224,7 +307,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 10,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignItems: "center",
   },
   priceContainer: {
@@ -238,5 +321,32 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 17,
     fontWeight: "500",
+  },
+  infoContainer: {
+    borderRadius: 10,
+    marginTop: 20,
+    marginHorizontal: 20,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  infoItemTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  infoItemValue: {
+    fontSize: 16,
+    color: '#555',
+  },
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginHorizontal: 10,
+    marginVertical: 10,
+    borderRadius: 5,
   },
 });

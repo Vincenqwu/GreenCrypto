@@ -16,7 +16,7 @@ const CoinItem = ({ marketCoin }) => {
     image,
   } = marketCoin;
 
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
 
   const percentageColor =
     price_change_percentage_24h < 0 ? "#ea3943" : "#16c784" || "white";
@@ -37,8 +37,14 @@ const CoinItem = ({ marketCoin }) => {
     return marketCap;
   };
 
+  const handlePress = () => {
+    navigation.navigate('Details', { coinId: id });
+  }
+
   return (
-    <Pressable style={styles.coinContainer}>
+    <Pressable 
+      style={styles.coinContainer}
+      onPress={handlePress}>
       <Image
         source={{ uri: image }}
         style={{

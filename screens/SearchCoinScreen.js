@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, Pressable } from 'react-native';
 import { getAllCryptosData, getMarketData } from '../api/request';
+import { Ionicons } from "@expo/vector-icons";
 
 export default function SearchCoinScreen({ navigation }) {
   const [allCoins, setAllCoins] = useState([]);
@@ -11,7 +12,7 @@ export default function SearchCoinScreen({ navigation }) {
     if (input.length > 0) {
       const lowerInput = input.toLowerCase();
       const results = [];
-  
+
       for (let i = 0; i < allCoins.length; i++) {
         const coinId = allCoins[i].id.toLowerCase();
         const coinName = allCoins[i].name.toLowerCase();
@@ -45,6 +46,9 @@ export default function SearchCoinScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
+        <View style={styles.searchIcon}>
+          <Ionicons name="search-sharp" size={20} color="black" />
+        </View>
         <TextInput
           style={styles.searchInput}
           value={searchInput}
@@ -79,11 +83,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginBottom: 16,
+  },
+  searchIcon: {
+    marginRight: 10,
   },
   searchInput: {
     height: 40,
