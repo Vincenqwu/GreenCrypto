@@ -24,7 +24,7 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [loading, setLoading] = useState(false);
   const [coinData, setCoinData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
-  const [selectedRangeValue, setSelectedRangeValue] = useState(1);
+  const [selectedRangeValue, setSelectedRangeValue] = useState("1");
   const [isBuyPopupVisible, setIsBuyPopupVisible] = useState(false);
   const [isSellPopupVisible, setIsSellPopupVisible] = useState(false);
 
@@ -69,13 +69,14 @@ export default function CoinDetailScreen({ route, navigation }) {
 
     getCoinHistoricalData(coinId, range, "hourly");
   };
+
   const handleFilterOption = React.useCallback(
     (range) => onFilterOptionChange(range),
     []
   );
 
   const filterArray = [
-    { days: "1", label: "24h" },
+    { days: "1", label: "1d" },
     { days: "7", label: "7d" },
     { days: "30", label: "30d" },
     { days: "365", label: "1y" },
@@ -212,15 +213,15 @@ export default function CoinDetailScreen({ route, navigation }) {
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Market Cap</Text>
-          <Text style={styles.infoItemValue}>${market_cap ? market_cap : "N/A"} </Text>
+          <Text style={styles.infoItemValue}>{market_cap ? "$" + market_cap : "N/A"} </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Volume 24h</Text>
-          <Text style={styles.infoItemValue}>${vol_24h ? vol_24h : "N/A"} </Text>
+          <Text style={styles.infoItemValue}>{vol_24h ? "$" + vol_24h : "N/A"} </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
-          <Text style={styles.infoItemValue}>${fully_diluted_valuation ? fully_diluted_valuation : "N/A"} </Text>
+          <Text style={styles.infoItemValue}>{fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"} </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Circulating Supply</Text>
@@ -306,7 +307,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 10,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignItems: "center",
   },
   priceContainer: {
