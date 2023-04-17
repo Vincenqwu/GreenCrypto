@@ -5,8 +5,7 @@ import {
   Dimensions,
   ActivityIndicator,
   StyleSheet,
-  Alert,
-  Button,
+  SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { getCryptoData, getCryptoHistoricalData } from "../api/request";
@@ -16,9 +15,9 @@ import PressableButton from "../components/PressableButton";
 import { createActivity } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
 import { AntDesign } from "@expo/vector-icons";
-import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import BuyPopup from "../components/BuyPopup";
 import SellPopup from "../components/SellPopup";
+import { MemorizedFilter } from "../components/FilterOptions";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -58,25 +57,51 @@ export default function CoinDetailScreen({ route, navigation }) {
 
   useEffect(() => {
     getCoinData();
-    getCoinHistoricalData(coinId, 1);
+    getCoinHistoricalData(coinId, 1, "hourly");
   }, []);
 
+  const onFilterOptionChange = (range) => {
+    setSelectedRangeValue(range);
+    if (range > 30) {
+      getCoinHistoricalData(coinId, range, "daily");
+      return;
+    }
+
+    getCoinHistoricalData(coinId, range, "hourly");
+  };
+  const handleFilterOption = React.useCallback(
+    (range) => onFilterOptionChange(range),
+    []
+  );
+
+  const filterArray = [
+    { days: "1", label: "24h" },
+    { days: "7", label: "7d" },
+    { days: "30", label: "30d" },
+    { days: "365", label: "1y" },
+    { days: "max", label: "All" },
+  ];
+
   const getCoinData = async () => {
+    setLoading(true);
     const responseData = await getCryptoData(coinId);
     setCoinData(responseData);
+    setLoading(false);
   };
 
-  const getCoinHistoricalData = async (coinId, selectedRangeValue) => {
+  const getCoinHistoricalData = async (coinId, selectedRangeValue, interval) => {
     const responseData = await getCryptoHistoricalData(
       coinId,
-      selectedRangeValue
+      selectedRangeValue,
+      interval
     );
     setHistoricalData(responseData);
   };
 
-  if (!historicalData || !coinData) {
+  if (loading || !historicalData || !coinData) {
     return <ActivityIndicator size="large" />;
   }
+
 
   const {
     name,
@@ -85,10 +110,6 @@ export default function CoinDetailScreen({ route, navigation }) {
     market_data: {
       current_price,
       price_change_percentage_24h,
-      price_change_percentage_7d,
-      price_change_percentage_14d,
-      price_change_percentage_30d,
-      price_change_percentage_1y,
     },
   } = coinData;
 
@@ -130,8 +151,9 @@ export default function CoinDetailScreen({ route, navigation }) {
     createActivity(newActivity);
   }
 
-  const ChartView = gestureHandlerRootHOC(() => (
-    <View>
+  return (
+    // <ChartView />
+    <SafeAreaView style={styles.container}>
       <View style={styles.priceContainer}>
         <View>
           <Text style={styles.nameStyle}>{name}</Text>
@@ -159,6 +181,18 @@ export default function CoinDetailScreen({ route, navigation }) {
           </Text>
         </View>
       </View>
+      <View style={styles.filterContainer}>
+        {filterArray.map((item) => (
+          <MemorizedFilter
+            days={item.days}
+            label={item.label}
+            selectedRange={selectedRangeValue}
+            setSelectedRange={handleFilterOption}
+            key={item.label}
+          />
+        ))}
+      </View>
+
       <LineChart.Provider
         data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
       >
@@ -176,43 +210,46 @@ export default function CoinDetailScreen({ route, navigation }) {
         </LineChart>
       </LineChart.Provider>
       <View style={styles.infoContainer}>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoItemTitle}>Market Cap</Text>
-            <Text style={styles.infoItemValue}>${market_cap? market_cap : "N/A"} </Text>
-          </View>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoItemTitle}>Volume 24h</Text>
-            <Text style={styles.infoItemValue}>${vol_24h? vol_24h : "N/A"} </Text>
-          </View>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
-            <Text style={styles.infoItemValue}>${fully_diluted_valuation? fully_diluted_valuation : "N/A"} </Text>
-          </View>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoItemTitle}>Circulating Supply</Text>
-            <Text style={styles.infoItemValue}>{circulating_supply? circulating_supply : "N/A"}</Text>
-          </View>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoItemTitle}>Total Supply</Text>
-            <Text style={styles.infoItemValue}>{total_supply? total_supply : "N/A"}</Text>
-          </View>
-          <View style={styles.infoItem}>
-            <Text style={styles.infoItemTitle}>Max Supply</Text>
-            <Text style={styles.infoItemValue}>{max_supply? max_supply: "N/A"}</Text>
-          </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Market Cap</Text>
+          <Text style={styles.infoItemValue}>${market_cap ? market_cap : "N/A"} </Text>
         </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Volume 24h</Text>
+          <Text style={styles.infoItemValue}>${vol_24h ? vol_24h : "N/A"} </Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
+          <Text style={styles.infoItemValue}>${fully_diluted_valuation ? fully_diluted_valuation : "N/A"} </Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Circulating Supply</Text>
+          <Text style={styles.infoItemValue}>{circulating_supply ? circulating_supply : "N/A"}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Total Supply</Text>
+          <Text style={styles.infoItemValue}>{total_supply ? total_supply : "N/A"}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Text style={styles.infoItemTitle}>Max Supply</Text>
+          <Text style={styles.infoItemValue}>{max_supply ? max_supply : "N/A"}</Text>
+        </View>
+      </View>
       <View style={styles.buttonContainer}>
         <PressableButton
-          pressHandler={() => {setIsBuyPopupVisible(true)
-          console.log("Buy Pressed")}}
+          pressHandler={() => {
+            setIsBuyPopupVisible(true)
+            console.log("Buy Pressed")
+          }}
           style={styles.buyButtonStyle}
         >
           <Text style={styles.buttonTextStyle}>Buy Coin</Text>
         </PressableButton>
         <PressableButton
-          pressHandler={() =>{
-          setIsSellPopupVisible(true)
-          console.log("Sell Pressed")}}
+          pressHandler={() => {
+            setIsSellPopupVisible(true)
+            console.log("Sell Pressed")
+          }}
           style={styles.sellButtonStyle}
         >
           <Text style={styles.buttonTextStyle}>Sell Coin</Text>
@@ -220,13 +257,14 @@ export default function CoinDetailScreen({ route, navigation }) {
         <BuyPopup visible={isBuyPopupVisible} onClose={() => setIsBuyPopupVisible(false)} onSubmit={handleBuy} />
         <SellPopup visible={isSellPopupVisible} onClose={() => setIsSellPopupVisible(false)} onSubmit={handleSell} />
       </View>
-    </View>
-  ));
-
-  return <ChartView />;
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   nameStyle: {
     fontSize: 20,
     fontWeight: "bold",
@@ -301,5 +339,13 @@ const styles = StyleSheet.create({
   infoItemValue: {
     fontSize: 16,
     color: '#555',
+  },
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginHorizontal: 10,
+    marginVertical: 10,
+    borderRadius: 5,
   },
 });

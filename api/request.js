@@ -33,10 +33,10 @@ export const getMarketData = async (pageNumber = 1) => {
   }
 };
 
-export const getCryptoHistoricalData = async (coinId, dateRange) => {
+export const getCryptoHistoricalData = async (coinId, dateRange, interval) => {
   try {
     const response = await axios.get(
-      `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${dateRange}&interval=hourly`
+      `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${dateRange}&interval=${interval}`
     );
     return response.data;
   } catch (e) {
