@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: "90%",
     alignItems: "center",
-    // justifyContent: "center",
   },
   headerItem: {
     alignItems: "center",

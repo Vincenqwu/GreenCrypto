@@ -26,3 +26,7 @@ export const getAddressFromCoords = async (coords) => {
 export const constants = {
   location: "Earth",
 };
+
+export const isValuePositive = (value) => {
+  return value > 0;
+};

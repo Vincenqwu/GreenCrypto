@@ -3,10 +3,11 @@ import { StyleSheet, Text, View } from "react-native";
 import PortfoliList from "../components/PortfoliList";
 import WatchList from "../components/WatchList";
 import styles from "../styles/styles";
+import { isValuePositive } from "../components/helper/service";
 
 const Portfolio = () => {
   const [currentBalance, setCurrentBalance] = useState(1000);
-  const [profit, setProfit] = useState(100);
+  const [profit, setProfit] = useState(-200);
   const [activeTab, setActiveTab] = useState("portfolio");
 
   return (
@@ -17,12 +18,15 @@ const Portfolio = () => {
       </View>
       <View style={styles.header}>
         <Text style={styles.headerLabel}>
-          {profit > 0 ? "Profit" : "Loss"}:
+          {isValuePositive(profit) ? "Profit" : "Loss"}:
         </Text>
         <Text
-          style={[styles.headerValue, profit > 0 ? styles.green : styles.red]}
+          style={[
+            styles.headerValue,
+            isValuePositive(profit) ? styles.green : styles.red,
+          ]}
         >
-          {profit > 0 ? "+" : "-"}$ {Math.abs(profit)}
+          {isValuePositive(profit) ? "+" : "-"}$ {Math.abs(profit)}
         </Text>
       </View>
       <View style={styles.tabs}>
