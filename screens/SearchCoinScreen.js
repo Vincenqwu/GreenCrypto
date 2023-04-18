@@ -13,7 +13,7 @@ export default function SearchCoinScreen({ navigation }) {
       const lowerInput = input.toLowerCase();
       const results = [];
 
-      for (let i = 0; i < allCoins.length; i++) {
+      for (let i = 0; i < allCoins?.length; i++) {
         const coinId = allCoins[i].id.toLowerCase();
         const coinName = allCoins[i].name.toLowerCase();
         const coinSymbol = allCoins[i].symbol.toLowerCase();

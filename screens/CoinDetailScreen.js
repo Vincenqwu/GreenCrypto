@@ -64,7 +64,7 @@ export default function CoinDetailScreen({ route, navigation }) {
         (
           <FontAwesome
             name={isWatchListed ? "star" : "star-o"}
-            size={24}
+            size={26}
             color={isWatchListed ? "#FFBF00" : "white"}
             style={{ marginRight: 10 }}
             onPress={handleWatchListChange}
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: 8,
   },
   infoItemTitle: {
     fontSize: 18,
