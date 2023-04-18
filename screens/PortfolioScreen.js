@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import PortfoliList from "../components/PortfoliList";
 import WatchList from "../components/WatchList";
 import styles from "../styles/styles";
 import { isValuePositive } from "../components/helper/service";
+import PortfolioList from "../components/PortfolioList";
 
 const Portfolio = () => {
   const [currentBalance, setCurrentBalance] = useState(1000);
@@ -57,7 +57,7 @@ const Portfolio = () => {
           </Text>
         </View>
       </View>
-      {activeTab === "portfolio" ? <PortfoliList /> : <WatchList />}
+      {activeTab === "portfolio" ? <PortfolioList /> : <WatchList />}
     </View>
   );
 };

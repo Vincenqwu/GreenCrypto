@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const PortfoliList = () => {
+const PortfolioList = () => {
   return (
     <View>
       <Text>PortfoliList</Text>
@@ -9,4 +9,4 @@ const PortfoliList = () => {
   );
 };
 
-export default PortfoliList;
+export default PortfolioList;
