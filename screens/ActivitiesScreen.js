@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f7f7f7",
-    paddingBottom: 100,
+    paddingBottom: 70,
   },
   tabStyle: {
     backgroundColor: Colors.barColor,

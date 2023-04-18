@@ -18,6 +18,10 @@ import { AntDesign } from "@expo/vector-icons";
 import BuyPopup from "../components/BuyPopup";
 import SellPopup from "../components/SellPopup";
 import { MemorizedFilter } from "../components/FilterOptions";
+import { auth } from "../Firebase/firebase-setup";
+import { getUserWatchList, updateWatchList } from "../Firebase/firebaseHelper";
+import { onAuthStateChanged } from "firebase/auth";
+
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -27,8 +31,20 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [selectedRangeValue, setSelectedRangeValue] = useState("1");
   const [isBuyPopupVisible, setIsBuyPopupVisible] = useState(false);
   const [isSellPopupVisible, setIsSellPopupVisible] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(auth.currentUser);
+  const [isWatchListed, setIsWatchListed] = useState(false);
 
   const screenWidth = Dimensions.get("window").width;
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    });
+  }, [auth]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -36,29 +52,56 @@ export default function CoinDetailScreen({ route, navigation }) {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image
             source={{ uri: coinData?.image?.small }}
-            style={{ width: 30, height: 30, marginRight: 10 }}
+            style={{ width: 28, height: 28, marginRight: 5 }}
           />
-          <Text style={{ color: "white" }}>
+          <Text style={{ color: "white", fontWeight: "bold", fontSize: 15 }}>
             {coinData?.symbol.toUpperCase()}
           </Text>
         </View>
       ),
       headerRight: () => (
-        <FontAwesome
-          name="star-o"
-          size={24}
-          color="red"
-          style={{ marginRight: 10 }}
-        />
+        isAuthenticated &&
+        (
+          <FontAwesome
+            name={isWatchListed ? "star" : "star-o"}
+            size={26}
+            color={isWatchListed ? "#FFBF00" : "white"}
+            style={{ marginRight: 10 }}
+            onPress={handleWatchListChange}
+          />
+        )
       ),
       headerBackTitleVisible: false,
     });
-  }, [navigation, coinData]);
+  }, [navigation, coinData, isAuthenticated, isWatchListed]);
 
   useEffect(() => {
     getCoinData();
     getCoinHistoricalData(coinId, 1, "hourly");
   }, []);
+
+  // Load user watchlist to check if coin is already in watchlist
+  useEffect(() => {
+    if (isAuthenticated) {
+      const checkWatchList = async () => {
+        const watchList = await getUserWatchList(auth.currentUser.uid);
+        if (watchList?.includes(coinId)) {
+          setIsWatchListed(true);
+        }
+      };
+      checkWatchList();
+    }
+  }, [isAuthenticated]);
+
+  const handleWatchListChange = async () => {
+    if (isWatchListed) {
+      setIsWatchListed(false);
+    } else {
+      setIsWatchListed(true);
+    }
+    console.log("Change watchlist")
+    await updateWatchList(auth.currentUser.uid, coinId);
+  }
 
   const onFilterOptionChange = (range) => {
     setSelectedRangeValue(range);
@@ -131,6 +174,7 @@ export default function CoinDetailScreen({ route, navigation }) {
     const newActivity = {
       action: "buy",
       coinId: coinId,
+      coinName: coinData.name,
       amount: amount,
       price: coinData.market_data.current_price.usd,
       timestamp: coinData.last_updated,
@@ -144,6 +188,7 @@ export default function CoinDetailScreen({ route, navigation }) {
     const newActivity = {
       action: "sell",
       coinId: coinId,
+      coinName: coinData.name,
       amount: amount,
       price: coinData.market_data.current_price.usd,
       timestamp: coinData.last_updated,
@@ -158,8 +203,8 @@ export default function CoinDetailScreen({ route, navigation }) {
       <View style={styles.priceContainer}>
         <View>
           <Text style={styles.nameStyle}>{name}</Text>
-          <Text style={{ fontSize: 16, color: trendColor }}>
-            {current_price.usd}
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: trendColor }}>
+            ${current_price.usd}
           </Text>
         </View>
         <View
@@ -182,22 +227,11 @@ export default function CoinDetailScreen({ route, navigation }) {
           </Text>
         </View>
       </View>
-      <View style={styles.filterContainer}>
-        {filterArray.map((item) => (
-          <MemorizedFilter
-            days={item.days}
-            label={item.label}
-            selectedRange={selectedRangeValue}
-            setSelectedRange={handleFilterOption}
-            key={item.label}
-          />
-        ))}
-      </View>
-
+      
       <LineChart.Provider
         data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
       >
-        <LineChart height={screenWidth / 2} width={screenWidth}>
+        <LineChart height={screenWidth / 1.6} width={screenWidth}>
           <LineChart.Path color={graphColor}>
             <LineChart.Gradient color={graphColor} />
           </LineChart.Path>
@@ -210,31 +244,54 @@ export default function CoinDetailScreen({ route, navigation }) {
           </LineChart.CursorCrosshair>
         </LineChart>
       </LineChart.Provider>
+
+      <View style={styles.filterContainer}>
+        {filterArray.map((item) => (
+          <MemorizedFilter
+            days={item.days}
+            label={item.label}
+            selectedRange={selectedRangeValue}
+            setSelectedRange={handleFilterOption}
+            key={item.label}
+          />
+        ))}
+      </View>
+
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Market Cap</Text>
-          <Text style={styles.infoItemValue}>{market_cap ? "$" + market_cap : "N/A"} </Text>
+          <Text style={styles.infoItemValue}>
+            {market_cap ? "$" + market_cap : "N/A"} 
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Volume 24h</Text>
-          <Text style={styles.infoItemValue}>{vol_24h ? "$" + vol_24h : "N/A"} </Text>
+          <Text style={styles.infoItemValue}>
+            {vol_24h ? "$" + vol_24h : "N/A"} 
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
-          <Text style={styles.infoItemValue}>{fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"} </Text>
+          <Text style={styles.infoItemValue}>
+            {fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"} 
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Circulating Supply</Text>
-          <Text style={styles.infoItemValue}>{circulating_supply ? circulating_supply : "N/A"}</Text>
+          <Text style={styles.infoItemValue}>
+            {circulating_supply ? Number(circulating_supply).toFixed(2) : "N/A"}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Total Supply</Text>
-          <Text style={styles.infoItemValue}>{total_supply ? total_supply : "N/A"}</Text>
+          <Text style={styles.infoItemValue}>
+            {total_supply ? Number(total_supply).toFixed(2) : "N/A"}
+            </Text>
         </View>
-        <View style={styles.infoItem}>
+        {/* <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Max Supply</Text>
           <Text style={styles.infoItemValue}>{max_supply ? max_supply : "N/A"}</Text>
-        </View>
+        </View> */}
       </View>
       <View style={styles.buttonContainer}>
         <PressableButton
@@ -244,7 +301,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           }}
           style={styles.buyButtonStyle}
         >
-          <Text style={styles.buttonTextStyle}>Buy Coin</Text>
+          <Text style={styles.buttonTextStyle}>Buy</Text>
         </PressableButton>
         <PressableButton
           pressHandler={() => {
@@ -253,7 +310,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           }}
           style={styles.sellButtonStyle}
         >
-          <Text style={styles.buttonTextStyle}>Sell Coin</Text>
+          <Text style={styles.buttonTextStyle}>Sell</Text>
         </PressableButton>
         <BuyPopup visible={isBuyPopupVisible} onClose={() => setIsBuyPopupVisible(false)} onSubmit={handleBuy} />
         <SellPopup visible={isSellPopupVisible} onClose={() => setIsSellPopupVisible(false)} onSubmit={handleSell} />
@@ -267,7 +324,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   nameStyle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
   },
   lineChart: {
@@ -285,7 +342,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     marginHorizontal: 10,
-    width: 150,
+    width: 120,
+    height: 50,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -296,13 +354,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     marginHorizontal: 10,
-    width: 150,
+    width: 120,
+    height: 50,
     alignItems: "center",
     justifyContent: "center",
   },
   buttonTextStyle: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 18,
   },
   buttonContainer: {
     marginTop: 10,
@@ -320,18 +380,18 @@ const styles = StyleSheet.create({
   priceChange: {
     color: "white",
     fontSize: 17,
-    fontWeight: "500",
+    fontWeight: "bold",
   },
   infoContainer: {
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 10,
     marginHorizontal: 20,
   },
   infoItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: 8,
   },
   infoItemTitle: {
     fontSize: 18,

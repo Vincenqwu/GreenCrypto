@@ -1,7 +1,6 @@
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Platform } from "react-native";
 import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo, FontAwesome, Foundation, Ionicons } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -11,6 +10,7 @@ import { auth } from "../Firebase/firebase-setup";
 import LoginScreen from "../screens/LoginScreen";
 import { onAuthStateChanged } from "firebase/auth";
 import { Colors } from "../styles/Color";
+
 
 export default function BottomTabNavigator({ navigation }) {
   const Tab = createBottomTabNavigator();
@@ -44,7 +44,7 @@ export default function BottomTabNavigator({ navigation }) {
                 opacity: 0.8,
               }}
             >
-              <Ionicons name="search-sharp" size={24} color="white" />
+              <Ionicons name="search-sharp" size={26} color="white" />
             </TouchableOpacity>
           </View>
         ),
@@ -57,17 +57,18 @@ export default function BottomTabNavigator({ navigation }) {
           fontSize: 16,
         },
         tabBarStyle: {
-          height: 90,
+          height: Platform.OS === 'ios' ? 80 : 70, 
           paddingHorizontal: 5,
-          paddingTop: 0,
           backgroundColor: Colors.barColor,
           position: "absolute",
           borderTopWidth: 0,
+          paddingBottom: Platform.OS === 'ios' ? 20 : 10, // adjust for safe area insets on iOS
+         
         },
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "bold",
-          marginBottom: 5,
+          marginBottom: Platform.OS === 'ios' ? 5 : 0, 
         },
         tabBarActiveTintColor: "orange",
       }}
