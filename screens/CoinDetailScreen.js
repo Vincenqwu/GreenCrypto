@@ -18,6 +18,10 @@ import { AntDesign } from "@expo/vector-icons";
 import BuyPopup from "../components/BuyPopup";
 import SellPopup from "../components/SellPopup";
 import { MemorizedFilter } from "../components/FilterOptions";
+import { auth } from "../Firebase/firebase-setup";
+import { getUserWatchList, updateWatchList } from "../Firebase/firebaseHelper";
+import { onAuthStateChanged } from "firebase/auth";
+
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -27,8 +31,20 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [selectedRangeValue, setSelectedRangeValue] = useState("1");
   const [isBuyPopupVisible, setIsBuyPopupVisible] = useState(false);
   const [isSellPopupVisible, setIsSellPopupVisible] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(auth.currentUser);
+  const [isWatchListed, setIsWatchListed] = useState(false);
 
   const screenWidth = Dimensions.get("window").width;
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    });
+  }, [auth]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -44,21 +60,48 @@ export default function CoinDetailScreen({ route, navigation }) {
         </View>
       ),
       headerRight: () => (
-        <FontAwesome
-          name="star-o"
-          size={24}
-          color="red"
-          style={{ marginRight: 10 }}
-        />
+        isAuthenticated &&
+        (
+          <FontAwesome
+            name={isWatchListed ? "star" : "star-o"}
+            size={24}
+            color={isWatchListed ? "#FFBF00" : "white"}
+            style={{ marginRight: 10 }}
+            onPress={handleWatchListChange}
+          />
+        )
       ),
       headerBackTitleVisible: false,
     });
-  }, [navigation, coinData]);
+  }, [navigation, coinData, isAuthenticated, isWatchListed]);
 
   useEffect(() => {
     getCoinData();
     getCoinHistoricalData(coinId, 1, "hourly");
   }, []);
+
+  // Load user watchlist to check if coin is already in watchlist
+  useEffect(() => {
+    if (isAuthenticated) {
+      const checkWatchList = async () => {
+        const watchList = await getUserWatchList(auth.currentUser.uid);
+        if (watchList?.includes(coinId)) {
+          setIsWatchListed(true);
+        }
+      };
+      checkWatchList();
+    }
+  }, [isAuthenticated]);
+
+  const handleWatchListChange = async () => {
+    if (isWatchListed) {
+      setIsWatchListed(false);
+    } else {
+      setIsWatchListed(true);
+    }
+    console.log("Change watchlist")
+    await updateWatchList(auth.currentUser.uid, coinId);
+  }
 
   const onFilterOptionChange = (range) => {
     setSelectedRangeValue(range);

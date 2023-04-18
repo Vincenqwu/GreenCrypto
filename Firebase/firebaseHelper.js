@@ -1,9 +1,13 @@
 import {
+  query,
   collection,
   addDoc,
   doc,
   deleteDoc,
   updateDoc,
+  getDocs,
+  getDoc,
+  where,
 } from "firebase/firestore";
 import { firestore } from "./firebase-setup";
 import { auth } from "./firebase-setup";
@@ -81,3 +85,51 @@ export async function saveUserLocation(location) {
     console.log("save user location ", err);
   }
 }
+
+export async function getUserWatchList(uid) {
+  try {
+    const q = query(collection(firestore, "profiles"), where("uid", "==", uid));
+    const querySnapshot = await getDocs(q);
+    console.log(querySnapshot.empty)
+    if (!querySnapshot.empty) {
+      console.log("HERE")
+      const profileDoc = querySnapshot.docs[0];
+      const watchList = profileDoc.data().watchList;
+      if (watchList) {
+        return watchList;
+      } else {
+        return [];
+      }
+    }
+  } catch (err) {
+    console.log("get user watchlist ", err);
+    return [];
+  }
+}
+
+export async function updateWatchList(uid, coinId) {
+  // watchList is an array of coin ids
+  try {
+    const q = query(collection(firestore, "profiles"), where("uid", "==", uid));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const profileDoc = querySnapshot.docs[0];
+      const watchList = profileDoc.data().watchList;
+      if (watchList && watchList.includes(coinId)) {
+        // remove coinId from watchList
+        const updatedWatchList = watchList.filter(id => id !== coinId);
+        await updateDoc(profileDoc.ref, { watchList: updatedWatchList });
+      } else if (watchList && !watchList.includes(coinId)) {
+        // add coinId to watchList
+        watchList.push(coinId);
+        await updateDoc(profileDoc.ref, { watchList });
+      } else {
+        // create watchList
+        await updateDoc(profileDoc.ref, { watchList: [coinId] });
+      }
+    }
+  } catch (err) {
+    console.log("update watchlist ", err);
+  }
+}
+
