@@ -52,9 +52,9 @@ export default function CoinDetailScreen({ route, navigation }) {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Image
             source={{ uri: coinData?.image?.small }}
-            style={{ width: 30, height: 30, marginRight: 10 }}
+            style={{ width: 28, height: 28, marginRight: 5 }}
           />
-          <Text style={{ color: "white" }}>
+          <Text style={{ color: "white", fontWeight: "bold", fontSize: 15 }}>
             {coinData?.symbol.toUpperCase()}
           </Text>
         </View>
@@ -201,7 +201,7 @@ export default function CoinDetailScreen({ route, navigation }) {
       <View style={styles.priceContainer}>
         <View>
           <Text style={styles.nameStyle}>{name}</Text>
-          <Text style={{ fontSize: 16, color: trendColor }}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: trendColor }}>
             {current_price.usd}
           </Text>
         </View>
@@ -240,7 +240,7 @@ export default function CoinDetailScreen({ route, navigation }) {
       <LineChart.Provider
         data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
       >
-        <LineChart height={screenWidth / 2} width={screenWidth}>
+        <LineChart height={screenWidth / 1.6} width={screenWidth}>
           <LineChart.Path color={graphColor}>
             <LineChart.Gradient color={graphColor} />
           </LineChart.Path>
@@ -274,10 +274,10 @@ export default function CoinDetailScreen({ route, navigation }) {
           <Text style={styles.infoItemTitle}>Total Supply</Text>
           <Text style={styles.infoItemValue}>{total_supply ? total_supply : "N/A"}</Text>
         </View>
-        <View style={styles.infoItem}>
+        {/* <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Max Supply</Text>
           <Text style={styles.infoItemValue}>{max_supply ? max_supply : "N/A"}</Text>
-        </View>
+        </View> */}
       </View>
       <View style={styles.buttonContainer}>
         <PressableButton
@@ -287,7 +287,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           }}
           style={styles.buyButtonStyle}
         >
-          <Text style={styles.buttonTextStyle}>Buy Coin</Text>
+          <Text style={styles.buttonTextStyle}>Buy</Text>
         </PressableButton>
         <PressableButton
           pressHandler={() => {
@@ -296,7 +296,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           }}
           style={styles.sellButtonStyle}
         >
-          <Text style={styles.buttonTextStyle}>Sell Coin</Text>
+          <Text style={styles.buttonTextStyle}>Sell</Text>
         </PressableButton>
         <BuyPopup visible={isBuyPopupVisible} onClose={() => setIsBuyPopupVisible(false)} onSubmit={handleBuy} />
         <SellPopup visible={isSellPopupVisible} onClose={() => setIsSellPopupVisible(false)} onSubmit={handleSell} />
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   nameStyle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
   },
   lineChart: {
@@ -328,7 +328,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     marginHorizontal: 10,
-    width: 150,
+    width: 120,
+    height: 50,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -339,13 +340,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     marginHorizontal: 10,
-    width: 150,
+    width: 120,
+    height: 50,
     alignItems: "center",
     justifyContent: "center",
   },
   buttonTextStyle: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 18,
   },
   buttonContainer: {
     marginTop: 10,
@@ -363,7 +366,7 @@ const styles = StyleSheet.create({
   priceChange: {
     color: "white",
     fontSize: 17,
-    fontWeight: "500",
+    fontWeight: "bold",
   },
   infoContainer: {
     borderRadius: 10,
