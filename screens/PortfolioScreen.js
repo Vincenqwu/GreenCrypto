@@ -1,68 +1,65 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
-import React from "react";
-import { getCryptoData } from "../api/request";
-import { createActivity } from "../Firebase/firebaseHelper";
-import PressableButton from "../components/PressableButton";
-import { Colors } from "../styles/Color";
+import React, { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import WatchList from "../components/WatchList";
+import styles from "../styles/styles";
+import { isValuePositive } from "../components/helper/service";
+import PortfolioList from "../components/PortfolioList";
 
-export default function PortfolioScreen() {
-  let testCoinId = "bitcoin";
-  let testAmount = 0.1;
-
-  async function buyCrypto(coinId, amount) {
-    const coinData = await getCryptoData(coinId);
-
-    Alert.alert(
-      "Buy Bitcoin?",
-      `Are you sure you want to buy 0.1 bitcoin at $${coinData.market_data.current_price.usd}?`,
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            const newActivity = {
-              action: "buy",
-              coinId: coinId,
-              amount: amount,
-              price: coinData.market_data.current_price.usd,
-              timestamp: coinData.last_updated,
-            };
-            console.log(newActivity);
-            createActivity(newActivity);
-          },
-        },
-      ]
-    );
-  }
+const Portfolio = () => {
+  const [currentBalance, setCurrentBalance] = useState(1000);
+  const [profit, setProfit] = useState(-200);
+  const [activeTab, setActiveTab] = useState("portfolio");
 
   return (
-    <View>
-      <PressableButton
-        pressHandler={() => buyCrypto(testCoinId, testAmount)}
-        style={styles.buttonStyle}
-      >
-        <Text style={styles.buttonTextStyle}>Click to Buy Bitcoin</Text>
-      </PressableButton>
+    <View style={styles.portContainer}>
+      <View style={styles.header}>
+        <Text style={styles.headerLabel}>Current Balance:</Text>
+        <Text style={styles.headerValue}>$ {currentBalance}</Text>
+      </View>
+      <View style={styles.header}>
+        <Text style={styles.headerLabel}>
+          {isValuePositive(profit) ? "Profit" : "Loss"}:
+        </Text>
+        <Text
+          style={[
+            styles.headerValue,
+            isValuePositive(profit) ? styles.green : styles.red,
+          ]}
+        >
+          {isValuePositive(profit) ? "+" : "-"}$ {Math.abs(profit)}
+        </Text>
+      </View>
+      <View style={styles.tabs}>
+        <View
+          style={[
+            styles.tabItem,
+            activeTab === "portfolio" ? styles.activeTab : null,
+          ]}
+        >
+          <Text
+            style={styles.tabLabel}
+            onPress={() => setActiveTab("portfolio")}
+          >
+            Portfolio
+          </Text>
+        </View>
+        <View
+          style={[
+            styles.tabItem,
+            activeTab === "watchlist" ? styles.activeTab : null,
+          ]}
+        >
+          <Text
+            style={styles.tabLabel}
+            onPress={() => setActiveTab("watchlist")}
+          >
+            WatchList
+          </Text>
+        </View>
+      </View>
+      {activeTab === "portfolio" ? <PortfolioList /> : <WatchList />}
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  buttonStyle: {
-    marginTop: 10,
-    backgroundColor: Colors.buttonColor,
-    padding: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginHorizontal: 10,
-    width: 180,
-  },
-  buttonTextStyle: {
-    color: "white",
-    fontWeight: "bold",
-  },
-  pressedStyle: { backgroundColor: "red", opacity: 0.2 },
-});
+export default Portfolio;

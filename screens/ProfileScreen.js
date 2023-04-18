@@ -43,9 +43,8 @@ export default function ProfileScreen({ route }) {
     setHasNewPhoto(false);
   };
 
-  console.log("route coords:", route.params);
-  // console.log("-".repeat(20), "routes");
-
+  // console.log("profile:", profile);
+  console.log("profileId:", profileId);
   useEffect(() => {
     let routeParams = route.params;
     if (routeParams) {
@@ -68,6 +67,7 @@ export default function ProfileScreen({ route }) {
       (querySnapshot) => {
         if (querySnapshot.empty) {
           // no data
+          console.log("no profile data");
           let newProfile = {
             uid: currentUser.uid,
             email: currentUser.email,

@@ -49,9 +49,16 @@ export async function deletePost(postId) {
   }
 }
 
-export async function createProfile(profile) {
+export async function createProfile(user) {
+  let newProfile = {
+    bio: "Please write about yourself",
+    email: user.email,
+    iconUri: "https://reactnative.dev/img/tiny_logo.png",
+    uid: user.uid,
+    username: "New User",
+  };
   try {
-    const docRef = await addDoc(collection(firestore, "profiles"), profile);
+    const docRef = await addDoc(collection(firestore, "profiles"), newProfile);
   } catch (err) {
     console.log(err);
   }
@@ -90,9 +97,9 @@ export async function getUserWatchList(uid) {
   try {
     const q = query(collection(firestore, "profiles"), where("uid", "==", uid));
     const querySnapshot = await getDocs(q);
-    console.log(querySnapshot.empty)
+    console.log(querySnapshot.empty);
     if (!querySnapshot.empty) {
-      console.log("HERE")
+      console.log("HERE");
       const profileDoc = querySnapshot.docs[0];
       const watchList = profileDoc.data().watchList;
       if (watchList) {
@@ -117,7 +124,7 @@ export async function updateWatchList(uid, coinId) {
       const watchList = profileDoc.data().watchList;
       if (watchList && watchList.includes(coinId)) {
         // remove coinId from watchList
-        const updatedWatchList = watchList.filter(id => id !== coinId);
+        const updatedWatchList = watchList.filter((id) => id !== coinId);
         await updateDoc(profileDoc.ref, { watchList: updatedWatchList });
       } else if (watchList && !watchList.includes(coinId)) {
         // add coinId to watchList
@@ -132,4 +139,3 @@ export async function updateWatchList(uid, coinId) {
     console.log("update watchlist ", err);
   }
 }
-

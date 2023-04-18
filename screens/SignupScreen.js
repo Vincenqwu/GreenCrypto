@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { auth } from "../Firebase/firebase-setup";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Colors } from "../styles/Color";
+import { createProfile } from "../Firebase/firebaseHelper";
 
 export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -22,7 +23,9 @@ export default function SignupScreen({ navigation }) {
         email,
         password
       );
-      console.log(userCred);
+      console.log(userCred.user.uid);
+      const user = userCred.user;
+      await createProfile(user);
       navigation.navigate("HomeNavigator", { screen: "Profile" });
     } catch (err) {
       console.log("signup err ", err);
