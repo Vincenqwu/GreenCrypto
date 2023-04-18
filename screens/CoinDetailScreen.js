@@ -174,6 +174,7 @@ export default function CoinDetailScreen({ route, navigation }) {
     const newActivity = {
       action: "buy",
       coinId: coinId,
+      coinName: coinData.name,
       amount: amount,
       price: coinData.market_data.current_price.usd,
       timestamp: coinData.last_updated,
@@ -187,6 +188,7 @@ export default function CoinDetailScreen({ route, navigation }) {
     const newActivity = {
       action: "sell",
       coinId: coinId,
+      coinName: coinData.name,
       amount: amount,
       price: coinData.market_data.current_price.usd,
       timestamp: coinData.last_updated,
@@ -202,7 +204,7 @@ export default function CoinDetailScreen({ route, navigation }) {
         <View>
           <Text style={styles.nameStyle}>{name}</Text>
           <Text style={{ fontSize: 20, fontWeight: 'bold', color: trendColor }}>
-            {current_price.usd}
+            ${current_price.usd}
           </Text>
         </View>
         <View
@@ -225,18 +227,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           </Text>
         </View>
       </View>
-      <View style={styles.filterContainer}>
-        {filterArray.map((item) => (
-          <MemorizedFilter
-            days={item.days}
-            label={item.label}
-            selectedRange={selectedRangeValue}
-            setSelectedRange={handleFilterOption}
-            key={item.label}
-          />
-        ))}
-      </View>
-
+      
       <LineChart.Provider
         data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
       >
@@ -253,26 +244,49 @@ export default function CoinDetailScreen({ route, navigation }) {
           </LineChart.CursorCrosshair>
         </LineChart>
       </LineChart.Provider>
+
+      <View style={styles.filterContainer}>
+        {filterArray.map((item) => (
+          <MemorizedFilter
+            days={item.days}
+            label={item.label}
+            selectedRange={selectedRangeValue}
+            setSelectedRange={handleFilterOption}
+            key={item.label}
+          />
+        ))}
+      </View>
+
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Market Cap</Text>
-          <Text style={styles.infoItemValue}>{market_cap ? "$" + market_cap : "N/A"} </Text>
+          <Text style={styles.infoItemValue}>
+            {market_cap ? "$" + market_cap : "N/A"} 
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Volume 24h</Text>
-          <Text style={styles.infoItemValue}>{vol_24h ? "$" + vol_24h : "N/A"} </Text>
+          <Text style={styles.infoItemValue}>
+            {vol_24h ? "$" + vol_24h : "N/A"} 
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
-          <Text style={styles.infoItemValue}>{fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"} </Text>
+          <Text style={styles.infoItemValue}>
+            {fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"} 
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Circulating Supply</Text>
-          <Text style={styles.infoItemValue}>{circulating_supply ? circulating_supply : "N/A"}</Text>
+          <Text style={styles.infoItemValue}>
+            {circulating_supply ? Number(circulating_supply).toFixed(2) : "N/A"}
+          </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Total Supply</Text>
-          <Text style={styles.infoItemValue}>{total_supply ? total_supply : "N/A"}</Text>
+          <Text style={styles.infoItemValue}>
+            {total_supply ? Number(total_supply).toFixed(2) : "N/A"}
+            </Text>
         </View>
         {/* <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Max Supply</Text>
@@ -370,7 +384,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 10,
     marginHorizontal: 20,
   },
   infoItem: {

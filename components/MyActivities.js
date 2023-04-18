@@ -13,8 +13,8 @@ import {
   deletePost,
 } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
-export default function MyActivities({ activities, posts }) {
 
+export default function MyActivities({ activities, posts }) {
   function addToPost(activityItem) {
     Alert.alert(
       "Create post?",
@@ -69,6 +69,25 @@ export default function MyActivities({ activities, posts }) {
     );
   }
 
+  function getActionText(activity) {
+    if (activity.action === "buy") {
+      const totalPrice = (activity.price * activity.amount).toFixed(2);
+      return `Bought ${activity.amount} ${activity.coinId} at $${totalPrice}`;
+    } else if (activity.action === "sell") {
+      const totalPrice = (activity.price * activity.amount).toFixed(2);
+      return `Sold ${activity.amount} ${activity.coinId} at $${totalPrice}`;
+    }
+  }
+
+
+  function getActionColor(activity) {
+    if (activity.action === "buy") {
+      return Colors.buyColor;
+    } else if (activity.action === "sell") {
+      return Colors.sellColor;
+    }
+  }
+
   return (
     <FlatList
       contentContainerStyle={styles.scrollViewContentContainer}
@@ -76,27 +95,40 @@ export default function MyActivities({ activities, posts }) {
       renderItem={({ item }) => {
         return (
           <View style={styles.listItem}>
-            <Text style={styles.listItemText}>User's ID: {item.userId}</Text>
-            <Text style={styles.listItemText}>Action: {item.action}</Text>
-            <Text style={styles.listItemText}>Coin: {item.coinId}</Text>
-            <Text style={styles.listItemText}>Amount: {item.amount}</Text>
-            <Text style={styles.listItemText}>Price: {item.price}</Text>
-            <Text style={styles.listItemText}>Date: {item.timestamp}</Text>
-            {item.postCreated ? (
-              <Pressable
-                onPress={() => removeFromPost(item.id)}
-                style={styles.removePostButton}
-              >
-                <Text style={styles.createPostButtonText}>Remove Post</Text>
-              </Pressable>
-            ) : (
-              <Pressable
-                onPress={() => addToPost(item)}
-                style={styles.createPostButton}
-              >
-                <Text style={styles.createPostButtonText}>Create Post</Text>
-              </Pressable>
-            )}
+            <View style={styles.actionContainer}>
+              <View>
+                <Text style={[styles.actionText, { color: getActionColor(item) }]}>
+                  {getActionText(item)}
+                </Text>
+                <Text style={styles.timestampText}>
+                  {new Date(item.timestamp).toLocaleString()}
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View>
+                  <Text style={[styles.coinText, { flex: 1 }]}>{item.coinName}</Text>
+                  <Text style={styles.amountText}>Amount: {item.amount}</Text>
+                  <Text style={styles.priceText}>Price: ${item.price}</Text>
+                </View>
+
+                {item.postCreated ? (
+                  <Pressable
+                    onPress={() => removeFromPost(item.id)}
+                    style={({ pressed }) => [styles.removePostButton, pressed && styles.removePostButtonPressed,]}
+                  >
+                    <Text style={styles.removePostButtonText}>Remove Post</Text>
+                  </Pressable>
+                ) : (
+                  <Pressable
+                    onPress={() => addToPost(item)}
+                    style={({ pressed }) => [styles.createPostButton, pressed && styles.createPostButtonPressed,]}
+                  >
+                    <Text style={styles.createPostButtonText}>Create Post</Text>
+                  </Pressable>
+                )}
+              </View>
+
+            </View>
 
           </View>
         );
@@ -106,46 +138,70 @@ export default function MyActivities({ activities, posts }) {
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginVertical: 20,
+  scrollViewContentContainer: {
+    paddingVertical: 10,
   },
   listItem: {
-    backgroundColor: "#fff",
-    padding: 20,
-    marginBottom: 10,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
-  listItemText: {
+  actionContainer: {
+    justifyContent: 'space-between',
+  },
+  actionText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
+  timestampText: {
+    fontSize: 14,
+    color: '#999',
+  },
+  coinText: {
     fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 5,
+  },
+  amountText: {
+    fontSize: 16,
     marginBottom: 5,
   },
-  scrollViewContentContainer: {
-    alignItems: "center",
-  },
-  createPostButton: {
-    backgroundColor: Colors.buttonColor,
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 5,
-  },
-  createPostButtonText: {
-    color: "white",
-    textAlign: "center",
+  priceText: {
+    fontSize: 16,
+    marginBottom: 5,
   },
   removePostButton: {
-    backgroundColor: Colors.removeButtonColor,
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 5,
+    backgroundColor: '#d9534f',
+    height: 40,
+    width: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  removePostButtonPressed: {
+    backgroundColor: '#c9302c',
+  },
+  removePostButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  createPostButton: {
+    backgroundColor: '#5cb85c',
+    height: 40,
+    width: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  createPostButtonPressed: {
+    backgroundColor: '#449d44',
+  },
+  createPostButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
+
