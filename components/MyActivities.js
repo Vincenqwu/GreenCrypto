@@ -13,6 +13,7 @@ import {
   deletePost,
 } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
+import { MaterialIcons, FontAwesome, Ionicons } from '@expo/vector-icons'; 
 
 export default function MyActivities({ activities, posts }) {
   function addToPost(activityItem) {
@@ -114,16 +115,16 @@ export default function MyActivities({ activities, posts }) {
                 {item.postCreated ? (
                   <Pressable
                     onPress={() => removeFromPost(item.id)}
-                    style={({ pressed }) => [styles.removePostButton, pressed && styles.removePostButtonPressed,]}
+                    style={styles.removePostButton}
                   >
-                    <Text style={styles.removePostButtonText}>Remove Post</Text>
+                    <FontAwesome name="remove" size={28} color={Colors.removeButtonColor}/>
                   </Pressable>
                 ) : (
                   <Pressable
                     onPress={() => addToPost(item)}
-                    style={({ pressed }) => [styles.createPostButton, pressed && styles.createPostButtonPressed,]}
+                    style={styles.createPostButton}
                   >
-                    <Text style={styles.createPostButtonText}>Create Post</Text>
+                    <MaterialIcons name="create" size={28} color={Colors.buyColor} />
                   </Pressable>
                 )}
               </View>
@@ -171,37 +172,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
   },
-  removePostButton: {
-    backgroundColor: '#d9534f',
-    height: 40,
-    width: 120,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-  },
-  removePostButtonPressed: {
-    backgroundColor: '#c9302c',
-  },
-  removePostButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
   createPostButton: {
-    backgroundColor: '#5cb85c',
-    height: 40,
-    width: 120,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
+    marginRight: 10,
   },
-  createPostButtonPressed: {
-    backgroundColor: '#449d44',
-  },
-  createPostButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
+  removePostButton: {
+    marginRight: 10,
   },
 });
 

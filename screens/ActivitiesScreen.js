@@ -1,4 +1,9 @@
-import { View, Text, Switch, StyleSheet, ActivityIndicator, Dimensions } from "react-native"
+import {
+View,
+StyleSheet,
+ActivityIndicator,
+Dimensions,
+} from "react-native"
 import React, { useState, useEffect } from "react"
 import { onSnapshot, collection, query, where, orderBy } from "firebase/firestore";
 import { auth, firestore } from "../Firebase/firebase-setup";
@@ -88,13 +93,15 @@ export default function ActivitiesScreen() {
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={{ width: Dimensions.get('window').width }}
+          indicatorStyle={{ fontWeight: "bold" }}
           renderTabBar={props => (
             <TabBar
               {...props}
               style={styles.tabStyle}
+              labelStyle={{ color: "white", fontWeight: "bold", fontSize: 12}}
+              indicatorStyle={{ backgroundColor: "orange" }}
             />
           )}
-          
         />
       }
     </View>
@@ -108,6 +115,7 @@ const styles = StyleSheet.create({
     paddingBottom: 70,
   },
   tabStyle: {
-    backgroundColor: Colors.barColor,
+    backgroundColor: Colors.subBarColor,
+    color: "white",
   },
 });
