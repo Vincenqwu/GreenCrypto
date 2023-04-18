@@ -22,7 +22,6 @@ import { auth } from "../Firebase/firebase-setup";
 import { getUserWatchList, updateWatchList } from "../Firebase/firebaseHelper";
 import { onAuthStateChanged } from "firebase/auth";
 
-
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
   const [loading, setLoading] = useState(false);
@@ -59,9 +58,8 @@ export default function CoinDetailScreen({ route, navigation }) {
           </Text>
         </View>
       ),
-      headerRight: () => (
-        isAuthenticated &&
-        (
+      headerRight: () =>
+        isAuthenticated && (
           <FontAwesome
             name={isWatchListed ? "star" : "star-o"}
             size={26}
@@ -69,8 +67,7 @@ export default function CoinDetailScreen({ route, navigation }) {
             style={{ marginRight: 10 }}
             onPress={handleWatchListChange}
           />
-        )
-      ),
+        ),
       headerBackTitleVisible: false,
     });
   }, [navigation, coinData, isAuthenticated, isWatchListed]);
@@ -99,9 +96,9 @@ export default function CoinDetailScreen({ route, navigation }) {
     } else {
       setIsWatchListed(true);
     }
-    console.log("Change watchlist")
+    console.log("Change watchlist");
     await updateWatchList(auth.currentUser.uid, coinId);
-  }
+  };
 
   const onFilterOptionChange = (range) => {
     setSelectedRangeValue(range);
@@ -133,7 +130,11 @@ export default function CoinDetailScreen({ route, navigation }) {
     setLoading(false);
   };
 
-  const getCoinHistoricalData = async (coinId, selectedRangeValue, interval) => {
+  const getCoinHistoricalData = async (
+    coinId,
+    selectedRangeValue,
+    interval
+  ) => {
     const responseData = await getCryptoHistoricalData(
       coinId,
       selectedRangeValue,
@@ -146,15 +147,11 @@ export default function CoinDetailScreen({ route, navigation }) {
     return <ActivityIndicator size="large" />;
   }
 
-
   const {
     name,
     image: { small },
     symbol,
-    market_data: {
-      current_price,
-      price_change_percentage_24h,
-    },
+    market_data: { current_price, price_change_percentage_24h },
   } = coinData;
 
   const market_cap = coinData.market_data.market_cap.usd;
@@ -162,7 +159,8 @@ export default function CoinDetailScreen({ route, navigation }) {
   const circulating_supply = coinData.market_data.circulating_supply;
   const total_supply = coinData.market_data.total_supply;
   const max_supply = coinData.market_data.max_supply;
-  const fully_diluted_valuation = coinData.market_data.fully_diluted_valuation.usd;
+  const fully_diluted_valuation =
+    coinData.market_data.fully_diluted_valuation.usd;
 
   const { prices } = historicalData;
   const graphColor = current_price.usd > prices[0][1] ? "#16c784" : "#ea3943";
@@ -203,7 +201,7 @@ export default function CoinDetailScreen({ route, navigation }) {
       <View style={styles.priceContainer}>
         <View>
           <Text style={styles.nameStyle}>{name}</Text>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: trendColor }}>
+          <Text style={{ fontSize: 20, fontWeight: "bold", color: trendColor }}>
             ${current_price.usd}
           </Text>
         </View>
@@ -227,7 +225,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           </Text>
         </View>
       </View>
-      
+
       <LineChart.Provider
         data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
       >
@@ -261,19 +259,19 @@ export default function CoinDetailScreen({ route, navigation }) {
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Market Cap</Text>
           <Text style={styles.infoItemValue}>
-            {market_cap ? "$" + market_cap : "N/A"} 
+            {market_cap ? "$" + market_cap : "N/A"}
           </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Volume 24h</Text>
           <Text style={styles.infoItemValue}>
-            {vol_24h ? "$" + vol_24h : "N/A"} 
+            {vol_24h ? "$" + vol_24h : "N/A"}
           </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
           <Text style={styles.infoItemValue}>
-            {fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"} 
+            {fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"}
           </Text>
         </View>
         <View style={styles.infoItem}>
@@ -286,7 +284,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           <Text style={styles.infoItemTitle}>Total Supply</Text>
           <Text style={styles.infoItemValue}>
             {total_supply ? Number(total_supply).toFixed(2) : "N/A"}
-            </Text>
+          </Text>
         </View>
         {/* <View style={styles.infoItem}>
           <Text style={styles.infoItemTitle}>Max Supply</Text>
@@ -296,8 +294,8 @@ export default function CoinDetailScreen({ route, navigation }) {
       <View style={styles.buttonContainer}>
         <PressableButton
           pressHandler={() => {
-            setIsBuyPopupVisible(true)
-            console.log("Buy Pressed")
+            setIsBuyPopupVisible(true);
+            console.log("Buy Pressed");
           }}
           style={styles.buyButtonStyle}
         >
@@ -305,15 +303,25 @@ export default function CoinDetailScreen({ route, navigation }) {
         </PressableButton>
         <PressableButton
           pressHandler={() => {
-            setIsSellPopupVisible(true)
-            console.log("Sell Pressed")
+            setIsSellPopupVisible(true);
+            console.log("Sell Pressed");
           }}
           style={styles.sellButtonStyle}
         >
           <Text style={styles.buttonTextStyle}>Sell</Text>
         </PressableButton>
-        <BuyPopup visible={isBuyPopupVisible} onClose={() => setIsBuyPopupVisible(false)} onSubmit={handleBuy} />
-        <SellPopup visible={isSellPopupVisible} onClose={() => setIsSellPopupVisible(false)} onSubmit={handleSell} />
+        <BuyPopup
+          visible={isBuyPopupVisible}
+          onClose={() => setIsBuyPopupVisible(false)}
+          onSubmit={handleBuy}
+          coinId={coinId}
+        />
+        <SellPopup
+          visible={isSellPopupVisible}
+          onClose={() => setIsSellPopupVisible(false)}
+          onSubmit={handleSell}
+          coinId={coinId}
+        />
       </View>
     </SafeAreaView>
   );
@@ -388,18 +396,18 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   infoItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginVertical: 8,
   },
   infoItemTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   infoItemValue: {
     fontSize: 16,
-    color: '#555',
+    color: "#555",
   },
   filterContainer: {
     flexDirection: "row",
