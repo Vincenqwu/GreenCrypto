@@ -1,13 +1,23 @@
 import React, { useState } from "react";
-import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { scheduleNotificationHandler } from "./helper/NotificationManager";
 
-export default function BuyPopup({ visible, onClose, onSubmit }) {
+export default function BuyPopup({ visible, onClose, onSubmit, coinId }) {
   const [amount, setAmount] = useState("");
+  const action = "bought";
 
   const handleConfirm = () => {
     onSubmit(amount);
     setAmount("");
     onClose();
+    scheduleNotificationHandler(action, amount, coinId);
   };
 
   const handleCancel = () => {
@@ -16,7 +26,12 @@ export default function BuyPopup({ visible, onClose, onSubmit }) {
   };
 
   return (
-    <Modal animationType="fade" transparent visible={visible} onRequestClose={handleCancel}>
+    <Modal
+      animationType="fade"
+      transparent
+      visible={visible}
+      onRequestClose={handleCancel}
+    >
       <View style={styles.container}>
         <View style={styles.modal}>
           <Text style={styles.title}>Enter the amount you want to buy:</Text>
@@ -29,10 +44,16 @@ export default function BuyPopup({ visible, onClose, onSubmit }) {
             autoFocus
           />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={handleCancel}
+            >
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={handleConfirm}
+            >
               <Text style={styles.buttonText}>Confirm</Text>
             </TouchableOpacity>
           </View>
@@ -40,7 +61,7 @@ export default function BuyPopup({ visible, onClose, onSubmit }) {
       </View>
     </Modal>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

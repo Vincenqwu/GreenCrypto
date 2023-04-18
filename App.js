@@ -10,7 +10,17 @@ import CoinDetailScreen from "./screens/CoinDetailScreen";
 import MapScreen from "./screens/MapScreen";
 import { Colors } from "./styles/Color";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as Notifications from "expo-notifications";
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    };
+  },
+});
 
 export default function App() {
   const Stack = createNativeStackNavigator();

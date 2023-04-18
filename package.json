@@ -29,7 +29,8 @@
     "react-native-svg": "13.4.0",
     "react-native-tab-view": "^3.5.1",
     "react-native-wagmi-charts": "^2.3.0",
-    "react-native-pager-view": "6.1.2"
+    "react-native-pager-view": "6.1.2",
+    "expo-notifications": "~0.18.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
