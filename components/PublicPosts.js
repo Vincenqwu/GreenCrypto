@@ -1,7 +1,11 @@
 import { FlatList, StyleSheet, Text, View, Pressable, Alert } from "react-native";
 import React, { useState, useEffect } from 'react'
+import { getActionText, getActionColor } from "./helper/activitiesHelper";
 
 export default function PublicPosts({ posts }) {
+
+  const [location, setLocation] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   
   return (
     <FlatList

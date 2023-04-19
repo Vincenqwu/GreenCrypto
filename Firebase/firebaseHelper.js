@@ -166,3 +166,16 @@ export async function updatePortfolio(pid, newPortfolio) {
     console.log(err);
   }
 }
+
+export async function getUserProfile(uid) {
+  try {
+    const q = query(collection(firestore, "profiles"), where("uid", "==", uid));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const profileDoc = querySnapshot.docs[0];
+      return profileDoc.data();
+    }
+  } catch (err) {
+    console.log("get user profile ", err);
+  }
+}

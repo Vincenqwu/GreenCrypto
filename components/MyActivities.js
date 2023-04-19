@@ -13,9 +13,18 @@ import {
   deletePost,
 } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
-import { MaterialIcons, FontAwesome, Ionicons } from '@expo/vector-icons'; 
+import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import { getActionText, getActionColor } from "./helper/activitiesHelper";
+import { getUserProfile } from "../Firebase/firebaseHelper";
+import { auth } from "../Firebase/firebase-setup";
 
 export default function MyActivities({ activities, posts }) {
+  const navigation = useNavigation();
+  const userId = auth.currentUser.uid;
+  const defaultImgUri = "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
+
   function addToPost(activityItem) {
     Alert.alert(
       "Create post?",
@@ -27,14 +36,21 @@ export default function MyActivities({ activities, posts }) {
         },
         {
           text: "OK",
-          onPress: () => {
+          onPress: async () => {
+            const profile = await getUserProfile(userId);
+            const location = profile.location? profile.location : 'Earth';
+            const iconURI = profile.iconUri? profile.iconUri : defaultImgUri;
+            
             const newPost = {
               activityId: activityItem.id,
               userId: activityItem.userId,
               action: activityItem.action,
               coinId: activityItem.coinId,
+              coinName: activityItem.coinName,
               amount: activityItem.amount,
               price: activityItem.price,
+              location: location,
+              iconUri: iconURI,
               timestamp: activityItem.timestamp,
               postDate: new Date(),
             };
@@ -70,28 +86,9 @@ export default function MyActivities({ activities, posts }) {
     );
   }
 
-  function getActionText(activity) {
-    if (activity.action === "buy") {
-      const totalPrice = (activity.price * activity.amount).toFixed(2);
-      return `Bought ${activity.amount} ${activity.coinId} at $${totalPrice}`;
-    } else if (activity.action === "sell") {
-      const totalPrice = (activity.price * activity.amount).toFixed(2);
-      return `Sold ${activity.amount} ${activity.coinId} at $${totalPrice}`;
-    }
-  }
-
-
-  function getActionColor(activity) {
-    if (activity.action === "buy") {
-      return Colors.buyColor;
-    } else if (activity.action === "sell") {
-      return Colors.sellColor;
-    }
-  }
-
   return (
     <FlatList
-      contentContainerStyle={styles.scrollViewContentContainer}
+      contentContainerStyle={styles.container}
       data={activities}
       renderItem={({ item }) => {
         return (
@@ -107,7 +104,9 @@ export default function MyActivities({ activities, posts }) {
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
-                  <Text style={[styles.coinText, { flex: 1 }]}>{item.coinName}</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate('Details', { coinId: item.coinId })}>
+                    <Text style={[styles.coinText, { flex: 1 }]}>{item.coinName}</Text>
+                  </TouchableOpacity>
                   <Text style={styles.amountText}>Amount: {item.amount}</Text>
                   <Text style={styles.priceText}>Price: ${item.price}</Text>
                 </View>
@@ -115,14 +114,12 @@ export default function MyActivities({ activities, posts }) {
                 {item.postCreated ? (
                   <Pressable
                     onPress={() => removeFromPost(item.id)}
-                    style={styles.removePostButton}
                   >
-                    <FontAwesome name="remove" size={28} color={Colors.removeButtonColor}/>
+                    <FontAwesome name="remove" size={28} color={Colors.removeButtonColor} />
                   </Pressable>
                 ) : (
                   <Pressable
                     onPress={() => addToPost(item)}
-                    style={styles.createPostButton}
                   >
                     <MaterialIcons name="create" size={28} color={Colors.buyColor} />
                   </Pressable>
@@ -139,8 +136,8 @@ export default function MyActivities({ activities, posts }) {
 }
 
 const styles = StyleSheet.create({
-  scrollViewContentContainer: {
-    paddingVertical: 10,
+  container: {
+    padding: 10,
   },
   listItem: {
     padding: 10,
@@ -151,7 +148,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   actionText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     marginRight: 10,
   },
@@ -171,12 +168,6 @@ const styles = StyleSheet.create({
   priceText: {
     fontSize: 16,
     marginBottom: 5,
-  },
-  createPostButton: {
-    marginRight: 10,
-  },
-  removePostButton: {
-    marginRight: 10,
-  },
+  }
 });
 
