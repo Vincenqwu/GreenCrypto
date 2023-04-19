@@ -38,13 +38,11 @@ const CoinItem = ({ marketCoin }) => {
   };
 
   const handlePress = () => {
-    navigation.navigate('Details', { coinId: id });
-  }
+    navigation.navigate("Details", { coinId: id });
+  };
 
   return (
-    <Pressable 
-      style={styles.coinContainer}
-      onPress={handlePress}>
+    <Pressable style={styles.coinContainer} onPress={handlePress}>
       <Image
         source={{ uri: image }}
         style={{
@@ -72,14 +70,9 @@ const CoinItem = ({ marketCoin }) => {
           </Text>
         </View>
       </View>
-      <View
-        style={{
-          marginLeft: "auto",
-          alignItems: "flex-end",
-        }}
-      >
+      <View style={styles.coinIndex}>
         <Text style={styles.title}>{current_price}</Text>
-        <Text style={{ color: "white" }}>
+        <Text style={styles.coinTextColor}>
           MCap {normalizeMarketCap(market_cap)}
         </Text>
       </View>
