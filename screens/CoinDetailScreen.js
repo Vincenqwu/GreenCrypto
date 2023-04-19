@@ -74,9 +74,9 @@ export default function CoinDetailScreen({ route, navigation }) {
       headerRight: () =>
         isAuthenticated && (
           <FontAwesome
-            name={isWatchListed ? "star" : "star-o"}
-            size={26}
-            color={isWatchListed ? "#FFBF00" : "white"}
+            name="star"
+            size={28}
+            color={isWatchListed ? "#FFBF00" : "#b8b9ba"}
             style={{ marginRight: 10 }}
             onPress={handleWatchListChange}
           />
