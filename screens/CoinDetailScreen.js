@@ -28,6 +28,7 @@ import {
   updatePortfolioWhenBuy,
   updatePortfolioWhenSell,
 } from "../components/helper/balance";
+import { scheduleNotificationHandler } from "../components/helper/NotificationManager";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -41,6 +42,7 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [isWatchListed, setIsWatchListed] = useState(false);
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioId, setPortfolioId] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   const screenWidth = Dimensions.get("window").width;
 
@@ -223,19 +225,26 @@ export default function CoinDetailScreen({ route, navigation }) {
       timestamp: coinData.last_updated,
     };
     // check available cash before proceed
-    let cashRequired = amount * currentPrice;
-    let cashAvailable = portfolio.cash;
-    if (cashRequired > cashAvailable) {
+    let cost = parseFloat(amount) * parseFloat(currentPrice);
+    if (cost > portfolio.cash) {
       insufficientCashAlert();
+      return;
     } else {
       // increase crypto amount in portfolio
       try {
-        await updatePortfolioWhenBuy(portfolio, portfolioId, coinId, amount);
+        await updatePortfolioWhenBuy(
+          portfolio,
+          portfolioId,
+          coinId,
+          amount,
+          cost
+        );
       } catch (error) {
         console.log("add crypto error: ", error);
       }
       console.log(newActivity);
       createActivity(newActivity);
+      setSuccess(true);
     }
   }
 
@@ -379,6 +388,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           onClose={() => setIsBuyPopupVisible(false)}
           onSubmit={handleBuy}
           coinId={coinId}
+          isSuccess={success}
         />
         <SellPopup
           visible={isSellPopupVisible}

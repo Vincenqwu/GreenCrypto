@@ -5,10 +5,18 @@ export const updatePortfolioWhenBuy = async (
   portfolio,
   portfolioId,
   coinId,
-  amount
+  amount,
+  cost
 ) => {
   let cryptosList = increaseCryptoHolds(portfolio, coinId, amount);
-  await updatePortfoliosCryptosList(portfolio, portfolioId, cryptosList);
+  let difference = parseFloat(cost) * -1;
+  console.log("cost difference", difference);
+  await updatePortfoliosCryptosList(
+    portfolio,
+    portfolioId,
+    cryptosList,
+    difference
+  );
 };
 
 export const updatePortfolioWhenSell = async (
@@ -56,12 +64,15 @@ const decreaseCryptoHolds = (portfolio, coinId, amount) => {
 const updatePortfoliosCryptosList = async (
   portfolio,
   portfolioId,
-  cryptosList
+  cryptosList,
+  difference
 ) => {
   const newPortfolio = {
     ...portfolio,
     cryptos: cryptosList,
+    cash: parseFloat(portfolio.cash) + difference,
   };
+  console.log("difference", difference);
   try {
     await updatePortfolio(portfolioId, newPortfolio);
   } catch (err) {
@@ -89,4 +100,8 @@ export const insufficientCashAlert = () => {
     [{ text: "OK" }]
   );
   return;
+};
+
+export const displayBalance = (balance) => {
+  return balance.toFixed(2);
 };
