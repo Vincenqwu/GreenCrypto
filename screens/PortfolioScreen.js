@@ -56,7 +56,6 @@ const PortfolioScreen = () => {
             docs.push({ ...snap.data(), id: snap.id });
           });
           setActivities(docs);
-          console.log("activities: ", docs);
         }
         setLoading(false);
       },

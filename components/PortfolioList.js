@@ -50,9 +50,8 @@ const PortfolioTab = ({ activeTab, setActiveTab }) => {
 const PortfolioList = () => {
   const currentUser = auth.currentUser;
 
-  const [portfolioList, setPortfolioList] = useState([]);
   const [detailsList, setDetailsList] = useState([]);
-  // console.log(cryptos);
+
   useEffect(() => {
     const unsubscribePortfolio = onSnapshot(
       query(
@@ -64,10 +63,12 @@ const PortfolioList = () => {
           let coinList = null;
           let snap = querySnapshot.docs.at(0);
           coinList = snap.data();
-          console.log("portfolio list: ", coinList);
-          setPortfolioList(coinList.cryptos);
-          console.log("portfolioList: ", portfolioList);
-          console.log("detailsList: ", detailsList);
+
+          let cryptosList = coinList.cryptos;
+          const ids = cryptosList.map((item) => item.coinId);
+          getCryptoDetailsBasedOnIds(ids).then((res) => {
+            setDetailsList(res);
+          });
         }
       },
       (error) => {
@@ -79,22 +80,10 @@ const PortfolioList = () => {
     };
   }, [currentUser]);
 
-  useEffect(() => {
-    console.log("length: ", portfolioList);
-    if (portfolioList.length > 0) {
-      const ids = portfolioList.map((item) => item.coinId);
-      console.log("ids: ", ids);
-      getCryptoDetailsBasedOnIds(ids).then((res) => {
-        console.log("res: ", res);
-        setDetailsList(res);
-      });
-    }
-  }, [portfolioList]);
-
   return (
     <View>
       <Text>PortfolioList</Text>
-      <CoinsList coins={cryptos} />
+      <CoinsList coins={detailsList} />
     </View>
   );
 };

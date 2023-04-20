@@ -50,11 +50,8 @@ export const getCryptoDetailsBasedOnIds = async (ids) => {
   )}`;
   try {
     const response = await axios.get(url);
-    console.log("response: ", response);
-    // const data = await response.json();
+    return response.data;
   } catch (error) {
     console.log("get crypto details error: ", error);
   }
-  return [];
-  // return response.data;
 };
