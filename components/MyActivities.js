@@ -38,12 +38,14 @@ export default function MyActivities({ activities, posts }) {
           text: "OK",
           onPress: async () => {
             const profile = await getUserProfile(userId);
-            const location = profile.location? profile.location : 'Earth';
-            const iconURI = profile.iconUri? profile.iconUri : defaultImgUri;
-            
+            const email = profile.email;
+            const location = profile.location ? profile.location : 'Earth';
+            const iconURI = profile.iconUri ? profile.iconUri : defaultImgUri;
+
             const newPost = {
               activityId: activityItem.id,
               userId: activityItem.userId,
+              email: email,
               action: activityItem.action,
               coinId: activityItem.coinId,
               coinName: activityItem.coinName,
@@ -98,17 +100,23 @@ export default function MyActivities({ activities, posts }) {
                 <Text style={[styles.actionText, { color: getActionColor(item) }]}>
                   {getActionText(item)}
                 </Text>
-                <Text style={styles.timestampText}>
-                  {new Date(item.timestamp).toLocaleString()}
-                </Text>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
-                  <TouchableOpacity onPress={() => navigation.navigate('Details', { coinId: item.coinId })}>
-                    <Text style={[styles.coinText, { flex: 1 }]}>{item.coinName}</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.amountText}>Amount: {item.amount}</Text>
-                  <Text style={styles.priceText}>Price: ${item.price}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.labelText}>Coin:</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Details', { coinId: item.coinId })}>
+                      <Text style={styles.contentText}>{item.coinName}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.labelText}>Amount:</Text>
+                    <Text style={styles.contentText}>{item.amount}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.labelText}>Price:</Text>
+                    <Text style={styles.contentText}>${item.price}</Text>
+                  </View>
                 </View>
 
                 {item.postCreated ? (
@@ -125,7 +133,9 @@ export default function MyActivities({ activities, posts }) {
                   </Pressable>
                 )}
               </View>
-
+              <Text style={styles.timestampText}>
+                {new Date(item.timestamp).toLocaleString()}
+              </Text>
             </View>
 
           </View>
@@ -150,22 +160,21 @@ const styles = StyleSheet.create({
   actionText: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginRight: 10,
+    marginBottom: 10,
   },
   timestampText: {
+    marginTop: 10,
     fontSize: 14,
     color: '#999',
   },
-  coinText: {
-    fontSize: 18,
+  contentText: {
     fontWeight: 'bold',
-    marginVertical: 5,
-  },
-  amountText: {
     fontSize: 16,
     marginBottom: 5,
   },
-  priceText: {
+  labelText: {
+    fontWeight: 'bold',
+    width: 80,
     fontSize: 16,
     marginBottom: 5,
   }
