@@ -139,3 +139,30 @@ export async function updateWatchList(uid, coinId) {
     console.log("update watchlist ", err);
   }
 }
+
+export async function createPortfolio(uid) {
+  let newPortfolio = {
+    uid: uid,
+    fund: 0,
+    cash: 0,
+    cryptos: [],
+  };
+  try {
+    const docRef = await addDoc(
+      collection(firestore, "portfolios"),
+      newPortfolio
+    );
+  } catch (err) {
+    console.log("create portfolio error:", err);
+  }
+}
+
+export async function updatePortfolio(pid, newPortfolio) {
+  console.log("newPortfolio", newPortfolio);
+  try {
+    const portfolioRef = doc(firestore, "portfolios", pid);
+    await updateDoc(portfolioRef, newPortfolio);
+  } catch (err) {
+    console.log(err);
+  }
+}

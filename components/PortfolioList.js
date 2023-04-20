@@ -4,6 +4,9 @@ import CoinsList from "./CoinsList";
 import cryptos from "../assets/data/cryptos";
 import styles from "../styles/styles";
 import { Colors } from "../styles/Color";
+import { onSnapshot, collection, query, where } from "firebase/firestore";
+import { auth, firestore } from "../Firebase/firebase-setup";
+import { getCryptoDetailsBasedOnIds } from "../api/request";
 
 const FundButton = ({ addFund }) => {
   return (
@@ -45,15 +48,42 @@ const PortfolioTab = ({ activeTab, setActiveTab }) => {
 };
 
 const PortfolioList = () => {
-  const [coins, setCoins] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const currentUser = auth.currentUser;
 
-  // console.log(cryptos);
+  const [detailsList, setDetailsList] = useState([]);
+
+  useEffect(() => {
+    const unsubscribePortfolio = onSnapshot(
+      query(
+        collection(firestore, "portfolios"),
+        where("uid", "==", currentUser.uid)
+      ),
+      async (querySnapshot) => {
+        if (!querySnapshot.empty) {
+          let coinList = null;
+          let snap = querySnapshot.docs.at(0);
+          coinList = snap.data();
+
+          let cryptosList = coinList.cryptos;
+          const ids = cryptosList.map((item) => item.coinId);
+          getCryptoDetailsBasedOnIds(ids).then((res) => {
+            setDetailsList(res);
+          });
+        }
+      },
+      (error) => {
+        console.log("portfolio onsnapshot error: ", error);
+      }
+    );
+    return () => {
+      unsubscribePortfolio();
+    };
+  }, [currentUser]);
 
   return (
     <View>
       <Text>PortfolioList</Text>
-      <CoinsList coins={cryptos} />
+      <CoinsList coins={detailsList} />
     </View>
   );
 };

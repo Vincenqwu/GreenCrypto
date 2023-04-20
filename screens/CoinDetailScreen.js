@@ -12,15 +12,20 @@ import { getCryptoData, getCryptoHistoricalData } from "../api/request";
 import { LineChart } from "react-native-wagmi-charts";
 import { FontAwesome } from "@expo/vector-icons";
 import PressableButton from "../components/PressableButton";
-import { createActivity } from "../Firebase/firebaseHelper";
+import { createActivity, createPortfolio } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
 import { AntDesign } from "@expo/vector-icons";
 import BuyPopup from "../components/BuyPopup";
 import SellPopup from "../components/SellPopup";
 import { MemorizedFilter } from "../components/FilterOptions";
-import { auth } from "../Firebase/firebase-setup";
+import { auth, firestore } from "../Firebase/firebase-setup";
 import { getUserWatchList, updateWatchList } from "../Firebase/firebaseHelper";
 import { onAuthStateChanged } from "firebase/auth";
+import { onSnapshot, collection, query, where } from "firebase/firestore";
+import {
+  updatePortfolioWhenBuy,
+  updatePortfolioWhenSell,
+} from "../components/helper/service";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -32,8 +37,12 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [isSellPopupVisible, setIsSellPopupVisible] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(auth.currentUser);
   const [isWatchListed, setIsWatchListed] = useState(false);
+  const [portfolio, setPortfolio] = useState(null);
+  const [portfolioId, setPortfolioId] = useState(null);
 
   const screenWidth = Dimensions.get("window").width;
+
+  const currentUser = auth.currentUser;
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -89,6 +98,39 @@ export default function CoinDetailScreen({ route, navigation }) {
       checkWatchList();
     }
   }, [isAuthenticated]);
+
+  // load user portfolio to check crypto's list
+  useEffect(() => {
+    const unsubscribePortfolio = onSnapshot(
+      query(
+        collection(firestore, "portfolios"),
+        where("uid", "==", currentUser.uid)
+      ),
+      async (querySnapshot) => {
+        if (querySnapshot.empty) {
+          // no data
+          try {
+            await createPortfolio(currentUser.uid);
+          } catch (error) {
+            console.log("create portfolio error: ", error);
+          }
+        } else {
+          let newPortfolio = null;
+          let snap = querySnapshot.docs.at(0);
+          newPortfolio = snap.data();
+          setPortfolio(newPortfolio);
+          setPortfolioId(snap.id);
+          console.log("portfolio list: ", newPortfolio);
+        }
+      },
+      (error) => {
+        console.log("portfolio onsnapshot error: ", error);
+      }
+    );
+    return () => {
+      unsubscribePortfolio();
+    };
+  }, [currentUser]);
 
   const handleWatchListChange = async () => {
     if (isWatchListed) {
@@ -177,6 +219,12 @@ export default function CoinDetailScreen({ route, navigation }) {
       price: coinData.market_data.current_price.usd,
       timestamp: coinData.last_updated,
     };
+    // increase crypto amount in portfolio
+    try {
+      await updatePortfolioWhenBuy(portfolio, portfolioId, coinId, amount);
+    } catch (error) {
+      console.log("add crypto error: ", error);
+    }
     console.log(newActivity);
     createActivity(newActivity);
   }
@@ -191,6 +239,12 @@ export default function CoinDetailScreen({ route, navigation }) {
       price: coinData.market_data.current_price.usd,
       timestamp: coinData.last_updated,
     };
+    // decrease crypto amount in portfolio
+    try {
+      await updatePortfolioWhenSell(portfolio, portfolioId, coinId, amount);
+    } catch (error) {
+      console.log("reduce crypto error: ", error);
+    }
     console.log(newActivity);
     createActivity(newActivity);
   }
