@@ -10,6 +10,7 @@ import AddFundField, { BalanceList } from "../components/AddFundField";
 import { auth, firestore } from "../Firebase/firebase-setup";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { createPortfolio } from "../Firebase/firebaseHelper";
+import { displayBalance } from "../components/helper/balance";
 
 const PortfolioScreen = () => {
   const currentUser = auth.currentUser;
@@ -95,16 +96,18 @@ const PortfolioScreen = () => {
       }
     );
     return () => {
-      unsubscribePortfolio();
+      if (!currentUser.uid) unsubscribePortfolio();
     };
-  }, [portfolio]);
+  }, [currentUser]);
 
   return (
     <View style={styles.portContainer}>
       <View style={styles.balanceWrapper}>
         <View style={styles.totalBalanceContainer}>
           <Text style={styles.totalBalanceLabel}>Total Balance:</Text>
-          <Text style={styles.totalBalanceValue}>$ {cash + "+cryptos"}</Text>
+          <Text style={styles.totalBalanceValue}>
+            $ {displayBalance(cash) + "+cryptos"}
+          </Text>
         </View>
         {!showFundInput && <FundButton addFund={handleAddFunds} />}
       </View>

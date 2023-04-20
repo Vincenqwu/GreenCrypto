@@ -9,15 +9,22 @@ import {
 } from "react-native";
 import { scheduleNotificationHandler } from "./helper/NotificationManager";
 
-export default function BuyPopup({ visible, onClose, onSubmit, coinId }) {
+export default function BuyPopup({
+  visible,
+  onClose,
+  onSubmit,
+  coinId,
+  isSuccess,
+}) {
   const [amount, setAmount] = useState("");
   const action = "bought";
 
   const handleConfirm = () => {
     onSubmit(amount);
+    console.log("success? ", isSuccess);
     setAmount("");
     onClose();
-    scheduleNotificationHandler(action, amount, coinId);
+    if (isSuccess) scheduleNotificationHandler(action, amount, coinId);
   };
 
   const handleCancel = () => {
