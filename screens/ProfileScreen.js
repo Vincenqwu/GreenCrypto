@@ -44,7 +44,7 @@ export default function ProfileScreen({ route }) {
   };
 
   // console.log("profile:", profile);
-  console.log("profileId:", profileId);
+  // console.log("profileId:", profileId);
   useEffect(() => {
     let routeParams = route.params;
     if (routeParams) {
@@ -52,7 +52,6 @@ export default function ProfileScreen({ route }) {
       getAddressFromCoords(routeParams.selectedLocation)
         .then((res) => {
           setLocation(res);
-          // setCurrentLocation(res);
         })
         .catch((error) => console.log(error));
     }

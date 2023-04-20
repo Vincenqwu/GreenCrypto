@@ -4,13 +4,19 @@ import styles from "../styles/styles";
 import { TextInput } from "react-native-gesture-handler";
 import { Colors } from "../styles/Color";
 import { isValuePositive } from "./helper/service";
+import { updatePortfolio } from "../Firebase/firebaseHelper";
 
 const BalanceList = ({ profit, availableFund, currentBalance }) => {
   return (
     <>
       <View style={styles.header}>
-        <Text style={styles.headerLabel}>Available Fund:</Text>
+        <Text style={styles.headerLabel}>Cash Available:</Text>
         <Text style={styles.headerValue}>$ {availableFund}</Text>
+      </View>
+
+      <View style={styles.header}>
+        <Text style={styles.headerLabel}>Crypto Assests:</Text>
+        <Text style={styles.headerValue}>$ {currentBalance}</Text>
       </View>
       <View style={styles.header}>
         <Text style={styles.headerLabel}>
@@ -29,22 +35,21 @@ const BalanceList = ({ profit, availableFund, currentBalance }) => {
           {isValuePositive(profit) ? "+" : "-"}$ {Math.abs(profit)}
         </Text>
       </View>
-      <View style={styles.header}>
-        <Text style={styles.headerLabel}>Assests:</Text>
-        <Text style={styles.headerValue}>$ {currentBalance}</Text>
-      </View>
     </>
   );
 };
 
-const AddFundField = ({ setShowFundInput, setCashAdded }) => {
+const AddFundField = ({ portfolioId, portfolio, setShowFundInput }) => {
   const [fundAmount, setFundAmount] = useState("");
 
   const handleConfirmAddFunds = () => {
-    // add funds logic here
+    let cash = parseFloat(portfolio.cash);
+    cash += parseFloat(fundAmount);
+    let newPortfolio = { ...portfolio, cash: cash };
+    updatePortfolio(portfolioId, newPortfolio);
+
     setShowFundInput(false);
-    setFundAmount("");
-    setCashAdded((prev) => prev + parseInt(fundAmount));
+    setFundAmount(0);
   };
 
   const handleCancelAddFunds = () => {

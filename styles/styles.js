@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   totalBalanceValue: {
     fontSize: 40,
     fontWeight: "bold",
-    // textAlign: "flex-start",
+    justifyContent: "flex-start",
   },
   title: {
     color: Colors.coinTextColor,
