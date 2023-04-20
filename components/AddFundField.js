@@ -44,8 +44,10 @@ const AddFundField = ({ portfolioId, portfolio, setShowFundInput }) => {
 
   const handleConfirmAddFunds = () => {
     let cash = parseFloat(portfolio.cash);
+    let fund = parseFloat(portfolio.fund);
     cash += parseFloat(fundAmount);
-    let newPortfolio = { ...portfolio, cash: cash };
+    fund += parseFloat(fundAmount);
+    let newPortfolio = { ...portfolio, cash: cash, fund: fund };
     updatePortfolio(portfolioId, newPortfolio);
 
     setShowFundInput(false);
