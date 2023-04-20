@@ -12,11 +12,7 @@ import { getCryptoData, getCryptoHistoricalData } from "../api/request";
 import { LineChart } from "react-native-wagmi-charts";
 import { FontAwesome } from "@expo/vector-icons";
 import PressableButton from "../components/PressableButton";
-import {
-  createActivity,
-  createPortfolio,
-  updatePortfolio,
-} from "../Firebase/firebaseHelper";
+import { createActivity, createPortfolio } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
 import { AntDesign } from "@expo/vector-icons";
 import BuyPopup from "../components/BuyPopup";
@@ -26,7 +22,10 @@ import { auth, firestore } from "../Firebase/firebase-setup";
 import { getUserWatchList, updateWatchList } from "../Firebase/firebaseHelper";
 import { onAuthStateChanged } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
-import { updatePortfolioWhenBuy } from "../components/helper/service";
+import {
+  updatePortfolioWhenBuy,
+  updatePortfolioWhenSell,
+} from "../components/helper/service";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -220,12 +219,11 @@ export default function CoinDetailScreen({ route, navigation }) {
       price: coinData.market_data.current_price.usd,
       timestamp: coinData.last_updated,
     };
-    // add to portfolio
-    // const cryptoslist = portfolio.cryptos;
+    // increase crypto amount in portfolio
     try {
       await updatePortfolioWhenBuy(portfolio, portfolioId, coinId, amount);
     } catch (error) {
-      console.log("add crypto to portfolio error: ", error);
+      console.log("add crypto error: ", error);
     }
     console.log(newActivity);
     createActivity(newActivity);
@@ -241,6 +239,12 @@ export default function CoinDetailScreen({ route, navigation }) {
       price: coinData.market_data.current_price.usd,
       timestamp: coinData.last_updated,
     };
+    // decrease crypto amount in portfolio
+    try {
+      await updatePortfolioWhenSell(portfolio, portfolioId, coinId, amount);
+    } catch (error) {
+      console.log("reduce crypto error: ", error);
+    }
     console.log(newActivity);
     createActivity(newActivity);
   }

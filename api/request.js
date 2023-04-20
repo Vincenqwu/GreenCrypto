@@ -43,3 +43,18 @@ export const getCryptoHistoricalData = async (coinId, dateRange, interval) => {
     console.log(e);
   }
 };
+
+export const getCryptoDetailsBasedOnIds = async (ids) => {
+  const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids.join(
+    ","
+  )}`;
+  try {
+    const response = await axios.get(url);
+    console.log("response: ", response);
+    // const data = await response.json();
+  } catch (error) {
+    console.log("get crypto details error: ", error);
+  }
+  return [];
+  // return response.data;
+};

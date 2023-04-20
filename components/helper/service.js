@@ -32,7 +32,27 @@ export const isValuePositive = (value) => {
   return value > 0;
 };
 
-const addCrypto = (portfolio, coinId, amount) => {
+export const updatePortfolioWhenBuy = async (
+  portfolio,
+  portfolioId,
+  coinId,
+  amount
+) => {
+  let cryptosList = increaseCryptoHolds(portfolio, coinId, amount);
+  await updatePortfoliosCryptosList(portfolio, portfolioId, cryptosList);
+};
+
+export const updatePortfolioWhenSell = async (
+  portfolio,
+  portfolioId,
+  coinId,
+  amount
+) => {
+  let cryptosList = decreaseCryptoHolds(portfolio, coinId, amount);
+  await updatePortfoliosCryptosList(portfolio, portfolioId, cryptosList);
+};
+
+const increaseCryptoHolds = (portfolio, coinId, amount) => {
   const cryptosList = portfolio.cryptos;
   const index = cryptosList.findIndex((crypto) => crypto.coinId === coinId);
 
@@ -45,25 +65,37 @@ const addCrypto = (portfolio, coinId, amount) => {
   return cryptosList;
 };
 
-export const updatePortfolioWhenBuy = async (
+const decreaseCryptoHolds = (portfolio, coinId, amount) => {
+  const cryptosList = portfolio.cryptos;
+  const index = cryptosList.findIndex((crypto) => crypto.coinId === coinId);
+
+  if (index >= 0) {
+    let newAmount = parseFloat(cryptosList[index].amount) - parseFloat(amount);
+    if (newAmount < 0) {
+      throw new Error("Not enough crypto to sell");
+    } else if (newAmount === 0) {
+      cryptosList.splice(index, 1);
+    } else {
+      cryptosList[index].amount = newAmount;
+    }
+  } else {
+    throw new Error("Not enough crypto to sell");
+  }
+  return cryptosList;
+};
+
+const updatePortfoliosCryptosList = async (
   portfolio,
   portfolioId,
-  coinId,
-  amount
+  cryptosList
 ) => {
-  // const cryptoslist = portfolio.cryptos;
-  // const index = cryptoslist.findIndex((crypto) => crypto.coinId === coinId);
-
-  // if (index >= 0) {
-  //   cryptos[index].amount += amount;
-  // } else {
-  //   cryptos.push({ coinId: coinId, amount: amount });
-  // }
-  let cryptosList = addCrypto(portfolio, coinId, amount);
-  console.log("cryptosList", cryptosList);
   const newPortfolio = {
     ...portfolio,
     cryptos: cryptosList,
   };
-  await updatePortfolio(portfolioId, newPortfolio);
+  try {
+    await updatePortfolio(portfolioId, newPortfolio);
+  } catch (err) {
+    console.log("update portfolio error: ", err);
+  }
 };
