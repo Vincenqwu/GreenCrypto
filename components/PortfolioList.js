@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import CoinsList from "./CoinsList";
-import cryptos from "../assets/data/cryptos";
 import styles from "../styles/styles";
 import { Colors } from "../styles/Color";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
@@ -56,7 +55,7 @@ const PortfolioList = () => {
     const unsubscribePortfolio = onSnapshot(
       query(
         collection(firestore, "portfolios"),
-        where("uid", "==", currentUser.uid)
+        where("uid", "==", currentUser?.uid)
       ),
       async (querySnapshot) => {
         if (!querySnapshot.empty) {
@@ -66,6 +65,11 @@ const PortfolioList = () => {
 
           let cryptosList = coinList.cryptos;
           const ids = cryptosList.map((item) => item.coinId);
+          console.log("ids: ", ids);
+          if (ids.length === 0) {
+            setDetailsList([]);
+            return;
+          }
           getCryptoDetailsBasedOnIds(ids).then((res) => {
             setDetailsList(res);
           });
@@ -76,6 +80,7 @@ const PortfolioList = () => {
       }
     );
     return () => {
+      if (!currentUser.uid) return;
       unsubscribePortfolio();
     };
   }, [currentUser]);
