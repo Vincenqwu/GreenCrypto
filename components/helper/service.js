@@ -1,4 +1,5 @@
 import { MAPS_API_KEY } from "@env";
+import { updatePortfolio } from "../../Firebase/firebaseHelper";
 
 export const getAddressFromCoords = async (coords) => {
   if (!coords) {
@@ -29,4 +30,40 @@ export const constants = {
 
 export const isValuePositive = (value) => {
   return value > 0;
+};
+
+const addCrypto = (portfolio, coinId, amount) => {
+  const cryptosList = portfolio.cryptos;
+  const index = cryptosList.findIndex((crypto) => crypto.coinId === coinId);
+
+  if (index >= 0) {
+    cryptosList[index].amount =
+      parseFloat(amount) + parseFloat(cryptosList[index].amount);
+  } else {
+    cryptosList.push({ coinId: coinId, amount: amount });
+  }
+  return cryptosList;
+};
+
+export const updatePortfolioWhenBuy = async (
+  portfolio,
+  portfolioId,
+  coinId,
+  amount
+) => {
+  // const cryptoslist = portfolio.cryptos;
+  // const index = cryptoslist.findIndex((crypto) => crypto.coinId === coinId);
+
+  // if (index >= 0) {
+  //   cryptos[index].amount += amount;
+  // } else {
+  //   cryptos.push({ coinId: coinId, amount: amount });
+  // }
+  let cryptosList = addCrypto(portfolio, coinId, amount);
+  console.log("cryptosList", cryptosList);
+  const newPortfolio = {
+    ...portfolio,
+    cryptos: cryptosList,
+  };
+  await updatePortfolio(portfolioId, newPortfolio);
 };

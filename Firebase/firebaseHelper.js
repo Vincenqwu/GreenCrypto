@@ -158,9 +158,10 @@ export async function createPortfolio(uid) {
 }
 
 export async function updatePortfolio(pid, newPortfolio) {
+  console.log("newPortfolio", newPortfolio);
   try {
-    const profileRef = doc(firestore, "portfolios", pid);
-    await updateDoc(profileRef, newPortfolio);
+    const portfolioRef = doc(firestore, "portfolios", pid);
+    await updateDoc(portfolioRef, newPortfolio);
   } catch (err) {
     console.log(err);
   }
