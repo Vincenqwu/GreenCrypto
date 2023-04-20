@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { getCryptoData, getCryptoHistoricalData } from "../api/request";
@@ -23,9 +24,10 @@ import { getUserWatchList, updateWatchList } from "../Firebase/firebaseHelper";
 import { onAuthStateChanged } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import {
+  insufficientCashAlert,
   updatePortfolioWhenBuy,
   updatePortfolioWhenSell,
-} from "../components/helper/service";
+} from "../components/helper/balance";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -211,22 +213,30 @@ export default function CoinDetailScreen({ route, navigation }) {
 
   async function handleBuy(amount) {
     const coinData = await getCryptoData(coinId);
+    let currentPrice = coinData.market_data.current_price.usd;
     const newActivity = {
       action: "buy",
       coinId: coinId,
       coinName: coinData.name,
       amount: amount,
-      price: coinData.market_data.current_price.usd,
+      price: currentPrice,
       timestamp: coinData.last_updated,
     };
-    // increase crypto amount in portfolio
-    try {
-      await updatePortfolioWhenBuy(portfolio, portfolioId, coinId, amount);
-    } catch (error) {
-      console.log("add crypto error: ", error);
+    // check available cash before proceed
+    let cashRequired = amount * currentPrice;
+    let cashAvailable = portfolio.cash;
+    if (cashRequired > cashAvailable) {
+      insufficientCashAlert();
+    } else {
+      // increase crypto amount in portfolio
+      try {
+        await updatePortfolioWhenBuy(portfolio, portfolioId, coinId, amount);
+      } catch (error) {
+        console.log("add crypto error: ", error);
+      }
+      console.log(newActivity);
+      createActivity(newActivity);
     }
-    console.log(newActivity);
-    createActivity(newActivity);
   }
 
   async function handleSell(amount) {

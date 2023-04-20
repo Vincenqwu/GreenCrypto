@@ -8,6 +8,7 @@ import {
   getDocs,
   getDoc,
   where,
+  setDoc,
 } from "firebase/firestore";
 import { firestore } from "./firebase-setup";
 import { auth } from "./firebase-setup";
