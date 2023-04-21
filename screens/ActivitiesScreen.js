@@ -93,13 +93,13 @@ export default function ActivitiesScreen() {
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={{ width: Dimensions.get('window').width }}
-          indicatorStyle={{ fontWeight: "bold" }}
           renderTabBar={props => (
             <TabBar
               {...props}
               style={styles.tabStyle}
-              labelStyle={{ color: "white", fontWeight: "bold", fontSize: 12}}
-              indicatorStyle={{ backgroundColor: "orange" }}
+              labelStyle={{ color: Colors.lightGrey, fontWeight: "bold", fontSize: 12}}
+              indicatorStyle={{ backgroundColor: Colors.orangeColor }}
+              activeColor={Colors.bgColor}
             />
           )}
         />
@@ -111,7 +111,7 @@ export default function ActivitiesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f7f7f7",
+    backgroundColor: Colors.bgColor,
     paddingBottom: 70,
   },
   tabStyle: {
