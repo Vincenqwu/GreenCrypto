@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   StyleSheet,
@@ -14,23 +14,29 @@ export default function BuyPopup({
   onClose,
   onSubmit,
   coinId,
-  isSuccess,
+  success,
+  setSuccess,
 }) {
   const [amount, setAmount] = useState("");
   const action = "bought";
 
   const handleConfirm = () => {
     onSubmit(amount);
-    console.log("success? ", isSuccess);
-    setAmount("");
     onClose();
-    if (isSuccess) scheduleNotificationHandler(action, amount, coinId);
   };
 
   const handleCancel = () => {
     setAmount("");
     onClose();
   };
+
+  useEffect(() => {
+    if (success) {
+      console.log("success? ", success);
+      scheduleNotificationHandler(action, amount, coinId);
+    }
+    setSuccess(false);
+  }, [success]);
 
   return (
     <Modal
@@ -46,7 +52,7 @@ export default function BuyPopup({
             style={styles.input}
             keyboardType="decimal-pad"
             value={amount}
-            onChangeText={setAmount}
+            onChangeText={(amount) => setAmount(amount)}
             placeholder="0.00"
             autoFocus
           />
