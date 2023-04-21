@@ -91,7 +91,7 @@ Members' Contributions:
 
 <figure>
   <figcaption>Profile Balance and Default Page Set-UP</figcaption>
-  <img src="./assets/balance_Info_page_set-up.png" alt="profile Balance and Default Page Set-UP" width="400"/>
+  <img src="./assets/balanceInfo.png"  width="400"/>
 
 </figure>
 
