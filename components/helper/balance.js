@@ -10,7 +10,7 @@ export const updatePortfolioWhenBuy = async (
 ) => {
   let cryptosList = increaseCryptoHolds(portfolio, coinId, amount);
   let difference = parseFloat(cost) * -1;
-  console.log("cost difference", difference);
+
   await updatePortfoliosCryptosList(
     portfolio,
     portfolioId,
@@ -72,7 +72,7 @@ const updatePortfoliosCryptosList = async (
     cryptos: cryptosList,
     cash: parseFloat(portfolio.cash) + difference,
   };
-  console.log("difference", difference);
+
   try {
     await updatePortfolio(portfolioId, newPortfolio);
   } catch (err) {

@@ -28,7 +28,6 @@ import {
   updatePortfolioWhenBuy,
   updatePortfolioWhenSell,
 } from "../components/helper/balance";
-import { scheduleNotificationHandler } from "../components/helper/NotificationManager";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -136,8 +135,6 @@ export default function CoinDetailScreen({ route, navigation }) {
         unsubscribePortfolio();
       };
     }
-
-
   }, [currentUser]);
 
   const handleWatchListChange = async () => {
@@ -235,6 +232,7 @@ export default function CoinDetailScreen({ route, navigation }) {
       return;
     } else {
       // increase crypto amount in portfolio
+      setSuccess(true);
       try {
         await updatePortfolioWhenBuy(
           portfolio,
@@ -248,7 +246,6 @@ export default function CoinDetailScreen({ route, navigation }) {
       }
       console.log(newActivity);
       createActivity(newActivity);
-      setSuccess(true);
     }
   }
 
@@ -392,8 +389,9 @@ export default function CoinDetailScreen({ route, navigation }) {
             visible={isBuyPopupVisible}
             onClose={() => setIsBuyPopupVisible(false)}
             onSubmit={handleBuy}
+            setSuccess={setSuccess}
             coinId={coinId}
-            isSuccess={success}
+            success={success}
           />
           <SellPopup
             visible={isSellPopupVisible}
@@ -403,7 +401,6 @@ export default function CoinDetailScreen({ route, navigation }) {
           />
         </View>
       )}
-
     </SafeAreaView>
   );
 }
