@@ -29,6 +29,7 @@ import {
 import ChartView from "../components/ChartView";
 import styles from "../styles/coinDetailsStyles";
 import { Colors } from "../styles/Color";
+import { scheduleNotificationHandler } from "../components/helper/NotificationManager";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -219,9 +220,12 @@ export default function CoinDetailScreen({ route, navigation }) {
     coinData.market_data.fully_diluted_valuation.usd;
 
   const { prices } = historicalData;
-  const graphColor = current_price.usd > prices[0][1] ? Colors.priceUp : Colors.priceDown;
+  const graphColor =
+    current_price.usd > prices[0][1] ? Colors.priceUp : Colors.priceDown;
   const trendColor =
-    price_change_percentage_24h < 0 ? Colors.priceDown : Colors.priceUp || Colors.backgroundColor;
+    price_change_percentage_24h < 0
+      ? Colors.priceDown
+      : Colors.priceUp || Colors.backgroundColor;
 
   async function handleBuy(amount) {
     const coinData = await getCryptoData(coinId);
@@ -250,6 +254,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           amount,
           cost
         );
+        await scheduleNotificationHandler(newActivity.action, amount, coinId);
       } catch (error) {
         console.log("add crypto error: ", error);
       }
@@ -284,119 +289,123 @@ export default function CoinDetailScreen({ route, navigation }) {
         contentContainerStyle={styles.scrollView}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-        }>
-      <View style={styles.priceContainer}>
-        <View>
-          <Text style={styles.nameStyle}>{name}</Text>
-          <Text style={{ fontSize: 20, fontWeight: "bold", color: trendColor }}>
-            ${current_price.usd}
-          </Text>
-        </View>
-        <View
-          style={{
-            backgroundColor: trendColor,
-            paddingHorizontal: 3,
-            paddingVertical: 8,
-            borderRadius: 5,
-            flexDirection: "row",
-          }}
-        >
-          <AntDesign
-            name={price_change_percentage_24h < 0 ? "caretdown" : "caretup"}
-            size={12}
-            color={Colors.bgColor}
-            style={{ alignSelf: "center", marginRight: 5 }}
-          />
-          <Text style={styles.priceChange}>
-            {price_change_percentage_24h?.toFixed(2)}%
-          </Text>
-        </View>
-      </View>
-        
-      <ChartView data={prices} color={graphColor} />
-
-      <View style={styles.filterContainer}>
-        {filterArray.map((item) => (
-          <MemorizedFilter
-            days={item.days}
-            label={item.label}
-            selectedRange={selectedRangeValue}
-            setSelectedRange={handleFilterOption}
-            key={item.label}
-          />
-        ))}
-      </View>
-
-      <View style={styles.infoContainer}>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoItemTitle}>Market Cap</Text>
-          <Text style={styles.infoItemValue}>
-            {market_cap ? "$" + market_cap : "N/A"}
-          </Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoItemTitle}>Volume 24h</Text>
-          <Text style={styles.infoItemValue}>
-            {vol_24h ? "$" + vol_24h : "N/A"}
-          </Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
-          <Text style={styles.infoItemValue}>
-            {fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"}
-          </Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoItemTitle}>Circulating Supply</Text>
-          <Text style={styles.infoItemValue}>
-            {circulating_supply ? Number(circulating_supply).toFixed(2) : "N/A"}
-          </Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoItemTitle}>Total Supply</Text>
-          <Text style={styles.infoItemValue}>
-            {total_supply ? Number(total_supply).toFixed(2) : "N/A"}
-          </Text>
-        </View>
-      </View>
-      {currentUser && (
-        <View style={styles.buttonContainer}>
-          <PressableButton
-            pressHandler={() => {
-              setIsBuyPopupVisible(true);
-              console.log("Buy Pressed");
+        }
+      >
+        <View style={styles.priceContainer}>
+          <View>
+            <Text style={styles.nameStyle}>{name}</Text>
+            <Text
+              style={{ fontSize: 20, fontWeight: "bold", color: trendColor }}
+            >
+              ${current_price.usd}
+            </Text>
+          </View>
+          <View
+            style={{
+              backgroundColor: trendColor,
+              paddingHorizontal: 3,
+              paddingVertical: 8,
+              borderRadius: 5,
+              flexDirection: "row",
             }}
-            style={styles.buyButtonStyle}
           >
-            <Text style={styles.buttonTextStyle}>Buy</Text>
-          </PressableButton>
-          <PressableButton
-            pressHandler={() => {
-              setIsSellPopupVisible(true);
-              console.log("Sell Pressed");
-            }}
-            style={styles.sellButtonStyle}
-          >
-            <Text style={styles.buttonTextStyle}>Sell</Text>
-          </PressableButton>
-          <BuyPopup
-            visible={isBuyPopupVisible}
-            onClose={() => setIsBuyPopupVisible(false)}
-            onSubmit={handleBuy}
-            setSuccess={setSuccess}
-            coinId={coinId}
-            success={success}
-          />
-          <SellPopup
-            visible={isSellPopupVisible}
-            onClose={() => setIsSellPopupVisible(false)}
-            onSubmit={handleSell}
-            coinId={coinId}
-          />
+            <AntDesign
+              name={price_change_percentage_24h < 0 ? "caretdown" : "caretup"}
+              size={12}
+              color={Colors.bgColor}
+              style={{ alignSelf: "center", marginRight: 5 }}
+            />
+            <Text style={styles.priceChange}>
+              {price_change_percentage_24h?.toFixed(2)}%
+            </Text>
+          </View>
         </View>
-      )}
+
+        <ChartView data={prices} color={graphColor} />
+
+        <View style={styles.filterContainer}>
+          {filterArray.map((item) => (
+            <MemorizedFilter
+              days={item.days}
+              label={item.label}
+              selectedRange={selectedRangeValue}
+              setSelectedRange={handleFilterOption}
+              key={item.label}
+            />
+          ))}
+        </View>
+
+        <View style={styles.infoContainer}>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Market Cap</Text>
+            <Text style={styles.infoItemValue}>
+              {market_cap ? "$" + market_cap : "N/A"}
+            </Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Volume 24h</Text>
+            <Text style={styles.infoItemValue}>
+              {vol_24h ? "$" + vol_24h : "N/A"}
+            </Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
+            <Text style={styles.infoItemValue}>
+              {fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"}
+            </Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Circulating Supply</Text>
+            <Text style={styles.infoItemValue}>
+              {circulating_supply
+                ? Number(circulating_supply).toFixed(2)
+                : "N/A"}
+            </Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoItemTitle}>Total Supply</Text>
+            <Text style={styles.infoItemValue}>
+              {total_supply ? Number(total_supply).toFixed(2) : "N/A"}
+            </Text>
+          </View>
+        </View>
+        {currentUser && (
+          <View style={styles.buttonContainer}>
+            <PressableButton
+              pressHandler={() => {
+                setIsBuyPopupVisible(true);
+                console.log("Buy Pressed");
+              }}
+              style={styles.buyButtonStyle}
+            >
+              <Text style={styles.buttonTextStyle}>Buy</Text>
+            </PressableButton>
+            <PressableButton
+              pressHandler={() => {
+                setIsSellPopupVisible(true);
+                console.log("Sell Pressed");
+              }}
+              style={styles.sellButtonStyle}
+            >
+              <Text style={styles.buttonTextStyle}>Sell</Text>
+            </PressableButton>
+            <BuyPopup
+              visible={isBuyPopupVisible}
+              onClose={() => setIsBuyPopupVisible(false)}
+              onSubmit={handleBuy}
+              setSuccess={setSuccess}
+              coinId={coinId}
+              success={success}
+            />
+            <SellPopup
+              visible={isSellPopupVisible}
+              onClose={() => setIsSellPopupVisible(false)}
+              onSubmit={handleSell}
+              coinId={coinId}
+            />
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
 }
-
