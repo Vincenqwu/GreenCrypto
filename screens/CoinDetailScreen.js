@@ -276,6 +276,7 @@ export default function CoinDetailScreen({ route, navigation }) {
     // decrease crypto amount in portfolio
     try {
       await updatePortfolioWhenSell(portfolio, portfolioId, coinId, amount);
+      await scheduleNotificationHandler(newActivity.action, amount, coinId);
     } catch (error) {
       console.log("reduce crypto error: ", error);
     }
