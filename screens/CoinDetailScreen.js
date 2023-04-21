@@ -4,17 +4,15 @@ import {
   Image,
   Dimensions,
   ActivityIndicator,
-  StyleSheet,
   SafeAreaView,
-  Alert,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { getCryptoData, getCryptoHistoricalData } from "../api/request";
-import { LineChart } from "react-native-wagmi-charts";
 import { FontAwesome } from "@expo/vector-icons";
 import PressableButton from "../components/PressableButton";
 import { createActivity, createPortfolio } from "../Firebase/firebaseHelper";
-import { Colors } from "../styles/Color";
 import { AntDesign } from "@expo/vector-icons";
 import BuyPopup from "../components/BuyPopup";
 import SellPopup from "../components/SellPopup";
@@ -28,6 +26,9 @@ import {
   updatePortfolioWhenBuy,
   updatePortfolioWhenSell,
 } from "../components/helper/balance";
+import ChartView from "../components/ChartView";
+import styles from "../styles/coinDetailsStyles";
+import { Colors } from "../styles/Color";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -42,6 +43,15 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioId, setPortfolioId] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setLoading(true);
+    getCoinData();
+    getCoinHistoricalData(coinId, 1, "hourly");
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
 
   const screenWidth = Dimensions.get("window").width;
 
@@ -60,12 +70,12 @@ export default function CoinDetailScreen({ route, navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={styles.headerTitle}>
           <Image
             source={{ uri: coinData?.image?.small }}
-            style={{ width: 28, height: 28, marginRight: 5 }}
+            style={styles.headerIcon}
           />
-          <Text style={{ color: "white", fontWeight: "bold", fontSize: 15 }}>
+          <Text style={styles.headerText}>
             {coinData?.symbol.toUpperCase()}
           </Text>
         </View>
@@ -75,7 +85,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           <FontAwesome
             name="star"
             size={28}
-            color={isWatchListed ? "#FFBF00" : "#b8b9ba"}
+            color={isWatchListed ? Colors.orangeColor : Colors.lightGrey}
             style={{ marginRight: 10 }}
             onPress={handleWatchListChange}
           />
@@ -167,7 +177,7 @@ export default function CoinDetailScreen({ route, navigation }) {
     { days: "7", label: "7d" },
     { days: "30", label: "30d" },
     { days: "365", label: "1y" },
-    { days: "max", label: "All" },
+    { days: "max", label: "YTD" },
   ];
 
   const getCoinData = async () => {
@@ -205,14 +215,13 @@ export default function CoinDetailScreen({ route, navigation }) {
   const vol_24h = coinData.market_data.total_volume.usd;
   const circulating_supply = coinData.market_data.circulating_supply;
   const total_supply = coinData.market_data.total_supply;
-  const max_supply = coinData.market_data.max_supply;
   const fully_diluted_valuation =
     coinData.market_data.fully_diluted_valuation.usd;
 
   const { prices } = historicalData;
-  const graphColor = current_price.usd > prices[0][1] ? "#16c784" : "#ea3943";
+  const graphColor = current_price.usd > prices[0][1] ? Colors.priceUp : Colors.priceDown;
   const trendColor =
-    price_change_percentage_24h < 0 ? "#ea3943" : "#16c784" || "white";
+    price_change_percentage_24h < 0 ? Colors.priceDown : Colors.priceUp || Colors.backgroundColor;
 
   async function handleBuy(amount) {
     const coinData = await getCryptoData(coinId);
@@ -270,8 +279,12 @@ export default function CoinDetailScreen({ route, navigation }) {
   }
 
   return (
-    // <ChartView />
     <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+        }>
       <View style={styles.priceContainer}>
         <View>
           <Text style={styles.nameStyle}>{name}</Text>
@@ -291,7 +304,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           <AntDesign
             name={price_change_percentage_24h < 0 ? "caretdown" : "caretup"}
             size={12}
-            color={"white"}
+            color={Colors.bgColor}
             style={{ alignSelf: "center", marginRight: 5 }}
           />
           <Text style={styles.priceChange}>
@@ -299,23 +312,8 @@ export default function CoinDetailScreen({ route, navigation }) {
           </Text>
         </View>
       </View>
-
-      <LineChart.Provider
-        data={prices.map(([timestamp, value]) => ({ timestamp, value }))}
-      >
-        <LineChart height={screenWidth / 1.6} width={screenWidth}>
-          <LineChart.Path color={graphColor}>
-            <LineChart.Gradient color={graphColor} />
-          </LineChart.Path>
-          <LineChart.CursorLine color={graphColor} />
-          <LineChart.CursorCrosshair>
-            <LineChart.Tooltip textStyle={styles.lineChart} />
-            <LineChart.Tooltip position="bottom">
-              <LineChart.DatetimeText />
-            </LineChart.Tooltip>
-          </LineChart.CursorCrosshair>
-        </LineChart>
-      </LineChart.Provider>
+        
+      <ChartView data={prices} color={graphColor} />
 
       <View style={styles.filterContainer}>
         {filterArray.map((item) => (
@@ -360,10 +358,6 @@ export default function CoinDetailScreen({ route, navigation }) {
             {total_supply ? Number(total_supply).toFixed(2) : "N/A"}
           </Text>
         </View>
-        {/* <View style={styles.infoItem}>
-          <Text style={styles.infoItemTitle}>Max Supply</Text>
-          <Text style={styles.infoItemValue}>{max_supply ? max_supply : "N/A"}</Text>
-        </View> */}
       </View>
       {currentUser && (
         <View style={styles.buttonContainer}>
@@ -401,98 +395,8 @@ export default function CoinDetailScreen({ route, navigation }) {
           />
         </View>
       )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  nameStyle: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  lineChart: {
-    backgroundColor: "black",
-    borderRadius: 4,
-    color: "white",
-    fontSize: 15,
-    fontWeight: "bold",
-    padding: 4,
-  },
-  buyButtonStyle: {
-    marginTop: 10,
-    backgroundColor: Colors.buttonColor,
-    padding: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginHorizontal: 10,
-    width: 120,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  sellButtonStyle: {
-    marginTop: 10,
-    backgroundColor: Colors.removeButtonColor,
-    padding: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginHorizontal: 10,
-    width: 120,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonTextStyle: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 18,
-  },
-  buttonContainer: {
-    marginTop: 10,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-  priceContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginHorizontal: 10,
-    marginVertical: 10,
-  },
-  priceChange: {
-    color: "white",
-    fontSize: 17,
-    fontWeight: "bold",
-  },
-  infoContainer: {
-    borderRadius: 10,
-    marginTop: 10,
-    marginHorizontal: 20,
-  },
-  infoItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 8,
-  },
-  infoItemTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  infoItemValue: {
-    fontSize: 16,
-    color: "#555",
-  },
-  filterContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    marginHorizontal: 10,
-    marginVertical: 10,
-    borderRadius: 5,
-  },
-});

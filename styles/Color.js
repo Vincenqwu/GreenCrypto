@@ -12,4 +12,10 @@ export const Colors = {
   oragne: "#FE6244",
   lightGreen: "#C7E8CA",
   hilightBlue: "#05BFDB",
+  headerTextColor: "#fff",
+  coinInfoValue: "#555",
+  lightGrey: "#CCCCCC",
+  orangeColor: "#FFA500",
+  priceDown: "#ea3943",
+  priceUp: "#16c784",
 };
