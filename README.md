@@ -151,7 +151,13 @@ Members' Contributions:
 
 <figure>
   <figcaption>Public Activity List</figcaption>
-  <img src="./assets/public_activity_list.png" alt="public activity list" width="400"/>
+  <img src="./assets/publicActivityList.png" alt="public activity list" width="400"/>
+
+</figure>
+
+<figure>
+  <figcaption>My Activity List</figcaption>
+  <img src="./assets/myActivityPolish.png" alt="public activity list" width="400"/>
 
 </figure>
 
