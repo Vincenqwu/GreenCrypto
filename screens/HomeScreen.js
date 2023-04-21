@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, View, Text } from "react-native";
 import CoinItem from "../components/CoinItem";
 import { getMarketData } from "../api/request";
+import { Colors } from "../styles/Color";
 
 const HomeScreen = () => {
   const [coins, setCoins] = useState([]);
@@ -24,7 +25,7 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <View style={{ backgroundColor: "#ffffff" }}>
+    <View style={{ backgroundColor: Colors.bgColor }}>
       <View
         style={{
           flexDirection: "row",
