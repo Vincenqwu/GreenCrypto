@@ -1,6 +1,5 @@
 import {
   FlatList,
-  StyleSheet,
   Text,
   View,
   Pressable,
@@ -19,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import { getActionText, getActionColor } from "./helper/activitiesHelper";
 import { getUserProfile } from "../Firebase/firebaseHelper";
 import { auth } from "../Firebase/firebase-setup";
+import styles from "../styles/activitiyStyles";
 
 export default function MyActivities({ activities, posts }) {
   const navigation = useNavigation();
@@ -95,7 +95,7 @@ export default function MyActivities({ activities, posts }) {
       renderItem={({ item }) => {
         return (
           <View style={styles.listItem}>
-            <View style={styles.actionContainer}>
+            <View style={[styles.actionContainer, { marginLeft: 0 }]}>
               <View>
                 <Text style={[styles.actionText, { color: getActionColor(item) }]}>
                   {getActionText(item)}
@@ -144,39 +144,3 @@ export default function MyActivities({ activities, posts }) {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  listItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  actionContainer: {
-    justifyContent: 'space-between',
-  },
-  actionText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  timestampText: {
-    marginTop: 10,
-    fontSize: 14,
-    color: '#999',
-  },
-  contentText: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  labelText: {
-    fontWeight: 'bold',
-    width: 80,
-    fontSize: 16,
-    marginBottom: 5,
-  }
-});
-
