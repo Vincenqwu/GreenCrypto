@@ -3,6 +3,7 @@ import { Colors } from "./Color";
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: Colors.bgColor,
     flex: 1,
   },
   headerTitle: {

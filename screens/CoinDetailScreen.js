@@ -28,6 +28,7 @@ import {
 } from "../components/helper/balance";
 import ChartView from "../components/ChartView";
 import styles from "../styles/coinDetailsStyles";
+import { Colors } from "../styles/Color";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -42,7 +43,6 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioId, setPortfolioId] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(() => {
     setLoading(true);
@@ -85,7 +85,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           <FontAwesome
             name="star"
             size={28}
-            color={isWatchListed ? "#FFBF00" : "#b8b9ba"}
+            color={isWatchListed ? Colors.orangeColor : Colors.lightGrey}
             style={{ marginRight: 10 }}
             onPress={handleWatchListChange}
           />
@@ -219,9 +219,9 @@ export default function CoinDetailScreen({ route, navigation }) {
     coinData.market_data.fully_diluted_valuation.usd;
 
   const { prices } = historicalData;
-  const graphColor = current_price.usd > prices[0][1] ? "#16c784" : "#ea3943";
+  const graphColor = current_price.usd > prices[0][1] ? Colors.priceUp : Colors.priceDown;
   const trendColor =
-    price_change_percentage_24h < 0 ? "#ea3943" : "#16c784" || "white";
+    price_change_percentage_24h < 0 ? Colors.priceDown : Colors.priceUp || Colors.backgroundColor;
 
   async function handleBuy(amount) {
     const coinData = await getCryptoData(coinId);
@@ -304,7 +304,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           <AntDesign
             name={price_change_percentage_24h < 0 ? "caretdown" : "caretup"}
             size={12}
-            color={"white"}
+            color={Colors.bgColor}
             style={{ alignSelf: "center", marginRight: 5 }}
           />
           <Text style={styles.priceChange}>
