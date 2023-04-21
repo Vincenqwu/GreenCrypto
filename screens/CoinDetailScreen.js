@@ -5,6 +5,8 @@ import {
   Dimensions,
   ActivityIndicator,
   SafeAreaView,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { getCryptoData, getCryptoHistoricalData } from "../api/request";
@@ -40,6 +42,16 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioId, setPortfolioId] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setLoading(true);
+    getCoinData();
+    getCoinHistoricalData(coinId, 1, "hourly");
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, []);
 
   const screenWidth = Dimensions.get("window").width;
 
@@ -268,6 +280,11 @@ export default function CoinDetailScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+        }>
       <View style={styles.priceContainer}>
         <View>
           <Text style={styles.nameStyle}>{name}</Text>
@@ -378,6 +395,7 @@ export default function CoinDetailScreen({ route, navigation }) {
           />
         </View>
       )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
