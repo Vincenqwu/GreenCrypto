@@ -90,28 +90,33 @@ Members' Contributions:
 ##### Fullfill Portfolio Page
 
 <figure>
-  <img src="./assets/Balance_Info_page_set-up.png" alt="profile Balance and Default Page Set-UP" width="400"/>
   <figcaption>Profile Balance and Default Page Set-UP</figcaption>
+  <img src="./assets/balance_Info_page_set-up.png" alt="profile Balance and Default Page Set-UP" width="400"/>
+
 </figure>
 
 <figure>
+ <figcaption>Add Fund</figcaption>
   <img src="./assets/fund_add.png" alt="add fund" width="400"/>
-  <figcaption>Add Fund</figcaption>
+ 
 </figure>
 
 <figure>
-  <img src="./assets/buyCoinPage.png" alt="buy/sell coin" width="400"/>
   <figcaption>Buy/Sell Coin</figcaption>
+  <img src="./assets/buyCoinPage.png" alt="buy/sell coin" width="400"/>
+
 </figure>
 
 <figure>
-  <img src="./assets/wishlist_add.png" alt="add wishlist" width="400"/>
   <figcaption>Add Wishlist</figcaption>
+  <img src="./assets/wishlist_add.png" alt="add wishlist" width="400"/>
+
 </figure>
 
 <figure>
+ <figcaption>Show Wishlist</figcaption>
   <img src="./assets/wishlist_shown.png" alt="show wishlist" width="400"/>
-  <figcaption>Show Wishlist</figcaption>
+ 
 </figure>
 
 <br>
@@ -121,18 +126,21 @@ Members' Contributions:
 ##### Buy/Sell Notification
 
 <figure>
+ <figcaption>Buy Notification</figcaption>
   <img src="./assets/buy_notification.png" alt="buy notification" width="400"/>
-  <figcaption>Buy Notification</figcaption>
+ 
 </figure>
 
 <figure>
-  <img src="./assets/sell_notification.png" alt="sell notification" width="400"/>
   <figcaption>Sell Notification</figcaption>
+  <img src="./assets/sell_notification.png" alt="sell notification" width="400"/>
+
 </figure>
 
 <figure>
+ <figcaption>Homepage Update</figcaption>
   <img src="./assets/homepage_update.png" alt="update homepage" width="400"/>
-  <figcaption>Homepage Update</figcaption>
+ 
 </figure>
 
 <br>
@@ -142,16 +150,19 @@ Members' Contributions:
 ##### Fullfill Activity Page
 
 <figure>
-  <img src="./assets/public_activity_list.png" alt="public activity list" width="400"/>
   <figcaption>Public Activity List</figcaption>
+  <img src="./assets/public_activity_list.png" alt="public activity list" width="400"/>
+
 </figure>
 
 <figure>
+ <figcaption>Create My Activity to Public</figcaption>
   <img src="./assets/myactivity_create.png" alt="create my activity to public" width="400"/>
-  <figcaption>Create My Activity to Public</figcaption>
+ 
 </figure>
 
 <figure>
-  <img src="./assets/myactivity_remove.png" alt="remove my activity from public" width="400"/>
   <figcaption>Remove My Activity from Public</figcaption>
+  <img src="./assets/myactivity_remove.png" alt="remove my activity from public" width="400"/>
+
 </figure>
