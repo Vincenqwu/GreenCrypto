@@ -45,7 +45,7 @@ export default function LoginScreen({ navigation }) {
         style={styles.input}
       />
       {showError && (
-        <View>
+        <View style={styles.error}>
           <Text style={styles.errorText}>Invalid email or password.</Text>
         </View>
       )}
@@ -69,8 +69,13 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
+  error: {
+    backgroundColor: Colors.errorColor,
+    padding: 10,
+    width: "100%",
+  },
   errorText: {
-    color: Colors.errorColor,
+    color: Colors.white,
     fontWeight: "bold",
     textAlign: "center",
   },
