@@ -7,17 +7,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { scheduleNotificationHandler } from "./helper/NotificationManager";
 
-export default function SellPopup({ visible, onClose, onSubmit, coinId }) {
+export default function SellPopup({ visible, onClose, onSubmit }) {
   const [amount, setAmount] = useState("");
-  const action = "sold";
 
   const handleConfirm = () => {
     onSubmit(amount);
     setAmount("");
     onClose();
-    scheduleNotificationHandler(action, amount, coinId);
   };
 
   const handleCancel = () => {
