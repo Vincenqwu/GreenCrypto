@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   StyleSheet,
@@ -7,18 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { scheduleNotificationHandler } from "./helper/NotificationManager";
 
-export default function BuyPopup({
-  visible,
-  onClose,
-  onSubmit,
-  coinId,
-  success,
-  setSuccess,
-}) {
+export default function BuyPopup({ visible, onClose, onSubmit }) {
   const [amount, setAmount] = useState("");
-  const action = "bought";
 
   const handleConfirm = () => {
     onSubmit(amount);
@@ -29,14 +20,6 @@ export default function BuyPopup({
     setAmount("");
     onClose();
   };
-
-  useEffect(() => {
-    if (success) {
-      console.log("success? ", success);
-      scheduleNotificationHandler(action, amount, coinId);
-    }
-    setSuccess(false);
-  }, [success]);
 
   return (
     <Modal
