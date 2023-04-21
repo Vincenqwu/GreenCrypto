@@ -1,6 +1,5 @@
 import {
   FlatList,
-  StyleSheet,
   Text,
   View,
   Pressable,
@@ -13,8 +12,19 @@ import {
   deletePost,
 } from "../Firebase/firebaseHelper";
 import { Colors } from "../styles/Color";
+import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import { getActionText, getActionColor } from "./helper/activitiesHelper";
+import { getUserProfile } from "../Firebase/firebaseHelper";
+import { auth } from "../Firebase/firebase-setup";
+import styles from "../styles/activitiyStyles";
 
 export default function MyActivities({ activities, posts }) {
+  const navigation = useNavigation();
+  const userId = auth.currentUser.uid;
+  const defaultImgUri = "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
+
   function addToPost(activityItem) {
     Alert.alert(
       "Create post?",
@@ -26,14 +36,23 @@ export default function MyActivities({ activities, posts }) {
         },
         {
           text: "OK",
-          onPress: () => {
+          onPress: async () => {
+            const profile = await getUserProfile(userId);
+            const email = profile.email;
+            const location = profile.location ? profile.location : 'Earth';
+            const iconURI = profile.iconUri ? profile.iconUri : defaultImgUri;
+
             const newPost = {
               activityId: activityItem.id,
               userId: activityItem.userId,
+              email: email,
               action: activityItem.action,
               coinId: activityItem.coinId,
+              coinName: activityItem.coinName,
               amount: activityItem.amount,
               price: activityItem.price,
+              location: location,
+              iconUri: iconURI,
               timestamp: activityItem.timestamp,
               postDate: new Date(),
             };
@@ -69,65 +88,54 @@ export default function MyActivities({ activities, posts }) {
     );
   }
 
-  function getActionText(activity) {
-    if (activity.action === "buy") {
-      const totalPrice = (activity.price * activity.amount).toFixed(2);
-      return `Bought ${activity.amount} ${activity.coinId} at $${totalPrice}`;
-    } else if (activity.action === "sell") {
-      const totalPrice = (activity.price * activity.amount).toFixed(2);
-      return `Sold ${activity.amount} ${activity.coinId} at $${totalPrice}`;
-    }
-  }
-
-
-  function getActionColor(activity) {
-    if (activity.action === "buy") {
-      return Colors.buyColor;
-    } else if (activity.action === "sell") {
-      return Colors.sellColor;
-    }
-  }
-
   return (
     <FlatList
-      contentContainerStyle={styles.scrollViewContentContainer}
+      contentContainerStyle={styles.container}
       data={activities}
       renderItem={({ item }) => {
         return (
           <View style={styles.listItem}>
-            <View style={styles.actionContainer}>
+            <View style={[styles.actionContainer, { marginLeft: 0 }]}>
               <View>
                 <Text style={[styles.actionText, { color: getActionColor(item) }]}>
                   {getActionText(item)}
                 </Text>
-                <Text style={styles.timestampText}>
-                  {new Date(item.timestamp).toLocaleString()}
-                </Text>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View>
-                  <Text style={[styles.coinText, { flex: 1 }]}>{item.coinName}</Text>
-                  <Text style={styles.amountText}>Amount: {item.amount}</Text>
-                  <Text style={styles.priceText}>Price: ${item.price}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.labelText}>Coin:</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Details', { coinId: item.coinId })}>
+                      <Text style={styles.contentText}>{item.coinName}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.labelText}>Amount:</Text>
+                    <Text style={styles.contentText}>{item.amount}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.labelText}>Price:</Text>
+                    <Text style={styles.contentText}>${item.price}</Text>
+                  </View>
                 </View>
 
                 {item.postCreated ? (
                   <Pressable
                     onPress={() => removeFromPost(item.id)}
-                    style={({ pressed }) => [styles.removePostButton, pressed && styles.removePostButtonPressed,]}
                   >
-                    <Text style={styles.removePostButtonText}>Remove Post</Text>
+                    <FontAwesome name="remove" size={28} color={Colors.removeButtonColor} />
                   </Pressable>
                 ) : (
                   <Pressable
                     onPress={() => addToPost(item)}
-                    style={({ pressed }) => [styles.createPostButton, pressed && styles.createPostButtonPressed,]}
                   >
-                    <Text style={styles.createPostButtonText}>Create Post</Text>
+                    <MaterialIcons name="create" size={28} color={Colors.buyColor} />
                   </Pressable>
                 )}
               </View>
-
+              <Text style={styles.timestampText}>
+                {new Date(item.timestamp).toLocaleString()}
+              </Text>
             </View>
 
           </View>
@@ -136,72 +144,3 @@ export default function MyActivities({ activities, posts }) {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  scrollViewContentContainer: {
-    paddingVertical: 10,
-  },
-  listItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  actionContainer: {
-    justifyContent: 'space-between',
-  },
-  actionText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginRight: 10,
-  },
-  timestampText: {
-    fontSize: 14,
-    color: '#999',
-  },
-  coinText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 5,
-  },
-  amountText: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  priceText: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  removePostButton: {
-    backgroundColor: '#d9534f',
-    height: 40,
-    width: 120,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-  },
-  removePostButtonPressed: {
-    backgroundColor: '#c9302c',
-  },
-  removePostButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  createPostButton: {
-    backgroundColor: '#5cb85c',
-    height: 40,
-    width: 120,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-  },
-  createPostButtonPressed: {
-    backgroundColor: '#449d44',
-  },
-  createPostButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-});
-

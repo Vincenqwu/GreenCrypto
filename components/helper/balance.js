@@ -98,9 +98,9 @@ export const calculateCryptosValue = (portfolio, priceList) => {
   portfolio.cryptos.forEach((crypto) => {
     const coinId = crypto.coinId;
     const amount = parseFloat(crypto.amount);
-    const coin = priceList.find((item) => item.id === coinId);
+    const coin = priceList?.find((item) => item.id === coinId);
     let price = 404;
-    if (coin.current_price) {
+    if (coin?.current_price) {
       price = coin.current_price;
     }
 

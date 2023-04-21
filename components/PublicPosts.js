@@ -1,53 +1,75 @@
-import { FlatList, StyleSheet, Text, View, Pressable, Alert } from "react-native";
-import React, { useState, useEffect } from 'react'
+import {
+  FlatList,
+  Text,
+  View,
+  Image,
+  TouchableOpacity
+} from "react-native";
+import React from 'react'
+import { getActionText, getActionColor } from "./helper/activitiesHelper";
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
+import styles from "../styles/activitiyStyles";
 
 export default function PublicPosts({ posts }) {
-  
+  const navigation = useNavigation();
+
+  function getNameFromEmail(email) {
+    if (!email) {
+      return "user";
+    }
+    const parts = email.split("@");
+    return parts[0];
+  }
+
   return (
     <FlatList
-      contentContainerStyle={styles.scrollViewContentContainer}
+      contentContainerStyle={styles.container}
       data={posts}
       renderItem={({ item }) => {
         return (
           <View style={styles.listItem}>
-            <Text style={styles.listItemText}>User's ID: {item.userId}</Text>
-            <Text style={styles.listItemText}>Action: {item.action}</Text>
-            <Text style={styles.listItemText}>Coin: {item.coinId}</Text>
-            <Text style={styles.listItemText}>Amount: {item.amount}</Text>
-            <Text style={styles.listItemText}>Price: {item.price}</Text>
+            <View style={styles.headerContainer}>
+              <Image source={{ uri: item.iconUri }} style={styles.userIcon} />
+              <Text style={styles.emailName}>{getNameFromEmail(item.email)}</Text>
+            </View>
+            <View style={styles.actionContainer}>
+              <Text style={[styles.actionText, { color: getActionColor(item) }]}>
+                {getActionText(item)}
+              </Text>
+              <View>
+                <View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.labelText}>Coin:</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Details', { coinId: item.coinId })}>
+                      <Text style={styles.contentText}>{item.coinName}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.labelText}>Amount:</Text>
+                    <Text style={styles.contentText}>{item.amount}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.labelText}>Price:</Text>
+                    <Text style={styles.contentText}>${item.price}</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={styles.footerContainer}>
+              <View style={styles.locationContainer}>
+                <Ionicons name="location-sharp" size={18} color="#999" />
+                <Text style={styles.locationText}>
+                  {item.location ? " " + item.location : " Unknown"}
+                </Text>
+              </View>
+              <Text style={styles.timestampText}>
+                {new Date(item.timestamp).toLocaleString()}
+              </Text>
+            </View>
           </View>
         );
       }}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginVertical: 20,
-  },
-  listItem: {
-    width: 300,
-    backgroundColor: "#fff",
-    padding: 20,
-    marginBottom: 10,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  listItemText: {
-    fontSize: 18,
-    marginBottom: 5,
-  },
-  scrollViewContentContainer: {
-    alignItems: "center",
-  }
-});
