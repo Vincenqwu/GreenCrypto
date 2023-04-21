@@ -105,35 +105,39 @@ export default function CoinDetailScreen({ route, navigation }) {
 
   // load user portfolio to check crypto's list
   useEffect(() => {
-    const unsubscribePortfolio = onSnapshot(
-      query(
-        collection(firestore, "portfolios"),
-        where("uid", "==", currentUser.uid)
-      ),
-      async (querySnapshot) => {
-        if (querySnapshot.empty) {
-          // no data
-          try {
-            await createPortfolio(currentUser.uid);
-          } catch (error) {
-            console.log("create portfolio error: ", error);
+    if (currentUser) {
+      const unsubscribePortfolio = onSnapshot(
+        query(
+          collection(firestore, "portfolios"),
+          where("uid", "==", currentUser.uid)
+        ),
+        async (querySnapshot) => {
+          if (querySnapshot.empty) {
+            // no data
+            try {
+              await createPortfolio(currentUser.uid);
+            } catch (error) {
+              console.log("create portfolio error: ", error);
+            }
+          } else {
+            let newPortfolio = null;
+            let snap = querySnapshot.docs.at(0);
+            newPortfolio = snap.data();
+            setPortfolio(newPortfolio);
+            setPortfolioId(snap.id);
+            console.log("portfolio list: ", newPortfolio);
           }
-        } else {
-          let newPortfolio = null;
-          let snap = querySnapshot.docs.at(0);
-          newPortfolio = snap.data();
-          setPortfolio(newPortfolio);
-          setPortfolioId(snap.id);
-          console.log("portfolio list: ", newPortfolio);
+        },
+        (error) => {
+          console.log("portfolio onsnapshot error: ", error);
         }
-      },
-      (error) => {
-        console.log("portfolio onsnapshot error: ", error);
-      }
-    );
-    return () => {
-      unsubscribePortfolio();
-    };
+      );
+      return () => {
+        unsubscribePortfolio();
+      };
+    }
+
+
   }, [currentUser]);
 
   const handleWatchListChange = async () => {
@@ -364,39 +368,42 @@ export default function CoinDetailScreen({ route, navigation }) {
           <Text style={styles.infoItemValue}>{max_supply ? max_supply : "N/A"}</Text>
         </View> */}
       </View>
-      <View style={styles.buttonContainer}>
-        <PressableButton
-          pressHandler={() => {
-            setIsBuyPopupVisible(true);
-            console.log("Buy Pressed");
-          }}
-          style={styles.buyButtonStyle}
-        >
-          <Text style={styles.buttonTextStyle}>Buy</Text>
-        </PressableButton>
-        <PressableButton
-          pressHandler={() => {
-            setIsSellPopupVisible(true);
-            console.log("Sell Pressed");
-          }}
-          style={styles.sellButtonStyle}
-        >
-          <Text style={styles.buttonTextStyle}>Sell</Text>
-        </PressableButton>
-        <BuyPopup
-          visible={isBuyPopupVisible}
-          onClose={() => setIsBuyPopupVisible(false)}
-          onSubmit={handleBuy}
-          coinId={coinId}
-          isSuccess={success}
-        />
-        <SellPopup
-          visible={isSellPopupVisible}
-          onClose={() => setIsSellPopupVisible(false)}
-          onSubmit={handleSell}
-          coinId={coinId}
-        />
-      </View>
+      {currentUser && (
+        <View style={styles.buttonContainer}>
+          <PressableButton
+            pressHandler={() => {
+              setIsBuyPopupVisible(true);
+              console.log("Buy Pressed");
+            }}
+            style={styles.buyButtonStyle}
+          >
+            <Text style={styles.buttonTextStyle}>Buy</Text>
+          </PressableButton>
+          <PressableButton
+            pressHandler={() => {
+              setIsSellPopupVisible(true);
+              console.log("Sell Pressed");
+            }}
+            style={styles.sellButtonStyle}
+          >
+            <Text style={styles.buttonTextStyle}>Sell</Text>
+          </PressableButton>
+          <BuyPopup
+            visible={isBuyPopupVisible}
+            onClose={() => setIsBuyPopupVisible(false)}
+            onSubmit={handleBuy}
+            coinId={coinId}
+            isSuccess={success}
+          />
+          <SellPopup
+            visible={isSellPopupVisible}
+            onClose={() => setIsSellPopupVisible(false)}
+            onSubmit={handleSell}
+            coinId={coinId}
+          />
+        </View>
+      )}
+
     </SafeAreaView>
   );
 }
