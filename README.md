@@ -89,16 +89,30 @@ Members' Contributions:
 
 ##### Fullfill Portfolio Page
 
-/_ Profile Balance and Default Page Set-UP_/
-<img src="./assets/Balance_Info_page_set-up.png" alt="profile Balance and Default Page Set-UP" width="400"/>
-/_ Add Fund_/
-<img src="./assets/fund_add.png" alt="add fund" width="400"/>
-/_ Buy/Sell Coin_/
-<img src="./assets/buyCoinPage.png" alt="buy/sell coin" width="400"/>
-/_ Add Wishlist_/
-<img src="./assets/wishlist_add.png" alt="add wishlist" width="400"/>
-/_ Show Wishlist_/
-<img src="./assets/wishlist_shown.png" alt="show wishlist" width="400"/>
+<figure>
+  <img src="./assets/Balance_Info_page_set-up.png" alt="profile Balance and Default Page Set-UP" width="400"/>
+  <figcaption>Profile Balance and Default Page Set-UP</figcaption>
+</figure>
+
+<figure>
+  <img src="./assets/fund_add.png" alt="add fund" width="400"/>
+  <figcaption>Add Fund</figcaption>
+</figure>
+
+<figure>
+  <img src="./assets/buyCoinPage.png" alt="buy/sell coin" width="400"/>
+  <figcaption>Buy/Sell Coin</figcaption>
+</figure>
+
+<figure>
+  <img src="./assets/wishlist_add.png" alt="add wishlist" width="400"/>
+  <figcaption>Add Wishlist</figcaption>
+</figure>
+
+<figure>
+  <img src="./assets/wishlist_shown.png" alt="show wishlist" width="400"/>
+  <figcaption>Show Wishlist</figcaption>
+</figure>
 
 <br>
 
@@ -106,12 +120,20 @@ Members' Contributions:
 
 ##### Buy/Sell Notification
 
-/_ buy notification_/
-<img src="./assets/buy_notification.png" alt="buy notification" width="400"/>
-/_ sell notification_/
-<img src="./assets/sell_notification.png" alt="sell notification" width="400"/>
-/_ homepage update_/
-<img src="./assets/homepage_update.png" alt="update homepage" width="400"/>
+<figure>
+  <img src="./assets/buy_notification.png" alt="buy notification" width="400"/>
+  <figcaption>Buy Notification</figcaption>
+</figure>
+
+<figure>
+  <img src="./assets/sell_notification.png" alt="sell notification" width="400"/>
+  <figcaption>Sell Notification</figcaption>
+</figure>
+
+<figure>
+  <img src="./assets/homepage_update.png" alt="update homepage" width="400"/>
+  <figcaption>Homepage Update</figcaption>
+</figure>
 
 <br>
 
@@ -119,9 +141,17 @@ Members' Contributions:
 
 ##### Fullfill Activity Page
 
-/_ public activity list_/
-<img src="./assets/public_activity_list.png" alt="public activity list" width="400"/>
-/_ create my activity to public_/
-<img src="./assets/myactivity_create.png" alt="create my activity to public" width="400"/>
-/_ remove my activity from public_/
-<img src="./assets/myactivity_remove.png" alt="remove my activity from public" width="400"/>
+<figure>
+  <img src="./assets/public_activity_list.png" alt="public activity list" width="400"/>
+  <figcaption>Public Activity List</figcaption>
+</figure>
+
+<figure>
+  <img src="./assets/myactivity_create.png" alt="create my activity to public" width="400"/>
+  <figcaption>Create My Activity to Public</figcaption>
+</figure>
+
+<figure>
+  <img src="./assets/myactivity_remove.png" alt="remove my activity from public" width="400"/>
+  <figcaption>Remove My Activity from Public</figcaption>
+</figure>
