@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   errorText: {
-    color: Colors.white,
+    color: Colors.bgColor,
     fontWeight: "bold",
     textAlign: "center",
   },
