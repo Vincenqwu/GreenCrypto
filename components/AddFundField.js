@@ -5,18 +5,23 @@ import { TextInput } from "react-native-gesture-handler";
 import { Colors } from "../styles/Color";
 import { isValuePositive } from "./helper/service";
 import { updatePortfolio } from "../Firebase/firebaseHelper";
+import { displayBalance } from "./helper/balance";
 
 const BalanceList = ({ profit, availableFund, currentBalance }) => {
   return (
     <>
       <View style={styles.header}>
         <Text style={styles.headerLabel}>Cash Available:</Text>
-        <Text style={styles.headerValue}>$ {availableFund}</Text>
+        <Text style={styles.headerValue}>
+          $ {displayBalance(availableFund)}
+        </Text>
       </View>
 
       <View style={styles.header}>
         <Text style={styles.headerLabel}>Crypto Assests:</Text>
-        <Text style={styles.headerValue}>$ {currentBalance}</Text>
+        <Text style={styles.headerValue}>
+          $ {displayBalance(currentBalance)}
+        </Text>
       </View>
       <View style={styles.header}>
         <Text style={styles.headerLabel}>
@@ -32,7 +37,8 @@ const BalanceList = ({ profit, availableFund, currentBalance }) => {
               : { color: "red" },
           ]}
         >
-          {isValuePositive(profit) ? "+" : "-"}$ {Math.abs(profit)}
+          {isValuePositive(profit) ? "+" : "-"}${" "}
+          {displayBalance(Math.abs(profit))}
         </Text>
       </View>
     </>
