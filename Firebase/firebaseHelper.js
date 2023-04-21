@@ -100,7 +100,6 @@ export async function getUserWatchList(uid) {
     const querySnapshot = await getDocs(q);
     console.log(querySnapshot.empty);
     if (!querySnapshot.empty) {
-      console.log("HERE");
       const profileDoc = querySnapshot.docs[0];
       const watchList = profileDoc.data().watchList;
       if (watchList) {

@@ -10,7 +10,10 @@ import AddFundField, { BalanceList } from "../components/AddFundField";
 import { auth, firestore } from "../Firebase/firebase-setup";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import { createPortfolio } from "../Firebase/firebaseHelper";
-import { displayBalance } from "../components/helper/balance";
+import {
+  calculateCryptosValue,
+  displayBalance,
+} from "../components/helper/balance";
 
 const PortfolioScreen = () => {
   const currentUser = auth.currentUser;
@@ -20,13 +23,12 @@ const PortfolioScreen = () => {
   const [showFundInput, setShowFundInput] = useState(false); // required
   // query db
   const [portfolio, setPortfolio] = useState(null);
-  const [profileId, setProfileId] = useState(null);
   const [portfolioId, setPortfolioId] = useState(null);
   // calculate balance
-  const [currentBalance, setCurrentBalance] = useState(1000);
-  const [profit, setProfit] = useState(-200);
-  const [activities, setActivities] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [assetsValue, setAssetsValue] = useState(0);
+  const [profit, setProfit] = useState(0);
+  const [portfolioList, setPortfolioList] = useState([]);
+  const [totalValue, setTotalValue] = useState(0);
 
   const handleAddFunds = () => {
     setShowFundInput(true);
@@ -35,39 +37,15 @@ const PortfolioScreen = () => {
   useEffect(() => {
     if (portfolio) {
       const availableFund = parseFloat(portfolio.cash);
-      const totalBalance = availableFund + "?";
-      setCash(availableFund);
-    }
-  }, [portfolio]);
+      const cryptoValue = calculateCryptosValue(portfolio, portfolioList);
+      const profit = cryptoValue + availableFund - portfolio.fund;
 
-  useEffect(() => {
-    const unsubscribeActivities = onSnapshot(
-      query(
-        collection(firestore, "activities"),
-        where("userId", "==", auth.currentUser.uid)
-      ),
-      (querySnapshot) => {
-        if (querySnapshot.empty) {
-          // no data
-          setActivities([]);
-        } else {
-          let docs = [];
-          // update activities array
-          querySnapshot.docs.forEach((snap) => {
-            docs.push({ ...snap.data(), id: snap.id });
-          });
-          setActivities(docs);
-        }
-        setLoading(false);
-      },
-      (error) => {
-        console.log("onsnapshot error: ", error);
-      }
-    );
-    return () => {
-      unsubscribeActivities();
-    };
-  }, []);
+      setProfit(profit);
+      setCash(availableFund);
+      setAssetsValue(cryptoValue);
+      setTotalValue(cryptoValue + availableFund);
+    }
+  }, [portfolioList]);
 
   useEffect(() => {
     const unsubscribePortfolio = onSnapshot(
@@ -106,7 +84,7 @@ const PortfolioScreen = () => {
         <View style={styles.totalBalanceContainer}>
           <Text style={styles.totalBalanceLabel}>Total Balance:</Text>
           <Text style={styles.totalBalanceValue}>
-            $ {displayBalance(cash) + "+cryptos"}
+            $ {displayBalance(totalValue)}
           </Text>
         </View>
         {!showFundInput && <FundButton addFund={handleAddFunds} />}
@@ -114,7 +92,7 @@ const PortfolioScreen = () => {
       <BalanceList
         profit={profit}
         availableFund={cash}
-        currentBalance={currentBalance}
+        currentBalance={assetsValue}
       />
       {showFundInput && (
         <AddFundField
@@ -125,7 +103,11 @@ const PortfolioScreen = () => {
       )}
       <PortfolioTab activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === "portfolio" ? (
-        <PortfolioList styles={styles.list} />
+        <PortfolioList
+          styles={styles.list}
+          portfolioList={portfolioList}
+          setPortfolioList={setPortfolioList}
+        />
       ) : (
         <WatchList styles={styles.list} />
       )}

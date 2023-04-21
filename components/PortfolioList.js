@@ -46,10 +46,8 @@ const PortfolioTab = ({ activeTab, setActiveTab }) => {
   );
 };
 
-const PortfolioList = () => {
+const PortfolioList = ({ portfolioList, setPortfolioList }) => {
   const currentUser = auth.currentUser;
-
-  const [detailsList, setDetailsList] = useState([]);
 
   useEffect(() => {
     const unsubscribePortfolio = onSnapshot(
@@ -65,13 +63,13 @@ const PortfolioList = () => {
 
           let cryptosList = coinList.cryptos;
           const ids = cryptosList.map((item) => item.coinId);
-          console.log("ids: ", ids);
+          // console.log("ids: ", ids);
           if (ids.length === 0) {
-            setDetailsList([]);
+            setPortfolioList([]);
             return;
           }
           getCryptoDetailsBasedOnIds(ids).then((res) => {
-            setDetailsList(res);
+            setPortfolioList(res);
           });
         }
       },
@@ -88,7 +86,7 @@ const PortfolioList = () => {
   return (
     <View>
       <Text>PortfolioList</Text>
-      <CoinsList coins={detailsList} />
+      <CoinsList coins={portfolioList} />
     </View>
   );
 };

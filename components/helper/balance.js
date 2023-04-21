@@ -93,6 +93,22 @@ export const reduceCashToBuy = (portfolio, amount, price) => {
   return newPortfolio;
 };
 
+export const calculateCryptosValue = (portfolio, priceList) => {
+  let totalValue = 0;
+  portfolio.cryptos.forEach((crypto) => {
+    const coinId = crypto.coinId;
+    const amount = parseFloat(crypto.amount);
+    const coin = priceList.find((item) => item.id === coinId);
+    let price = 404;
+    if (coin.current_price) {
+      price = coin.current_price;
+    }
+
+    totalValue += amount * price;
+  });
+  return totalValue;
+};
+
 export const insufficientCashAlert = () => {
   Alert.alert(
     "Insufficient cash",
