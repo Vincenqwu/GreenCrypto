@@ -24,10 +24,11 @@ const PortfolioScreen = () => {
   // query db
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioId, setPortfolioId] = useState(null);
+  const [portfolioList, setPortfolioList] = useState([]);
+  const [watchlist, setWatchlist] = useState([]);
   // calculate balance
   const [assetsValue, setAssetsValue] = useState(0);
   const [profit, setProfit] = useState(0);
-  const [portfolioList, setPortfolioList] = useState([]);
   const [totalValue, setTotalValue] = useState(0);
 
   const handleAddFunds = () => {
@@ -109,7 +110,11 @@ const PortfolioScreen = () => {
           setPortfolioList={setPortfolioList}
         />
       ) : (
-        <WatchList styles={styles.list} />
+        <WatchList
+          styles={styles.list}
+          watchlist={watchlist}
+          setWatchlist={setWatchlist}
+        />
       )}
     </View>
   );
