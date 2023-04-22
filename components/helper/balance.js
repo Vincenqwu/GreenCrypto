@@ -146,6 +146,6 @@ export const insufficientCryptoAlert = () => {
   return;
 };
 
-export const displayBalance = (balance) => {
-  return balance.toFixed(2);
+export const displayBalance = (balance, digits = 2) => {
+  return parseFloat(balance).toFixed(digits);
 };
