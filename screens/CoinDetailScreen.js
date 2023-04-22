@@ -22,7 +22,9 @@ import { getUserWatchList, updateWatchList } from "../Firebase/firebaseHelper";
 import { onAuthStateChanged } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import {
+  getOwnedCryptoAmountById,
   insufficientCashAlert,
+  insufficientCryptoAlert,
   updatePortfolioWhenBuy,
   updatePortfolioWhenSell,
 } from "../components/helper/balance";
@@ -43,7 +45,6 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [isWatchListed, setIsWatchListed] = useState(false);
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioId, setPortfolioId] = useState(null);
-  const [success, setSuccess] = useState(false);
 
   const onRefresh = React.useCallback(() => {
     setLoading(true);
@@ -134,7 +135,6 @@ export default function CoinDetailScreen({ route, navigation }) {
             newPortfolio = snap.data();
             setPortfolio(newPortfolio);
             setPortfolioId(snap.id);
-            console.log("portfolio list: ", newPortfolio);
           }
         },
         (error) => {
@@ -242,39 +242,54 @@ export default function CoinDetailScreen({ route, navigation }) {
     if (cost > portfolio.cash) {
       insufficientCashAlert();
       return;
-    } else {
-      // increase crypto amount in portfolio
-      setSuccess(true);
-      try {
-        await updatePortfolioWhenBuy(
-          portfolio,
-          portfolioId,
-          coinId,
-          amount,
-          cost
-        );
-        await scheduleNotificationHandler(newActivity.action, amount, coinId);
-      } catch (error) {
-        console.log("add crypto error: ", error);
-      }
-      console.log(newActivity);
-      createActivity(newActivity);
     }
+    // increase crypto amount in portfolio
+    try {
+      await updatePortfolioWhenBuy(
+        portfolio,
+        portfolioId,
+        coinId,
+        amount,
+        cost
+      );
+      await scheduleNotificationHandler(newActivity.action, amount, coinId);
+    } catch (error) {
+      console.log("add crypto error: ", error);
+    }
+    console.log(newActivity);
+    createActivity(newActivity);
   }
 
   async function handleSell(amount) {
     const coinData = await getCryptoData(coinId);
+
+    // check owned cryptos before proceed to sell
+    console.log("portfolio list: ", portfolio.cryptos);
+    const currentAmount = getOwnedCryptoAmountById(portfolio, coinId);
+    console.log(coinId, "current amount: ", currentAmount, " selling:", amount);
+    if (parseFloat(amount) > parseFloat(currentAmount)) {
+      insufficientCryptoAlert();
+      return;
+    }
+
+    let currentPrice = coinData.market_data.current_price.usd;
     const newActivity = {
       action: "sell",
       coinId: coinId,
       coinName: coinData.name,
       amount: amount,
-      price: coinData.market_data.current_price.usd,
+      price: currentPrice,
       timestamp: coinData.last_updated,
     };
     // decrease crypto amount in portfolio
     try {
-      await updatePortfolioWhenSell(portfolio, portfolioId, coinId, amount);
+      await updatePortfolioWhenSell(
+        portfolio,
+        portfolioId,
+        coinId,
+        amount,
+        currentPrice
+      );
       await scheduleNotificationHandler(newActivity.action, amount, coinId);
     } catch (error) {
       console.log("reduce crypto error: ", error);
@@ -393,9 +408,7 @@ export default function CoinDetailScreen({ route, navigation }) {
               visible={isBuyPopupVisible}
               onClose={() => setIsBuyPopupVisible(false)}
               onSubmit={handleBuy}
-              setSuccess={setSuccess}
               coinId={coinId}
-              success={success}
             />
             <SellPopup
               visible={isSellPopupVisible}
