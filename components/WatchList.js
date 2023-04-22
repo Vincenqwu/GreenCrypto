@@ -18,7 +18,7 @@ const WatchList = ({ watchlist, setWatchlist }) => {
           let snap = querySnapshot.docs.at(0);
           let currentWatchlist = snap.data().watchList;
 
-          if (currentWatchlist.length === 0) {
+          if (!currentWatchlist || currentWatchlist.length === 0) {
             setWatchlist([]);
             return;
           }
