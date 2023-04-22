@@ -396,21 +396,23 @@ export default function CoinDetailScreen({ route, navigation }) {
               {total_supply ? Number(total_supply).toFixed(2) : "N/A"}
             </Text>
           </View>
-          <View style={styles.infoItem}>
-            <Text style={[{ color: Colors.hilightBlue }, styles.infoItemTitle]}>
-              Amount Purchased
-            </Text>
-            <Text
-              style={[
-                styles.infoItemValue,
-                { color: Colors.hilightBlue, fontWeight: "bold" },
-              ]}
-            >
-              {selectedCryptoAmount
-                ? displayBalance(selectedCryptoAmount)
-                : "N/A"}
-            </Text>
-          </View>
+          {selectedCryptoAmount > 0 && (
+            <View style={styles.infoItem}>
+              <Text
+                style={[{ color: Colors.hilightBlue }, styles.infoItemTitle]}
+              >
+                Amount Purchased
+              </Text>
+              <Text
+                style={[
+                  styles.infoItemValue,
+                  { color: Colors.hilightBlue, fontWeight: "bold" },
+                ]}
+              >
+                {displayBalance(selectedCryptoAmount, 6)}
+              </Text>
+            </View>
+          )}
         </View>
         {currentUser && (
           <View style={styles.buttonContainer}>
