@@ -424,15 +424,17 @@ export default function CoinDetailScreen({ route, navigation }) {
             >
               <Text style={styles.buttonTextStyle}>Buy</Text>
             </PressableButton>
-            <PressableButton
-              pressHandler={() => {
-                setIsSellPopupVisible(true);
-                console.log("Sell Pressed");
-              }}
-              style={styles.sellButtonStyle}
-            >
-              <Text style={styles.buttonTextStyle}>Sell</Text>
-            </PressableButton>
+            {selectedCryptoAmount > 0 && (
+              <PressableButton
+                pressHandler={() => {
+                  setIsSellPopupVisible(true);
+                  console.log("Sell Pressed");
+                }}
+                style={styles.sellButtonStyle}
+              >
+                <Text style={styles.buttonTextStyle}>Sell</Text>
+              </PressableButton>
+            )}
             <BuyPopup
               visible={isBuyPopupVisible}
               onClose={() => setIsBuyPopupVisible(false)}
