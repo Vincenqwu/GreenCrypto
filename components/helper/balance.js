@@ -23,10 +23,17 @@ export const updatePortfolioWhenSell = async (
   portfolio,
   portfolioId,
   coinId,
-  amount
+  amount,
+  currentPrice
 ) => {
   let cryptosList = decreaseCryptoHolds(portfolio, coinId, amount);
-  await updatePortfoliosCryptosList(portfolio, portfolioId, cryptosList);
+  console.log("currentPrice type: ", typeof currentPrice);
+  await updatePortfoliosCryptosList(
+    portfolio,
+    portfolioId,
+    cryptosList,
+    parseFloat(currentPrice)
+  );
 };
 
 const increaseCryptoHolds = (portfolio, coinId, amount) => {
@@ -48,6 +55,7 @@ const decreaseCryptoHolds = (portfolio, coinId, amount) => {
 
   if (index >= 0) {
     let newAmount = parseFloat(cryptosList[index].amount) - parseFloat(amount);
+    console.log("amount after sell: ", newAmount);
     if (newAmount < 0) {
       throw new Error("Not enough crypto to sell");
     } else if (newAmount === 0) {
@@ -65,8 +73,10 @@ const updatePortfoliosCryptosList = async (
   portfolio,
   portfolioId,
   cryptosList,
-  difference
+  difference = 0
 ) => {
+  console.log("difference: ", difference);
+
   const newPortfolio = {
     ...portfolio,
     cryptos: cryptosList,
@@ -109,12 +119,28 @@ export const calculateCryptosValue = (portfolio, priceList) => {
   return totalValue;
 };
 
+export const getOwnedCryptoAmountById = (portfolio, coinId) => {
+  const cryptosList = portfolio.cryptos;
+  const currentAmount = cryptosList.find(
+    (crypto) => crypto.coinId === coinId
+  ).amount;
+
+  return currentAmount;
+};
+
 export const insufficientCashAlert = () => {
   Alert.alert(
     "Insufficient cash",
     "You don't have enough cash to buy this crypto",
     [{ text: "OK" }]
   );
+  return;
+};
+
+export const insufficientCryptoAlert = () => {
+  Alert.alert("Insufficient Crypto", "You don't have enough crypto to sell", [
+    { text: "OK" },
+  ]);
   return;
 };
 
