@@ -121,11 +121,13 @@ export const calculateCryptosValue = (portfolio, priceList) => {
 
 export const getOwnedCryptoAmountById = (portfolio, coinId) => {
   const cryptosList = portfolio.cryptos;
-  const currentAmount = cryptosList.find(
-    (crypto) => crypto.coinId === coinId
-  ).amount;
+  const crypto = portfolio.cryptos.find((crypto) => crypto.coinId === coinId);
 
-  return currentAmount;
+  if (crypto) {
+    return crypto.amount;
+  } else {
+    return 0;
+  }
 };
 
 export const insufficientCashAlert = () => {
