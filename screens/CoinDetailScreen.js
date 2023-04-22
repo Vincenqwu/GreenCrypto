@@ -49,12 +49,11 @@ export default function CoinDetailScreen({ route, navigation }) {
     setLoading(true);
     getCoinData();
     getCoinHistoricalData(coinId, 1, "hourly");
+    setSelectedRangeValue("1");
     setTimeout(() => {
       setLoading(false);
     }, 2000);
   }, []);
-
-  const screenWidth = Dimensions.get("window").width;
 
   const currentUser = auth.currentUser;
 
