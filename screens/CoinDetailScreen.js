@@ -22,6 +22,7 @@ import { getUserWatchList, updateWatchList } from "../Firebase/firebaseHelper";
 import { onAuthStateChanged } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
 import {
+  displayBalance,
   getOwnedCryptoAmountById,
   insufficientCashAlert,
   insufficientCryptoAlert,
@@ -32,6 +33,7 @@ import ChartView from "../components/ChartView";
 import styles from "../styles/coinDetailsStyles";
 import { Colors } from "../styles/Color";
 import { scheduleNotificationHandler } from "../components/helper/NotificationManager";
+import { color } from "react-native-reanimated";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
@@ -45,6 +47,7 @@ export default function CoinDetailScreen({ route, navigation }) {
   const [isWatchListed, setIsWatchListed] = useState(false);
   const [portfolio, setPortfolio] = useState(null);
   const [portfolioId, setPortfolioId] = useState(null);
+  const [selectedCryptoAmount, setSelectedAmount] = useState(0);
 
   const onRefresh = React.useCallback(() => {
     setLoading(true);
@@ -146,6 +149,16 @@ export default function CoinDetailScreen({ route, navigation }) {
       };
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    if (portfolio) {
+      if (portfolio) {
+        let selectedAmount = getOwnedCryptoAmountById(portfolio, coinId);
+        setSelectedAmount(selectedAmount);
+      }
+      console.log("current amount: ", selectedCryptoAmount);
+    }
+  }, [portfolio]);
 
   const handleWatchListChange = async () => {
     if (isWatchListed) {
@@ -383,6 +396,21 @@ export default function CoinDetailScreen({ route, navigation }) {
               {total_supply ? Number(total_supply).toFixed(2) : "N/A"}
             </Text>
           </View>
+          <View style={styles.infoItem}>
+            <Text style={[{ color: Colors.hilightBlue }, styles.infoItemTitle]}>
+              Amount Purchased
+            </Text>
+            <Text
+              style={[
+                styles.infoItemValue,
+                { color: Colors.hilightBlue, fontWeight: "bold" },
+              ]}
+            >
+              {selectedCryptoAmount
+                ? displayBalance(selectedCryptoAmount)
+                : "N/A"}
+            </Text>
+          </View>
         </View>
         {currentUser && (
           <View style={styles.buttonContainer}>
@@ -395,15 +423,17 @@ export default function CoinDetailScreen({ route, navigation }) {
             >
               <Text style={styles.buttonTextStyle}>Buy</Text>
             </PressableButton>
-            <PressableButton
-              pressHandler={() => {
-                setIsSellPopupVisible(true);
-                console.log("Sell Pressed");
-              }}
-              style={styles.sellButtonStyle}
-            >
-              <Text style={styles.buttonTextStyle}>Sell</Text>
-            </PressableButton>
+            {selectedCryptoAmount > 0 && (
+              <PressableButton
+                pressHandler={() => {
+                  setIsSellPopupVisible(true);
+                  console.log("Sell Pressed");
+                }}
+                style={styles.sellButtonStyle}
+              >
+                <Text style={styles.buttonTextStyle}>Sell</Text>
+              </PressableButton>
+            )}
             <BuyPopup
               visible={isBuyPopupVisible}
               onClose={() => setIsBuyPopupVisible(false)}
