@@ -5,7 +5,7 @@ export function FilterOptions({ days, label, selectedRange, setSelectedRange}) {
   return (
     <Pressable
       style={{
-        backgroundColor: selectedRange === days ? '#000000' : '#ffffff',
+        backgroundColor: selectedRange === days ? '#000000' : '#ECECEC',
         width: 50,
         height: 35,
         justifyContent: 'center',

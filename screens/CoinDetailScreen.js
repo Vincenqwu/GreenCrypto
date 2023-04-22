@@ -49,12 +49,11 @@ export default function CoinDetailScreen({ route, navigation }) {
     setLoading(true);
     getCoinData();
     getCoinHistoricalData(coinId, 1, "hourly");
+    setSelectedRangeValue("1");
     setTimeout(() => {
       setLoading(false);
     }, 2000);
   }, []);
-
-  const screenWidth = Dimensions.get("window").width;
 
   const currentUser = auth.currentUser;
 
@@ -177,8 +176,8 @@ export default function CoinDetailScreen({ route, navigation }) {
     { days: "1", label: "1d" },
     { days: "7", label: "7d" },
     { days: "30", label: "30d" },
+    { days: "90", label: "90d" },
     { days: "365", label: "1y" },
-    { days: "max", label: "YTD" },
   ];
 
   const getCoinData = async () => {
