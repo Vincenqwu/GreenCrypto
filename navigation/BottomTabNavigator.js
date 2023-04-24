@@ -71,6 +71,7 @@ export default function BottomTabNavigator({ navigation }) {
           marginBottom: Platform.OS === 'ios' ? 5 : 0, 
         },
         tabBarActiveTintColor: "orange",
+        tabBarInactiveTintColor: Colors.lightGrey,
       }}
     >
       <Tab.Screen

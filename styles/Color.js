@@ -1,6 +1,6 @@
 export const Colors = {
-  barColor: "#87CBB9",
-  subBarColor: "#B9EDDD",
+  barColor: "#439A97",
+  subBarColor: "#62B6B7",
   buttonColor: "#569DAA",
   removeButtonColor: "#8b0000",
   errorColor: "#0F6292",
