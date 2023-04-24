@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { auth } from "../Firebase/firebase-setup";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Colors } from "../styles/Color";
+import { ProfileButton } from "../components/Profile";
+import PressableButton from "../components/PressableButton";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -49,8 +51,10 @@ export default function LoginScreen({ navigation }) {
           <Text style={styles.errorText}>Invalid email or password.</Text>
         </View>
       )}
-      <Button title="Login" onPress={loginHandler} />
-      <Button title="New User? Create an Account" onPress={signupHandler} />
+      <View style={styles.footer}>
+        <ProfileButton handler={loginHandler} title="Login" />
+        <ProfileButton handler={signupHandler} title="New User Sign Up" />
+      </View>
     </View>
   );
 }
@@ -78,5 +82,11 @@ const styles = StyleSheet.create({
     color: Colors.bgColor,
     fontWeight: "bold",
     textAlign: "center",
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+    alignSelf: "center",
   },
 });
