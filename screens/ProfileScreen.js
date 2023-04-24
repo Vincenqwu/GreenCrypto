@@ -4,7 +4,10 @@ import styles from "../styles/profileStyles";
 import { auth, firestore } from "../Firebase/firebase-setup";
 import { signOut } from "firebase/auth";
 import { onSnapshot, collection, query, where } from "firebase/firestore";
-import { updateUserProfile, updatePostIconUri } from "../Firebase/firebaseHelper";
+import { 
+  updateUserProfile, 
+  updatePostIconUri, 
+  updatePostLocation } from "../Firebase/firebaseHelper";
 import {
   ProfileButton,
   ProfileField,
@@ -136,6 +139,9 @@ export default function ProfileScreen({ route }) {
       updateUserProfile(profileId, newProfile);
       if (hasNewPhoto) {
         updatePostIconUri(currentUser.uid, newProfile.iconUri);
+      }
+      if (location !== "") {
+        updatePostLocation(currentUser.uid, newProfile.location);
       }
     }
   };

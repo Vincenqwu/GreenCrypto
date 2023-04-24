@@ -193,3 +193,18 @@ export async function updatePostIconUri(uid, iconUri) {
     console.log(err);
   }
 }
+
+export async function updatePostLocation(uid, location) {
+  try {
+    const q = query(collection(firestore, "posts"), where("userId", "==", uid));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      querySnapshot.forEach(async (doc) => {
+        await updateDoc(doc.ref, { location });
+      });
+    }
+  }
+  catch (err) {
+    console.log(err);
+  }
+}
