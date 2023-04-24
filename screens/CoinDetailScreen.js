@@ -51,12 +51,10 @@ export default function CoinDetailScreen({ route, navigation }) {
 
   const onRefresh = React.useCallback(() => {
     setLoading(true);
+    setSelectedRangeValue("1");
     getCoinData();
     getCoinHistoricalData(coinId, 1, "hourly");
-    setSelectedRangeValue("1");
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    setLoading(false);
   }, []);
 
   const currentUser = auth.currentUser;
@@ -99,8 +97,10 @@ export default function CoinDetailScreen({ route, navigation }) {
   }, [navigation, coinData, isAuthenticated, isWatchListed]);
 
   useEffect(() => {
+    setLoading(true);
     getCoinData();
     getCoinHistoricalData(coinId, 1, "hourly");
+    setLoading(false);
   }, []);
 
   // Load user watchlist to check if coin is already in watchlist
@@ -194,10 +194,8 @@ export default function CoinDetailScreen({ route, navigation }) {
   ];
 
   const getCoinData = async () => {
-    setLoading(true);
     const responseData = await getCryptoData(coinId);
     setCoinData(responseData);
-    setLoading(false);
   };
 
   const getCoinHistoricalData = async (
