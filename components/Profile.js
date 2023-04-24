@@ -1,9 +1,8 @@
-import { View, Text, Alert } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
 import PressableButton from "./PressableButton";
 import styles, { colors } from "../styles/profileStyles";
 import { AntDesign } from "@expo/vector-icons";
-import LocateOptions, { LocateButton } from "./LocateOptions";
 import { constants } from "./helper/service";
 
 const ProfileButton = ({ title, handler }) => {
