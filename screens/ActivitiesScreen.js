@@ -22,12 +22,14 @@ export default function ActivitiesScreen() {
     { key: 'publicPosts', title: 'Public Activities' },
   ]);
 
+  const startAfterTimestamp = "2023-04-20T00:00:00.000Z";
 
   useEffect(() => {
     const unsubscribePosts = onSnapshot(
       query(
         collection(firestore, "posts"),
         orderBy("timestamp", "desc"),
+        where("timestamp", ">", startAfterTimestamp)
       ),
       (querySnapshot) => {
         if (querySnapshot.empty) {
