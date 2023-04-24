@@ -4,6 +4,8 @@ import { auth } from "../Firebase/firebase-setup";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Colors } from "../styles/Color";
 import { createPortfolio, createProfile } from "../Firebase/firebaseHelper";
+import { ProfileButton } from "../components/Profile";
+import styles from "../styles/loginStyles";
 
 export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -40,71 +42,54 @@ export default function SignupScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text>Email</Text>
-      <TextInput
-        value={email}
-        onChangeText={(newEmail) => {
-          setEmail(newEmail);
-        }}
-        placeholder="Email"
-        style={styles.input}
-      />
-      <Text>Password</Text>
-      <TextInput
-        secureTextEntry={true}
-        value={password}
-        onChangeText={(newPassword) => {
-          setPassword(newPassword);
-        }}
-        placeholder="Password"
-        style={styles.input}
-      />
-      <Text>Confirm Password</Text>
-      <TextInput
-        secureTextEntry={true}
-        value={confirmPassword}
-        onChangeText={(newConfirmPassword) => {
-          setConfirmPassword(newConfirmPassword);
-        }}
-        placeholder="Confirm Password"
-        style={styles.input}
-      />
-      {showError && (
-        <View style={styles.error}>
-          <Text style={styles.errorText}>
-            {password !== confirmPassword
-              ? "Passwords do not match"
-              : "Error creating account"}
-          </Text>
-        </View>
-      )}
-      <Button title="Create Account" onPress={signupHandler} />
-      <Button title="Already have an account? Login" onPress={loginHandler} />
+      <View>
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          value={email}
+          onChangeText={(newEmail) => {
+            setEmail(newEmail);
+          }}
+          placeholder="Email"
+          style={styles.input}
+        />
+      </View>
+      <Text style={styles.label}>Password</Text>
+      <View>
+        <TextInput
+          secureTextEntry={true}
+          value={password}
+          onChangeText={(newPassword) => {
+            setPassword(newPassword);
+          }}
+          placeholder="Password"
+          style={styles.input}
+        />
+      </View>
+      <View>
+        <Text style={styles.label}>Confirm Password</Text>
+        <TextInput
+          secureTextEntry={true}
+          value={confirmPassword}
+          onChangeText={(newConfirmPassword) => {
+            setConfirmPassword(newConfirmPassword);
+          }}
+          placeholder="Confirm Password"
+          style={styles.input}
+        />
+        {showError && (
+          <View style={styles.error}>
+            <Text style={styles.errorText}>
+              {password !== confirmPassword
+                ? "Passwords do not match"
+                : "Error creating account"}
+            </Text>
+          </View>
+        )}
+      </View>
+      <View style={styles.footer}>
+        <ProfileButton handler={signupHandler} title="Sign Up" />
+        <ProfileButton handler={loginHandler} title="User Login" />
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: Colors.borderColor,
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    width: "100%",
-  },
-  error: {
-    backgroundColor: Colors.errorColor,
-    padding: 10,
-    width: "100%",
-  },
-  errorText: {
-    color: Colors.bgColor,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-});

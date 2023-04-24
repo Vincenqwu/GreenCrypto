@@ -1,10 +1,9 @@
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import React, { useState } from "react";
 import { auth } from "../Firebase/firebase-setup";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { Colors } from "../styles/Color";
 import { ProfileButton } from "../components/Profile";
-import PressableButton from "../components/PressableButton";
+import styles from "../styles/loginStyles";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -14,7 +13,6 @@ export default function LoginScreen({ navigation }) {
   const loginHandler = async () => {
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
-      // console.log(userCred);
       navigation.navigate("HomeNavigator", { screen: "Profile" });
     } catch (err) {
       console.log("login err ", err);
@@ -27,25 +25,29 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text>Email</Text>
-      <TextInput
-        value={email}
-        onChangeText={(newEmail) => {
-          setEmail(newEmail);
-        }}
-        placeholder="Email"
-        style={styles.input}
-      />
-      <Text>Password</Text>
-      <TextInput
-        secureTextEntry={true}
-        value={password}
-        onChangeText={(newPassword) => {
-          setPassword(newPassword);
-        }}
-        placeholder="Password"
-        style={styles.input}
-      />
+      <View>
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          value={email}
+          onChangeText={(newEmail) => {
+            setEmail(newEmail);
+          }}
+          placeholder="Email"
+          style={styles.input}
+        />
+      </View>
+      <View>
+        <Text style={styles.label}>Password</Text>
+        <TextInput
+          secureTextEntry={true}
+          value={password}
+          onChangeText={(newPassword) => {
+            setPassword(newPassword);
+          }}
+          placeholder="Password"
+          style={styles.input}
+        />
+      </View>
       {showError && (
         <View style={styles.error}>
           <Text style={styles.errorText}>Invalid email or password.</Text>
@@ -58,35 +60,3 @@ export default function LoginScreen({ navigation }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: Colors.borderColor,
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    width: "100%",
-  },
-
-  error: {
-    backgroundColor: Colors.errorColor,
-    padding: 10,
-    width: "100%",
-  },
-  errorText: {
-    color: Colors.bgColor,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-    alignSelf: "center",
-  },
-});
