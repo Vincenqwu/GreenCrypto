@@ -2,7 +2,6 @@ import {
   View,
   Text,
   Image,
-  Dimensions,
   ActivityIndicator,
   SafeAreaView,
   ScrollView,
@@ -33,7 +32,6 @@ import ChartView from "../components/ChartView";
 import styles from "../styles/coinDetailsStyles";
 import { Colors } from "../styles/Color";
 import { scheduleNotificationHandler } from "../components/helper/NotificationManager";
-import { color } from "react-native-reanimated";
 
 export default function CoinDetailScreen({ route, navigation }) {
   const { coinId } = route.params;
