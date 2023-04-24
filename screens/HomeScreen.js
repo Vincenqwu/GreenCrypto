@@ -36,7 +36,7 @@ const HomeScreen = () => {
       <FlatList
         data={coins}
         renderItem={({ item }) => <CoinItem marketCoin={item} />}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id.toString()  + Date.now().toString()}
       />
     </View>
   );
