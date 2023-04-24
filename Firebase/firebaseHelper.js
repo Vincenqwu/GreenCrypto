@@ -179,3 +179,32 @@ export async function getUserProfile(uid) {
     console.log("get user profile ", err);
   }
 }
+
+export async function updatePostIconUri(uid, iconUri) {
+  try {
+    const q = query(collection(firestore, "posts"), where("userId", "==", uid));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      querySnapshot.forEach(async (doc) => {
+        await updateDoc(doc.ref, { iconUri });
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function updatePostLocation(uid, location) {
+  try {
+    const q = query(collection(firestore, "posts"), where("userId", "==", uid));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      querySnapshot.forEach(async (doc) => {
+        await updateDoc(doc.ref, { location });
+      });
+    }
+  }
+  catch (err) {
+    console.log(err);
+  }
+}
