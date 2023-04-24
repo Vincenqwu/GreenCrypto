@@ -3,6 +3,7 @@ View,
 StyleSheet,
 ActivityIndicator,
 Dimensions,
+LogBox,
 } from "react-native"
 import React, { useState, useEffect } from "react"
 import { onSnapshot, collection, query, where, orderBy } from "firebase/firestore";
@@ -11,6 +12,8 @@ import PublicPosts from "../components/PublicPosts";
 import MyActivities from "../components/MyActivities";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { Colors } from "../styles/Color";
+
+LogBox.ignoreLogs(['']);
 
 export default function ActivitiesScreen() {
   const [posts, setPosts] = useState([]);

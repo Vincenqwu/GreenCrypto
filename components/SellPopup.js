@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Colors } from "../styles/Color";
 
 export default function SellPopup({ visible, onClose, onSubmit }) {
   const [amount, setAmount] = useState("");
@@ -90,14 +91,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   cancelButton: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#999",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginRight: 10,
   },
   confirmButton: {
-    backgroundColor: "green",
+    backgroundColor: Colors.buttonColor,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
