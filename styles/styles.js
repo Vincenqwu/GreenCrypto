@@ -73,9 +73,9 @@ const styles = StyleSheet.create({
   },
   coinContainer: {
     flexDirection: "row",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#282828",
-    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    padding: 18,
   },
   coinTextColor: {
     color: Colors.coinTextColor,
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     color: Colors.coinTextColor,
   },
   rankContainer: {
-    backgroundColor: "#585858",
+    backgroundColor: Colors.lightGrey,
     paddingHorizontal: 5,
     borderRadius: 5,
     marginRight: 5,
