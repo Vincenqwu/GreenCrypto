@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { Colors } from "./Color";
 
 export const colors = {
   bgColor: "#3795BD",
@@ -8,7 +9,7 @@ export const colors = {
   lightBg: "#ECF9FF",
   navy: "#00337C",
   lightText: "#ECF2FF",
-  btnColor: "#0F6292",
+  btnColor: "#569DAA",
 };
 
 const styles = StyleSheet.create({
@@ -73,6 +74,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginBottom: 5,
+    width: "65%",
   },
 
   footer: {
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: colors.btnColor,
+    backgroundColor: Colors.buttonColor,
     padding: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

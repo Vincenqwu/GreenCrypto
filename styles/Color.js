@@ -1,7 +1,7 @@
 export const Colors = {
-  barColor: "#006400",
-  subBarColor: "#2C8B3A",
-  buttonColor: "#0F6292",
+  barColor: "#87CBB9",
+  subBarColor: "#B9EDDD",
+  buttonColor: "#569DAA",
   removeButtonColor: "#8b0000",
   errorColor: "#0F6292",
   buyColor: "#0F6292",
