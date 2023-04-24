@@ -363,33 +363,33 @@ export default function CoinDetailScreen({ route, navigation }) {
           <View style={styles.infoItem}>
             <Text style={styles.infoItemTitle}>Market Cap</Text>
             <Text style={styles.infoItemValue}>
-              {market_cap ? "$" + market_cap : "N/A"}
+              {market_cap ? "$" + market_cap.toLocaleString() : "N/A"}
             </Text>
           </View>
           <View style={styles.infoItem}>
             <Text style={styles.infoItemTitle}>Volume 24h</Text>
             <Text style={styles.infoItemValue}>
-              {vol_24h ? "$" + vol_24h : "N/A"}
+              {vol_24h ? "$" + vol_24h.toLocaleString() : "N/A"}
             </Text>
           </View>
           <View style={styles.infoItem}>
             <Text style={styles.infoItemTitle}>Fully Diluted Valuation</Text>
             <Text style={styles.infoItemValue}>
-              {fully_diluted_valuation ? "$" + fully_diluted_valuation : "N/A"}
+              {fully_diluted_valuation ? "$" + fully_diluted_valuation.toLocaleString() : "N/A"}
             </Text>
           </View>
           <View style={styles.infoItem}>
             <Text style={styles.infoItemTitle}>Circulating Supply</Text>
             <Text style={styles.infoItemValue}>
               {circulating_supply
-                ? Number(circulating_supply).toFixed(2)
+                ? Number(Number(circulating_supply).toFixed(2)).toLocaleString()
                 : "N/A"}
             </Text>
           </View>
           <View style={styles.infoItem}>
             <Text style={styles.infoItemTitle}>Total Supply</Text>
             <Text style={styles.infoItemValue}>
-              {total_supply ? Number(total_supply).toFixed(2) : "N/A"}
+              {total_supply ? Number(Number(total_supply).toFixed(2)).toLocaleString() : "N/A"}
             </Text>
           </View>
           {selectedCryptoAmount > 0 && (
