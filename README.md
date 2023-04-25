@@ -2,6 +2,8 @@
 
 ## Team members: Chen Qiu, Maokun Sun, Qiuan Wu
 
+### Final Demo youtube link: https://www.youtube.com/watch?v=zY8V8DQeQyw
+
 ### Iteration 1
 
 Finished 2 navigators and basis of CRUD operations to Firestore.
